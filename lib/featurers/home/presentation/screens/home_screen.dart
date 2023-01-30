@@ -34,17 +34,31 @@ class HomeScreen extends ConsumerWidget {
                   vertical: screenSize.height * 0.02,
                   horizontal: screenSize.width * 0.04,
                 ),
-                child: Wrap(
-                  alignment: WrapAlignment.spaceBetween,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    for (var exam in data)
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: 10.0, left: 10.0),
-                        child: ExamCard(
-                          examType: exam.examType,
-                        ),
-                      ),
+                    Text(
+                      'Exam Resources',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(fontWeight: FontWeight.w500),
+                    ),
+                    const Divider(),
+                    Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      children: [
+                        for (var exam in data)
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 10.0, left: 10.0),
+                            child: ExamCard(
+                              examType: exam.examType,
+                            ),
+                          ),
+                      ],
+                    ),
                   ],
                 ),
               );
