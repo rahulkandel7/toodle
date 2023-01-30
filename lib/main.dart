@@ -6,6 +6,7 @@ import 'package:toddle/featurers/auth/presentation/screens/forget_password_scree
 import 'package:toddle/featurers/auth/presentation/screens/login_screen.dart';
 import 'package:toddle/featurers/auth/presentation/screens/register_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
+import 'package:toddle/featurers/home/presentation/screens/set_screen.dart';
 
 void main() {
   runApp(
@@ -37,6 +38,7 @@ class MainApp extends StatelessWidget {
         ForgetOtp.routeName: (ctx) => const ForgetOtp(),
         ForgetChangePassword.routeName: (ctx) => const ForgetChangePassword(),
         HomeScreen.routeName: (ctx) => const HomeScreen(),
+        SetScreen.routeName: (ctx) => const SetScreen(),
       },
     );
   }

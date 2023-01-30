@@ -54,7 +54,7 @@ class HomeScreen extends ConsumerWidget {
                             padding:
                                 const EdgeInsets.only(bottom: 10.0, left: 10.0),
                             child: ExamCard(
-                              examType: exam.examType,
+                              examType: exam,
                             ),
                           ),
                       ],
