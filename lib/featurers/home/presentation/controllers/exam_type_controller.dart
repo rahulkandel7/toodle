@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toddle/featurers/home/data/models/ExamType.dart';
+import 'package:toddle/featurers/home/data/models/exam_type.dart';
 import 'package:toddle/featurers/home/data/repositories/exam_type_repositories.dart';
 
 class ExamTypeController extends StateNotifier<AsyncValue<List<ExamType>>> {

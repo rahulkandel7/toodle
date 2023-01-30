@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toddle/featurers/home/presentation/controllers/examTypeController.dart';
+import 'package:toddle/featurers/home/presentation/controllers/exam_type_controller.dart';
 
 import 'widgets/exam_card.dart';
 

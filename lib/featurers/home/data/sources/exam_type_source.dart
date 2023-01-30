@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toddle/core/api/api_services.dart';
-import 'package:toddle/featurers/home/data/models/ExamType.dart';
+import 'package:toddle/featurers/home/data/models/exam_type.dart';
 
 abstract class ExamTypeDataSource {
   Future<List<ExamType>> fetchExamType();
