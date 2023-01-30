@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toddle/featurers/auth/presentation/screens/forget_change_password.dart';
+import 'package:toddle/featurers/auth/presentation/screens/forget_otp.dart';
+import 'package:toddle/featurers/auth/presentation/screens/forget_password_screen.dart';
+import 'package:toddle/featurers/auth/presentation/screens/login_screen.dart';
+import 'package:toddle/featurers/auth/presentation/screens/register_screen.dart';
+
+void main() {
+  runApp(
+    const ProviderScope(
+      child: MainApp(),
+    ),
+  );
+}
+
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        useMaterial3: true,
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      ),
+      home: const LoginScreen(),
+      routes: {
+        LoginScreen.routeName: (ctx) => const LoginScreen(),
+        RegisterScreen.routeName: (ctx) => const RegisterScreen(),
+        ForgetPasswordScreen.routeName: (ctx) => const ForgetPasswordScreen(),
+        ForgetOtp.routeName: (ctx) => const ForgetOtp(),
+        ForgetChangePassword.routeName: (ctx) => const ForgetChangePassword(),
+      },
+    );
+  }
+}
