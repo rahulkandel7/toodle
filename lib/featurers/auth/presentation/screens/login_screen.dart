@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_password_screen.dart';
 import 'package:toddle/featurers/auth/presentation/screens/register_screen.dart';
+import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
 
 import '../../../../core/utils/toaster.dart';
 import '../controllers/auth_controller.dart';
@@ -155,6 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                           color: Colors.red,
                                         );
                                       } else {
+                                        Navigator.of(context)
+                                            .pushReplacementNamed(
+                                                HomeScreen.routeName);
                                         toast(
                                           context: context,
                                           label: value[1],

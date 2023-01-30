@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toddle/core/api/api_error.dart';
 import 'package:toddle/core/api/dio_exception.dart';
 
-import '../data_sources/auth_data_sources.dart';
+import '../sources/auth_data_sources.dart';
 
 abstract class AuthRepositories {
   Future<Either<ApiError, String>> login(var data);
