@@ -25,18 +25,11 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
 
   List<Map<String, dynamic>> userSelected = [];
 
-  List<dynamic> option1Images = [];
-  List<dynamic> option2Images = [];
-  List<dynamic> option3Images = [];
-  List<dynamic> option4Images = [];
-  List<dynamic> questionImage = [];
-
   //Widget For Option Box
-  Widget optionBox({
-    required String option,
-    required String isImage,
-    required Size screenSize,
-  }) {
+  Widget optionBox(
+      {required String option,
+      required String isImage,
+      required Size screenSize}) {
     return Padding(
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
       child: InkWell(
@@ -110,50 +103,6 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
       ),
       body: ref.watch(questionControllerProvider(examType.id)).when(
             data: (data) {
-              data.map((ques) => option1Images.add(
-                    CachedNetworkImage(
-                      imageUrl: '${ApiConstants.answerImageUrl}${ques.option1}',
-                      height: screenSize.height * 0.1,
-                      placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  ));
-              data.map((ques) => option2Images.add(
-                    CachedNetworkImage(
-                      imageUrl: '${ApiConstants.answerImageUrl}${ques.option2}',
-                      height: screenSize.height * 0.1,
-                      placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  ));
-              data.map((ques) => option3Images.add(
-                    CachedNetworkImage(
-                      imageUrl: '${ApiConstants.answerImageUrl}${ques.option3}',
-                      height: screenSize.height * 0.1,
-                      placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  ));
-              data.map((ques) => option4Images.add(
-                    CachedNetworkImage(
-                      imageUrl: '${ApiConstants.answerImageUrl}${ques.option4}',
-                      height: screenSize.height * 0.1,
-                      placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  ));
-              data.map((ques) => questionImage.add(CachedNetworkImage(
-                    imageUrl:
-                        '${ApiConstants.questionFileUrl}${data[i].filePath}',
-                    height: screenSize.height * 0.17,
-                    placeholder: (context, url) => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )));
               return SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.symmetric(
