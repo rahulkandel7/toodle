@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toddle/featurers/home/data/models/exam_type.dart';
+import 'package:toddle/featurers/quiz/presnetation/screens/quiz_screen.dart';
 
 class SetCard extends StatelessWidget {
   final int setNumber;
@@ -46,7 +47,16 @@ class SetCard extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: FilledButton.tonalIcon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Map args = {
+                      'exam': exam,
+                      'setId': setNumber,
+                    };
+                    Navigator.of(context).pushNamed(
+                      QuizScreen.routeName,
+                      arguments: args,
+                    );
+                  },
                   icon: const Icon(Icons.play_arrow),
                   label: const Text(
                     'Play Quiz',

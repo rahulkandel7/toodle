@@ -7,6 +7,7 @@ import 'package:toddle/featurers/auth/presentation/screens/login_screen.dart';
 import 'package:toddle/featurers/auth/presentation/screens/register_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/set_screen.dart';
+import 'package:toddle/featurers/quiz/presnetation/screens/quiz_screen.dart';
 
 void main() {
   runApp(
@@ -39,6 +40,7 @@ class MainApp extends StatelessWidget {
         ForgetChangePassword.routeName: (ctx) => const ForgetChangePassword(),
         HomeScreen.routeName: (ctx) => const HomeScreen(),
         SetScreen.routeName: (ctx) => const SetScreen(),
+        QuizScreen.routeName: (ctx) => const QuizScreen(),
       },
     );
   }

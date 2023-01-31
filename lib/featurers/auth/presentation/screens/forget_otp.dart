@@ -26,6 +26,24 @@ class _ForgetOtpState extends State<ForgetOtp> {
 
   late String code6;
 
+  final code1Node = FocusNode();
+  final code2Node = FocusNode();
+  final code3Node = FocusNode();
+  final code4Node = FocusNode();
+  final code5Node = FocusNode();
+  final code6Node = FocusNode();
+
+  @override
+  void dispose() {
+    code1Node.dispose();
+    code2Node.dispose();
+    code3Node.dispose();
+    code4Node.dispose();
+    code5Node.dispose();
+    code6Node.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -74,6 +92,7 @@ class _ForgetOtpState extends State<ForgetOtp> {
                         width: screenSize.width * 0.13,
                         height: screenSize.height * 0.13,
                         child: TextFormField(
+                          focusNode: code1Node,
                           maxLength: 1,
                           decoration: const InputDecoration(
                             counterText: '',
@@ -89,6 +108,9 @@ class _ForgetOtpState extends State<ForgetOtp> {
                             }
                           },
                           keyboardType: TextInputType.number,
+                          onEditingComplete: () {
+                            FocusScope.of(context).requestFocus(code2Node);
+                          },
                         ),
                       ),
                     ),
@@ -101,6 +123,7 @@ class _ForgetOtpState extends State<ForgetOtp> {
                         width: screenSize.width * 0.13,
                         height: screenSize.height * 0.13,
                         child: TextFormField(
+                          focusNode: code2Node,
                           maxLength: 1,
                           decoration: const InputDecoration(
                             counterText: '',
@@ -116,6 +139,9 @@ class _ForgetOtpState extends State<ForgetOtp> {
                             }
                           },
                           keyboardType: TextInputType.number,
+                          onEditingComplete: () {
+                            FocusScope.of(context).requestFocus(code3Node);
+                          },
                         ),
                       ),
                     ),
@@ -128,6 +154,7 @@ class _ForgetOtpState extends State<ForgetOtp> {
                         width: screenSize.width * 0.13,
                         height: screenSize.height * 0.13,
                         child: TextFormField(
+                          focusNode: code3Node,
                           maxLength: 1,
                           decoration: const InputDecoration(
                             counterText: '',
@@ -143,6 +170,9 @@ class _ForgetOtpState extends State<ForgetOtp> {
                             }
                           },
                           keyboardType: TextInputType.number,
+                          onEditingComplete: () {
+                            FocusScope.of(context).requestFocus(code4Node);
+                          },
                         ),
                       ),
                     ),
@@ -155,6 +185,7 @@ class _ForgetOtpState extends State<ForgetOtp> {
                         width: screenSize.width * 0.13,
                         height: screenSize.height * 0.13,
                         child: TextFormField(
+                          focusNode: code4Node,
                           maxLength: 1,
                           decoration: const InputDecoration(
                             counterText: '',
@@ -170,6 +201,9 @@ class _ForgetOtpState extends State<ForgetOtp> {
                             }
                           },
                           keyboardType: TextInputType.number,
+                          onEditingComplete: () {
+                            FocusScope.of(context).requestFocus(code5Node);
+                          },
                         ),
                       ),
                     ),
@@ -182,6 +216,7 @@ class _ForgetOtpState extends State<ForgetOtp> {
                         width: screenSize.width * 0.13,
                         height: screenSize.height * 0.13,
                         child: TextFormField(
+                          focusNode: code5Node,
                           maxLength: 1,
                           decoration: const InputDecoration(
                             counterText: '',
@@ -197,6 +232,9 @@ class _ForgetOtpState extends State<ForgetOtp> {
                             }
                           },
                           keyboardType: TextInputType.number,
+                          onEditingComplete: () {
+                            FocusScope.of(context).requestFocus(code6Node);
+                          },
                         ),
                       ),
                     ),
@@ -209,6 +247,7 @@ class _ForgetOtpState extends State<ForgetOtp> {
                         width: screenSize.width * 0.13,
                         height: screenSize.height * 0.13,
                         child: TextFormField(
+                          focusNode: code6Node,
                           maxLength: 1,
                           decoration: const InputDecoration(
                             counterText: '',

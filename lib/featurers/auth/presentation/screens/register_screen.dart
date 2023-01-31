@@ -15,19 +15,36 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final formKey = GlobalKey<FormState>();
+
+  late String name;
+  late String email;
+  late String phone;
+  late String address;
+  late String password;
+  late String confirmPassword;
+
+  final nameNode = FocusNode();
+  final emailNode = FocusNode();
+  final phoneNode = FocusNode();
+  final addressNode = FocusNode();
+  final passwordNode = FocusNode();
+  final confirmPasswordNode = FocusNode();
+
+  @override
+  void dispose() {
+    nameNode.dispose();
+    emailNode.dispose();
+    phoneNode.dispose();
+    addressNode.dispose();
+    passwordNode.dispose();
+    confirmPasswordNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-
-    final formKey = GlobalKey<FormState>();
-
-    late String name;
-    late String email;
-    late String phone;
-    late String address;
-    late String password;
-    late String confirmPassword;
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -70,6 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           top: screenSize.height * 0.03,
                         ),
                         child: TextFormField(
+                          focusNode: nameNode,
                           decoration: const InputDecoration(
                             labelText: 'Full Name',
                             prefixIcon: Icon(
@@ -86,6 +104,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return null;
                             }
                           },
+                          onEditingComplete: () {
+                            FocusScope.of(context).requestFocus(emailNode);
+                          },
                         ),
                       ),
 
@@ -95,6 +116,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           top: screenSize.height * 0.03,
                         ),
                         child: TextFormField(
+                          focusNode: emailNode,
                           decoration: const InputDecoration(
                             labelText: 'Email Address',
                             prefixIcon: Icon(
@@ -113,6 +135,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return null;
                             }
                           },
+                          onEditingComplete: () {
+                            FocusScope.of(context).requestFocus(passwordNode);
+                          },
                           keyboardType: TextInputType.emailAddress,
                         ),
                       ),
@@ -123,6 +148,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           top: screenSize.height * 0.03,
                         ),
                         child: TextFormField(
+                          focusNode: passwordNode,
                           decoration: const InputDecoration(
                             labelText: 'Password',
                             prefixIcon: Icon(
@@ -140,6 +166,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return null;
                             }
                           },
+                          onEditingComplete: () {
+                            FocusScope.of(context)
+                                .requestFocus(confirmPasswordNode);
+                          },
                           keyboardType: TextInputType.visiblePassword,
                         ),
                       ),
@@ -150,6 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           top: screenSize.height * 0.03,
                         ),
                         child: TextFormField(
+                          focusNode: confirmPasswordNode,
                           decoration: const InputDecoration(
                             labelText: 'Confirm Password',
                             prefixIcon: Icon(
@@ -169,6 +200,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return null;
                             }
                           },
+                          onEditingComplete: () {
+                            FocusScope.of(context).requestFocus(phoneNode);
+                          },
                           keyboardType: TextInputType.visiblePassword,
                         ),
                       ),
@@ -179,6 +213,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           top: screenSize.height * 0.03,
                         ),
                         child: TextFormField(
+                          focusNode: phoneNode,
                           decoration: const InputDecoration(
                             labelText: 'Phone Number',
                             prefixIcon: Icon(
@@ -196,6 +231,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             }
                           },
                           keyboardType: TextInputType.phone,
+                          onEditingComplete: () {
+                            FocusScope.of(context).requestFocus(addressNode);
+                          },
                         ),
                       ),
 
@@ -205,6 +243,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           top: screenSize.height * 0.03,
                         ),
                         child: TextFormField(
+                          focusNode: addressNode,
                           decoration: const InputDecoration(
                             labelText: 'Address',
                             prefixIcon: Icon(

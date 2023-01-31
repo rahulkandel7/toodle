@@ -17,14 +17,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final formKey = GlobalKey<FormState>();
+
+  final emailNode = FocusNode();
+  final passwordNode = FocusNode();
+
+  late String email;
+  late String password;
+
+  @override
+  void dispose() {
+    emailNode.dispose();
+    passwordNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-
-    final formKey = GlobalKey<FormState>();
-
-    late String email;
-    late String password;
 
     return Scaffold(
       body: SafeArea(
@@ -61,12 +71,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 key: formKey,
                 child: Column(
                   children: [
-                    //Field For Login
+                    //Field For Email
                     Padding(
                       padding: EdgeInsets.only(
                         top: screenSize.height * 0.03,
                       ),
                       child: TextFormField(
+                        focusNode: emailNode,
                         decoration: const InputDecoration(
                           labelText: 'Email Address',
                           prefixIcon: Icon(
@@ -86,6 +97,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                         },
                         keyboardType: TextInputType.emailAddress,
+                        onEditingComplete: () {
+                          FocusScope.of(context).requestFocus(passwordNode);
+                        },
                       ),
                     ),
 
@@ -95,6 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         top: screenSize.height * 0.03,
                       ),
                       child: TextFormField(
+                        focusNode: passwordNode,
                         decoration: const InputDecoration(
                           labelText: 'Password',
                           prefixIcon: Icon(

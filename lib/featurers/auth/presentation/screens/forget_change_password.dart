@@ -18,6 +18,16 @@ class _ForgetChangePasswordState extends State<ForgetChangePassword> {
   late String password;
   late String confirmPassword;
 
+  final passwordNode = FocusNode();
+  final confirmPasswordNode = FocusNode();
+
+  @override
+  void dispose() {
+    passwordNode.dispose();
+    confirmPasswordNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -57,6 +67,7 @@ class _ForgetChangePasswordState extends State<ForgetChangePassword> {
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: TextFormField(
+                        focusNode: passwordNode,
                         decoration: const InputDecoration(
                           label: Text('Enter New Password'),
                         ),
@@ -73,12 +84,17 @@ class _ForgetChangePasswordState extends State<ForgetChangePassword> {
                             return null;
                           }
                         },
+                        onEditingComplete: () {
+                          FocusScope.of(context)
+                              .requestFocus(confirmPasswordNode);
+                        },
                       ),
                     ),
                     //Field For new Password
                     Padding(
                       padding: const EdgeInsets.only(top: 12.0),
                       child: TextFormField(
+                        focusNode: confirmPasswordNode,
                         decoration: const InputDecoration(
                           label: Text('Confirm Your New Password'),
                         ),
