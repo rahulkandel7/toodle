@@ -4,11 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:toddle/constants/api_constants.dart';
 import 'package:toddle/constants/app_constants.dart';
+import 'package:toddle/core/utils/toaster.dart';
 import 'package:toddle/featurers/home/data/models/exam_type.dart';
 import 'package:toddle/featurers/quiz/data/models/questions.dart';
 import 'package:toddle/featurers/quiz/presnetation/controllers/question_controller.dart';
+import 'package:toddle/featurers/quiz/presnetation/screens/quiz_result_screen.dart';
 
-import '../../../../core/utils/count_down_timer.dart';
 import '../../../home/presentation/screens/set_screen.dart';
 
 class QuizScreen extends ConsumerStatefulWidget {
@@ -182,7 +183,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                         ),
                         const Divider(),
                         //Remaning Timer
-                        CountDownTimer(time: Duration(minutes: examType.time)),
+                        // CountDownTimer(time: Duration(minutes: examType.time)),
 
                         //Showing Question
                         Padding(
@@ -258,7 +259,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                 ? const Spacer()
                                 : previousButton(data, examType),
                             i == data.length - 1
-                                ? submitButton(data)
+                                ? submitButton(data, examType)
                                 : nextButton(data, examType),
                           ],
                         ),
@@ -349,50 +350,70 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     );
   }
 
-  Padding submitButton(List<Questions> data) {
+  Padding submitButton(List<Questions> data, ExamType examType) {
     return Padding(
       padding: const EdgeInsets.only(top: 15.0),
       child: Align(
         alignment: Alignment.centerRight,
-        child: FilledButton.tonal(
-          onPressed: () {
-            setState(() {
-              Map<String, dynamic> ua = {
-                'question': data[i].id,
-                'userAnswer': answer,
-                'option': selectedOptions,
-              };
+        child: Consumer(
+          builder: (context, ref, child) {
+            return FilledButton.tonal(
+              onPressed: () {
+                setState(() {
+                  Map<String, dynamic> ua = {
+                    'question': data[i].id,
+                    'userAnswer': answer,
+                    'option': selectedOptions,
+                  };
 
-              userSelected.length > 1
-                  ? userSelected
-                          .firstWhere(
-                              (element) =>
-                                  element['question'] == ua['question'],
-                              orElse: () => {})
-                          .isNotEmpty
-                      ? userSelected[userSelected.indexWhere((element) =>
-                          element['question'] == ua['question'])] = ua
-                      : userSelected.add(ua)
-                  : userSelected.add(ua);
+                  userSelected.length > 1
+                      ? userSelected
+                              .firstWhere(
+                                  (element) =>
+                                      element['question'] == ua['question'],
+                                  orElse: () => {})
+                              .isNotEmpty
+                          ? userSelected[userSelected.indexWhere((element) =>
+                              element['question'] == ua['question'])] = ua
+                          : userSelected.add(ua)
+                      : userSelected.add(ua);
 
-              if (userSelected.length > 1) {
-                for (var users in userSelected) {
-                  answer = userSelected.firstWhere((element) =>
-                      element['question'] == users['question'])['userAnswer'];
+                  if (userSelected.length > 1) {
+                    for (var users in userSelected) {
+                      answer = userSelected.firstWhere((element) =>
+                          element['question'] ==
+                          users['question'])['userAnswer'];
+                    }
+                  }
+                });
+                List<String> questionIds = [];
+                List<String> selectedAnswers = [];
+
+                for (var userAnswer in userSelected) {
+                  questionIds.add(userAnswer['question'].toString());
+                  selectedAnswers.add(userAnswer['option'].toString());
                 }
-              }
-            });
-            List<String> questionIds = [];
-            List<String> selectedAnswers = [];
 
-            for (var userAnswer in userSelected) {
-              questionIds.add(userAnswer['question'].toString());
-              selectedAnswers.add(userAnswer['option']);
-            }
+                ref
+                    .read(questionControllerProvider(examType.id).notifier)
+                    .submitAnswer(
+                        questions: questionIds, answers: selectedAnswers)
+                    .then((value) {
+                  if (value[0] == 'false') {
+                    toast(context: context, label: value[1], color: Colors.red);
+                  } else {
+                    List<String> msg = [value[1], value[2]];
+                    Navigator.of(context).pushReplacementNamed(
+                        QuizResultScreen.routeName,
+                        arguments: msg);
+                  }
+                });
+              },
+              child: const Text(
+                'Submit',
+              ),
+            );
           },
-          child: const Text(
-            'Submit',
-          ),
         ),
       ),
     );

@@ -10,6 +10,7 @@ class Questions {
   final String questionSetsId;
   final String isImage;
   final String isAudio;
+  final String? selectedOption;
 
   Questions({
     required this.id,
@@ -23,6 +24,7 @@ class Questions {
     required this.questionSetsId,
     required this.isImage,
     required this.isAudio,
+    required this.selectedOption,
   });
 
   factory Questions.fromMap(Map<String, dynamic> map) {
@@ -38,6 +40,9 @@ class Questions {
       questionSetsId: map['question_sets_id'].toString(),
       isImage: map['isImage'] as String,
       isAudio: map['isAudio'] as String,
+      selectedOption: map['selected_option'] != null
+          ? map['selected_option'] as String
+          : null,
     );
   }
 }

@@ -26,6 +26,25 @@ class ApiServices {
     }
   }
 
+  postDataWithAuthorize({required String endpoint, var data}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final Dio dio = Dio(
+      BaseOptions(
+        baseUrl: ApiConstants.url,
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString('token')}',
+        },
+      ),
+    );
+    try {
+      final result = await dio.post(endpoint, data: data);
+      return result.data;
+    } on DioError catch (e) {
+      return DioException.fromDioError(e);
+    }
+  }
+
   //Get data with Authorize
   getDataWithAuthorize({required String endpoint}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

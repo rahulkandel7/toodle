@@ -4,6 +4,8 @@ import 'package:toddle/featurers/quiz/data/models/questions.dart';
 
 abstract class QuestionDataSource {
   Future<List<Questions>> fetchQuestion(int id);
+  Future<List<String>> submitAnswer(var data);
+  Future<List<Questions>> viewPaper(String id);
 }
 
 final questionDataSourceProvider = Provider<QuestionDataSource>((ref) {
@@ -17,7 +19,24 @@ class QuestionDataSourceImpl implements QuestionDataSource {
   @override
   Future<List<Questions>> fetchQuestion(int id) async {
     final result =
-        await _apiServices.getDataWithAuthorize(endpoint: '/startexam/$id');
+        await _apiServices.getDataWithAuthorize(endpoint: '/start-exam/$id');
+
+    final questions = result['data'] as List<dynamic>;
+    return questions.map((question) => Questions.fromMap(question)).toList();
+  }
+
+  @override
+  Future<List<String>> submitAnswer(var data) async {
+    final result = await _apiServices.postDataWithAuthorize(
+        endpoint: 'submitexam', data: data);
+    List<String> message = [result['message'], result['id'].toString()];
+    return message;
+  }
+
+  @override
+  Future<List<Questions>> viewPaper(String id) async {
+    final result =
+        await _apiServices.getDataWithAuthorize(endpoint: 'viewpaper/$id');
     final questions = result['data'] as List<dynamic>;
     return questions.map((question) => Questions.fromMap(question)).toList();
   }

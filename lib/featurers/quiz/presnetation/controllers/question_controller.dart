@@ -18,6 +18,29 @@ class QuestionController extends StateNotifier<AsyncValue<List<Questions>>> {
       (success) => state = AsyncData(success),
     );
   }
+
+  Future<List<String>> submitAnswer(
+      {required List<String> questions, required List<String> answers}) async {
+    var data = {'questions': questions.toString(), 'answers': answers};
+
+    final result = await _questionRepositories.submitAnswer(data);
+    return result.fold((error) {
+      List<String> msg = ['false', error.message];
+      return msg;
+    }, (success) {
+      List<String> msg = ['true', success[0], success[1]];
+      return msg;
+    });
+  }
+
+  viewPaper(String id) async {
+    final result = await _questionRepositories.viewPaper(id);
+    result.fold(
+      (error) =>
+          state = AsyncError(error, StackTrace.fromString(error.message)),
+      (success) => state = AsyncData(success),
+    );
+  }
 }
 
 final questionControllerProvider = StateNotifierProvider.family
