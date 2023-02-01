@@ -6,8 +6,8 @@ import '../../../../../constants/api_constants.dart';
 import '../../../../../constants/app_constants.dart';
 
 class ViewPaperWidget extends StatelessWidget {
-  Questions questions;
-  ViewPaperWidget({required this.questions, super.key});
+  final Questions questions;
+  const ViewPaperWidget({required this.questions, super.key});
 
   //Widget For Option Box
   Widget optionBox({
