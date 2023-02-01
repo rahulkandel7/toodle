@@ -329,9 +329,6 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               questionIds.add(userAnswer['question'].toString());
               selectedAnswers.add(userAnswer['option']);
             }
-
-            print(questionIds);
-            print(selectedAnswers);
           },
           icon: const Icon(Icons.check_box),
           label: const Text(
