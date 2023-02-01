@@ -5,9 +5,10 @@ import 'package:just_audio/just_audio.dart';
 import 'package:toddle/constants/api_constants.dart';
 import 'package:toddle/constants/app_constants.dart';
 import 'package:toddle/featurers/home/data/models/exam_type.dart';
-import 'package:toddle/featurers/home/presentation/screens/set_screen.dart';
 import 'package:toddle/featurers/quiz/data/models/questions.dart';
 import 'package:toddle/featurers/quiz/presnetation/controllers/question_controller.dart';
+
+import '../../../home/presentation/screens/set_screen.dart';
 
 class QuizScreen extends ConsumerStatefulWidget {
   static const routeName = '/start-quiz';
@@ -115,7 +116,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                     'Yes',
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(
+                  width: 5,
+                ),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -280,19 +283,22 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         child: FilledButton.tonalIcon(
           onPressed: () {
             setState(() {
+              Map<String, dynamic> ua = {
+                'question': data[i].id,
+                'userAnswer': answer,
+                'option': selectedOptions,
+              };
               if (i < data.length - 1) {
                 i++;
 
-                Map<String, dynamic> ua = {
-                  'question': data[i - 1].id,
-                  'userAnswer': answer,
-                  'option': selectedOptions,
-                };
+                int selectedQuestion = data[i].id;
 
                 userSelected.length > 1
                     ? userSelected
-                            .firstWhere((element) =>
-                                element['question'] == ua['question'])
+                            .firstWhere(
+                                (element) =>
+                                    element['question'] == selectedQuestion,
+                                orElse: () => {})
                             .isNotEmpty
                         ? userSelected[userSelected.indexWhere((element) =>
                             element['question'] == ua['question'])] = ua
@@ -347,7 +353,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
       padding: const EdgeInsets.only(top: 15.0),
       child: Align(
         alignment: Alignment.centerRight,
-        child: FilledButton.tonalIcon(
+        child: FilledButton.tonal(
           onPressed: () {
             setState(() {
               Map<String, dynamic> ua = {
@@ -358,8 +364,10 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
 
               userSelected.length > 1
                   ? userSelected
-                          .firstWhere((element) =>
-                              element['question'] == ua['question'])
+                          .firstWhere(
+                              (element) =>
+                                  element['question'] == ua['question'],
+                              orElse: () => {})
                           .isNotEmpty
                       ? userSelected[userSelected.indexWhere((element) =>
                           element['question'] == ua['question'])] = ua
@@ -381,8 +389,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               selectedAnswers.add(userAnswer['option']);
             }
           },
-          icon: const Icon(Icons.check_box),
-          label: const Text(
+          child: const Text(
             'Submit',
           ),
         ),
