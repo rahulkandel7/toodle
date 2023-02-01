@@ -20,22 +20,26 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
   int i = 0;
 
   String? answer;
+  String? selectedOptions;
 
   final player = AudioPlayer();
 
   List<Map<String, dynamic>> userSelected = [];
 
   //Widget For Option Box
-  Widget optionBox(
-      {required String option,
-      required String isImage,
-      required Size screenSize}) {
+  Widget optionBox({
+    required String option,
+    required String isImage,
+    required Size screenSize,
+    required String selectedOption,
+  }) {
     return Padding(
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
       child: InkWell(
         onTap: () {
           setState(() {
             answer = option;
+            selectedOptions = selectedOption;
           });
         },
         child: ListTile(
@@ -169,21 +173,29 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                               : const SizedBox(),
                       //Option Box
                       optionBox(
-                          option: data[i].option1,
-                          isImage: data[i].isImage,
-                          screenSize: screenSize),
+                        option: data[i].option1,
+                        isImage: data[i].isImage,
+                        screenSize: screenSize,
+                        selectedOption: 'option1',
+                      ),
                       optionBox(
-                          option: data[i].option2,
-                          isImage: data[i].isImage,
-                          screenSize: screenSize),
+                        option: data[i].option2,
+                        isImage: data[i].isImage,
+                        screenSize: screenSize,
+                        selectedOption: 'option2',
+                      ),
                       optionBox(
-                          option: data[i].option3,
-                          isImage: data[i].isImage,
-                          screenSize: screenSize),
+                        option: data[i].option3,
+                        isImage: data[i].isImage,
+                        screenSize: screenSize,
+                        selectedOption: 'option3',
+                      ),
                       optionBox(
-                          option: data[i].option4,
-                          isImage: data[i].isImage,
-                          screenSize: screenSize),
+                        option: data[i].option4,
+                        isImage: data[i].isImage,
+                        screenSize: screenSize,
+                        selectedOption: 'option4',
+                      ),
 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -192,7 +204,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                               ? const Spacer()
                               : previousButton(data, examType),
                           i == data.length - 1
-                              ? submitButton()
+                              ? submitButton(data)
                               : nextButton(data, examType),
                         ],
                       ),
@@ -219,21 +231,30 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
             setState(() {
               if (i < data.length - 1) {
                 i++;
-              }
-              Map<String, dynamic> ua = {
-                'question': data[i].id,
-                'userAnswer': answer,
-              };
 
-              userSelected.length > 1
-                  ? userSelected
-                          .firstWhere((element) =>
-                              element['question'] == ua['question'])
-                          .isNotEmpty
-                      ? userSelected[userSelected.indexWhere((element) =>
-                          element['question'] == ua['question'])] = ua
-                      : userSelected.add(ua)
-                  : userSelected.add(ua);
+                Map<String, dynamic> ua = {
+                  'question': data[i - 1].id,
+                  'userAnswer': answer,
+                  'option': selectedOptions,
+                };
+
+                userSelected.length > 1
+                    ? userSelected
+                            .firstWhere((element) =>
+                                element['question'] == ua['question'])
+                            .isNotEmpty
+                        ? userSelected[userSelected.indexWhere((element) =>
+                            element['question'] == ua['question'])] = ua
+                        : userSelected.add(ua)
+                    : userSelected.add(ua);
+
+                if (userSelected.length > 1) {
+                  for (var users in userSelected) {
+                    answer = userSelected.firstWhere((element) =>
+                        element['question'] == users['question'])['userAnswer'];
+                  }
+                }
+              }
             });
           },
           icon: const Icon(Icons.next_plan_outlined),
@@ -256,6 +277,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               if (i > 0) {
                 i--;
               }
+              if (userSelected.isNotEmpty) {
+                answer = userSelected[i]['userAnswer'];
+              }
             });
           },
           icon: const Icon(Icons.skip_previous_outlined),
@@ -267,13 +291,48 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     );
   }
 
-  Padding submitButton() {
+  Padding submitButton(List<Questions> data) {
     return Padding(
       padding: const EdgeInsets.only(top: 15.0),
       child: Align(
         alignment: Alignment.centerRight,
         child: FilledButton.tonalIcon(
-          onPressed: () {},
+          onPressed: () {
+            setState(() {
+              Map<String, dynamic> ua = {
+                'question': data[i].id,
+                'userAnswer': answer,
+                'option': selectedOptions,
+              };
+
+              userSelected.length > 1
+                  ? userSelected
+                          .firstWhere((element) =>
+                              element['question'] == ua['question'])
+                          .isNotEmpty
+                      ? userSelected[userSelected.indexWhere((element) =>
+                          element['question'] == ua['question'])] = ua
+                      : userSelected.add(ua)
+                  : userSelected.add(ua);
+
+              if (userSelected.length > 1) {
+                for (var users in userSelected) {
+                  answer = userSelected.firstWhere((element) =>
+                      element['question'] == users['question'])['userAnswer'];
+                }
+              }
+            });
+            List<String> questionIds = [];
+            List<String> selectedAnswers = [];
+
+            for (var userAnswer in userSelected) {
+              questionIds.add(userAnswer['question'].toString());
+              selectedAnswers.add(userAnswer['option']);
+            }
+
+            print(questionIds);
+            print(selectedAnswers);
+          },
           icon: const Icon(Icons.check_box),
           label: const Text(
             'Submit',
