@@ -17,6 +17,7 @@ class HomeScreen extends ConsumerWidget {
           'Toddle',
           style: Theme.of(context).textTheme.displaySmall,
         ),
+        automaticallyImplyLeading: false,
         centerTitle: true,
         actions: [
           IconButton(
