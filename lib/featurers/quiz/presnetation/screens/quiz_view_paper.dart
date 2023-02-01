@@ -61,23 +61,22 @@ class QuizViewPaperState extends ConsumerState<QuizViewPaper> {
                 return SingleChildScrollView(
                   child: Padding(
                     padding: EdgeInsets.symmetric(
-                        vertical: screenSize.height * 0.02,
                         horizontal: screenSize.width * 0.04),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Showing for Title
-                        Text(
-                          'View Paper',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(
-                                fontWeight: FontWeight.w500,
-                              ),
-                        ),
-                        const Divider(),
+                        // Text(
+                        //   'View Paper',
+                        //   style: Theme.of(context)
+                        //       .textTheme
+                        //       .headlineMedium!
+                        //       .copyWith(
+                        //         fontWeight: FontWeight.w500,
+                        //       ),
+                        // ),
+
                         SizedBox(
                           height: screenSize.height * 0.8,
                           child: ListView.builder(

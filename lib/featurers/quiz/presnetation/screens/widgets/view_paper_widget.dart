@@ -20,44 +20,41 @@ class ViewPaperWidget extends StatelessWidget {
   }) {
     return Padding(
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
-      child: InkWell(
-        onTap: () {},
-        child: ListTile(
-          title: isImage == 'No'
-              ? Text(option)
-              : CachedNetworkImage(
-                  imageUrl: '${ApiConstants.answerImageUrl}$option',
-                  height: screenSize.height * 0.1,
-                  placeholder: (context, url) => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+      child: ListTile(
+        title: isImage == 'No'
+            ? Text(option)
+            : CachedNetworkImage(
+                imageUrl: '${ApiConstants.answerImageUrl}$option',
+                height: screenSize.height * 0.1,
+                placeholder: (context, url) => const Center(
+                  child: CircularProgressIndicator(),
                 ),
-          textColor: options == correctOption
-              ? Colors.white
-              : options == userSelected
-                  ? Colors.white
-                  : Colors.black,
-          tileColor: options == correctOption
-              ? Colors.green
-              : options == userSelected
-                  ? Colors.red
-                  : Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              10,
-            ),
-            side: BorderSide(
-              color: options == correctOption
-                  ? Colors.transparent
-                  : options == userSelected
-                      ? Colors.transparent
-                      : AppConstants.optionBoxColor,
-            ),
+              ),
+        textColor: options == correctOption
+            ? Colors.white
+            : options == userSelected
+                ? Colors.white
+                : Colors.black,
+        tileColor: options == correctOption
+            ? Colors.green
+            : options == userSelected
+                ? Colors.red
+                : Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(
+            10,
           ),
-          enableFeedback: true,
-          selectedTileColor: AppConstants.optionBoxColor,
-          minLeadingWidth: double.infinity,
+          side: BorderSide(
+            color: options == correctOption
+                ? Colors.transparent
+                : options == userSelected
+                    ? Colors.transparent
+                    : AppConstants.optionBoxColor,
+          ),
         ),
+        enableFeedback: true,
+        selectedTileColor: AppConstants.optionBoxColor,
+        minLeadingWidth: double.infinity,
       ),
     );
   }
