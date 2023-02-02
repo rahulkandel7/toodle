@@ -34,6 +34,18 @@ class AuthController extends StateNotifier<AsyncValue> {
     });
   }
 
+  //Logout Method
+  Future<List<String>> logout() async {
+    final result = await _authRepositories.logout();
+    return result.fold((error) {
+      List<String> msg = ['false', error.message];
+      return msg;
+    }, (success) {
+      List<String> msg = ['true', success];
+      return msg;
+    });
+  }
+
   //Send Forget Password Link
   Future<List<String>> sendPasswordResetLink(String email) async {
     var data = {'email': email};

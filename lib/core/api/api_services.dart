@@ -62,6 +62,7 @@ class ApiServices {
       final result = await dio.get(endpoint);
       return result.data;
     } on DioError catch (e) {
+      print(e.response);
       throw DioException.fromDioError(e);
     }
   }

@@ -143,14 +143,6 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
             style: Theme.of(context).textTheme.displaySmall,
           ),
           centerTitle: true,
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.person_2_outlined,
-              ),
-            ),
-          ],
         ),
         body: ref.watch(questionControllerProvider(examType.id)).when(
               data: (data) {

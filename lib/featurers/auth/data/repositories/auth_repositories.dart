@@ -8,6 +8,7 @@ import '../sources/auth_data_sources.dart';
 abstract class AuthRepositories {
   Future<Either<ApiError, String>> login(var data);
   Future<Either<ApiError, String>> register(var data);
+  Future<Either<ApiError, String>> logout();
   Future<Either<ApiError, String>> sendPasswordResetLink(var data);
   Future<Either<ApiError, String>> codeCheck(var data);
   Future<Either<ApiError, String>> forgetChangePassword(var data);
@@ -81,6 +82,16 @@ class AuthRepositoriesImpl implements AuthRepositories {
   Future<Either<ApiError, String>> forgetChangePassword(data) async {
     try {
       final result = await _authDataSource.forgetChnagePassword(data);
+      return right(result);
+    } on DioException catch (e) {
+      return left(ApiError(message: e.message!));
+    }
+  }
+
+  @override
+  Future<Either<ApiError, String>> logout() async {
+    try {
+      final result = await _authDataSource.logout();
       return right(result);
     } on DioException catch (e) {
       return left(ApiError(message: e.message!));

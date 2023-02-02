@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toddle/core/utils/app_drawer.dart';
 import 'package:toddle/featurers/home/presentation/controllers/exam_type_controller.dart';
 
 import 'widgets/exam_card.dart';
@@ -20,12 +21,14 @@ class HomeScreen extends ConsumerWidget {
         automaticallyImplyLeading: false,
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.person_2_outlined,
-            ),
-          ),
+          Builder(builder: (context) {
+            return IconButton(
+              onPressed: () => Scaffold.of(context).openDrawer(),
+              icon: const Icon(
+                Icons.person_2_outlined,
+              ),
+            );
+          }),
         ],
       ),
       body: ref.watch(examTypeControllerProvider).when(
@@ -69,6 +72,9 @@ class HomeScreen extends ConsumerWidget {
               child: CircularProgressIndicator(),
             ),
           ),
+      drawer: AppDrawer(
+        screenSize: screenSize,
+      ),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:toddle/core/api/api_services.dart';
 abstract class AuthDataSource {
   Future<String> login(var data);
   Future<String> register(var data);
+  Future<String> logout();
   Future<String> sendPasswordResetLink(var data);
   Future<String> checkCode(var data);
   Future<String> forgetChnagePassword(var data);
@@ -53,6 +54,13 @@ class AuthDataSourceImpl implements AuthDataSource {
   Future<String> forgetChnagePassword(data) async {
     final result =
         await _apiServices.postData(endPoint: 'password/reset', data: data);
+    return result['message'];
+  }
+
+  @override
+  Future<String> logout() async {
+    final result = await _apiServices.postDataWithAuthorize(endpoint: 'logout');
+
     return result['message'];
   }
 }
