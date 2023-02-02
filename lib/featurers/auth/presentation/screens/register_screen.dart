@@ -302,6 +302,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             label: value[1],
                                             color: Colors.green,
                                           );
+                                          Navigator.of(context)
+                                              .pushReplacementNamed(
+                                                  LoginScreen.routeName);
                                         }
                                       });
                                     },
