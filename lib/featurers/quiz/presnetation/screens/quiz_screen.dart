@@ -10,6 +10,7 @@ import 'package:toddle/featurers/quiz/data/models/questions.dart';
 import 'package:toddle/featurers/quiz/presnetation/controllers/question_controller.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_result_screen.dart';
 
+import '../../../../core/utils/count_down_timer.dart';
 import '../../../home/presentation/screens/set_screen.dart';
 
 class QuizScreen extends ConsumerStatefulWidget {
@@ -183,7 +184,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                         ),
                         const Divider(),
                         //Remaning Timer
-                        // CountDownTimer(time: Duration(minutes: examType.time)),
+                        CountDownTimer(time: Duration(minutes: examType.time)),
 
                         //Showing Question
                         Padding(
