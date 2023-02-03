@@ -301,10 +301,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                     : userSelected.add(ua);
 
                 if (userSelected.length > 1) {
-                  for (var users in userSelected) {
-                    answer = userSelected.firstWhere((element) =>
-                        element['question'] == users['question'])['userAnswer'];
-                  }
+                  answer = userSelected.firstWhere(
+                      (element) => element['question'] == selectedQuestion,
+                      orElse: () => {})['userAnswer'];
                 }
               }
             });
