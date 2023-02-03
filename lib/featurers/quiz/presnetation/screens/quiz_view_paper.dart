@@ -47,14 +47,6 @@ class QuizViewPaperState extends ConsumerState<QuizViewPaper> {
             style: Theme.of(context).textTheme.displaySmall,
           ),
           centerTitle: true,
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.person_2_outlined,
-              ),
-            ),
-          ],
         ),
         body: ref.watch(viewPaperControllerProvider(examId)).when(
               data: (data) {
@@ -66,17 +58,6 @@ class QuizViewPaperState extends ConsumerState<QuizViewPaper> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Showing for Title
-                        // Text(
-                        //   'View Paper',
-                        //   style: Theme.of(context)
-                        //       .textTheme
-                        //       .headlineMedium!
-                        //       .copyWith(
-                        //         fontWeight: FontWeight.w500,
-                        //       ),
-                        // ),
-
                         SizedBox(
                           height: screenSize.height * 0.8,
                           child: ListView.builder(

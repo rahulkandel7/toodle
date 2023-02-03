@@ -24,14 +24,6 @@ class SetScreen extends ConsumerWidget {
             style: Theme.of(context).textTheme.displaySmall,
           ),
           centerTitle: true,
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.person_2_outlined,
-              ),
-            ),
-          ],
         ),
         body: SingleChildScrollView(
           child: Padding(
