@@ -4,6 +4,8 @@ import 'package:toddle/core/utils/toaster.dart';
 import 'package:toddle/featurers/auth/presentation/controllers/auth_controller.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_change_password.dart';
 
+import 'login_screen.dart';
+
 class ForgetOtp extends StatefulWidget {
   static const String routeName = '/forget-otp';
   const ForgetOtp({super.key});
@@ -308,6 +310,16 @@ class _ForgetOtpState extends State<ForgetOtp> {
                     ),
                   );
                 },
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              FilledButton.tonal(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(LoginScreen.routeName);
+                },
+                child: const Text('Cancel'),
               ),
             ],
           ),

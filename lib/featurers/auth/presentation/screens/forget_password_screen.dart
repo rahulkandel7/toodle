@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toddle/core/utils/toaster.dart';
 import 'package:toddle/featurers/auth/presentation/controllers/auth_controller.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_otp.dart';
+import 'package:toddle/featurers/auth/presentation/screens/login_screen.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   static const String routeName = '/forget-password';
@@ -113,6 +114,16 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           ),
                         );
                       },
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    FilledButton.tonal(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushReplacementNamed(LoginScreen.routeName);
+                      },
+                      child: const Text('Cancel'),
                     ),
                   ],
                 ),

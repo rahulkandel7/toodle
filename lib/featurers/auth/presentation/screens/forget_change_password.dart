@@ -155,6 +155,16 @@ class _ForgetChangePasswordState extends State<ForgetChangePassword> {
                         );
                       },
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    FilledButton.tonal(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushReplacementNamed(LoginScreen.routeName);
+                      },
+                      child: const Text('Cancel'),
+                    ),
                   ],
                 ),
               ),
