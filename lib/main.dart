@@ -11,7 +11,8 @@ import 'package:toddle/featurers/quiz/presnetation/screens/quiz_result_screen.da
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_view_paper.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     const ProviderScope(
       child: MainApp(),
