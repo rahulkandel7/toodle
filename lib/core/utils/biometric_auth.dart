@@ -17,8 +17,8 @@ class BiometricAuth {
             useErrorDialogs: true,
           ),
         );
-      } on PlatformException catch (e) {
-        print(e);
+      } on PlatformException {
+        rethrow;
       }
     }
     return isAuthenticate;
