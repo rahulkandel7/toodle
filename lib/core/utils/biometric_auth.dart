@@ -11,7 +11,12 @@ class BiometricAuth {
     if (canAuthenticate) {
       try {
         isAuthenticate = await auth.authenticate(
-            localizedReason: 'Complete Authorization for Login');
+          localizedReason: 'Complete Authorization for Login',
+          options: const AuthenticationOptions(
+            stickyAuth: true,
+            useErrorDialogs: true,
+          ),
+        );
       } on PlatformException catch (e) {
         print(e);
       }
