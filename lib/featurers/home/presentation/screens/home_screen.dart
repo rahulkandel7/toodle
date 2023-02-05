@@ -50,18 +50,14 @@ class HomeScreen extends ConsumerWidget {
                           .copyWith(fontWeight: FontWeight.w500),
                     ),
                     const Divider(),
-                    Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      children: [
-                        for (var exam in data)
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 10.0, left: 10.0),
-                            child: ExamCard(
-                              examType: exam,
-                            ),
-                          ),
-                      ],
+                    SizedBox(
+                      height: 300,
+                      child: ListView.builder(
+                        itemBuilder: (ctx, i) => ExamCard(
+                          examType: data[i],
+                        ),
+                        itemCount: data.length,
+                      ),
                     ),
                   ],
                 ),
