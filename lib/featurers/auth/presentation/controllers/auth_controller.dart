@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/featurers/auth/data/repositories/auth_repositories.dart';
 
 class AuthController extends StateNotifier<AsyncValue> {
@@ -12,11 +13,17 @@ class AuthController extends StateNotifier<AsyncValue> {
       'email': email,
       'password': password,
     };
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     final result = await _authRepositories.login(data);
     return result.fold((error) {
       List<String> msg = ['false', error.message];
       return msg;
     }, (success) {
+      //Adding Data to Shared Prefs
+      prefs.setBool('isBio', true);
+      prefs.setString('email', email);
+      prefs.setString('password', password);
       List<String> msg = ['true', success];
       return msg;
     });

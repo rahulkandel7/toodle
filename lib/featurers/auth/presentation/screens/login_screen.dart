@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toddle/core/utils/biometric_auth.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_password_screen.dart';
 import 'package:toddle/featurers/auth/presentation/screens/register_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
@@ -24,6 +26,28 @@ class _LoginScreenState extends State<LoginScreen> {
 
   late String email;
   late String password;
+
+  bool isLogged = false;
+  //For getting is login info
+  _isBio() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (prefs.getBool('isBio')! == true) {
+      setState(() {
+        isLogged = true;
+      });
+    } else {
+      setState(() {
+        isLogged = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _isBio();
+  }
 
   @override
   void dispose() {
@@ -155,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               Expanded(
                                 child: FilledButton.tonalIcon(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     formKey.currentState!.save();
                                     if (!formKey.currentState!.validate()) {
                                       return;
@@ -188,6 +212,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
+                              isLogged
+                                  ? Row(
+                                      children: [
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        biometricLogin(ref, context),
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
                             ],
                           ),
                         );
@@ -213,6 +247,44 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  FilledButton biometricLogin(WidgetRef ref, BuildContext context) {
+    return FilledButton(
+      onPressed: () async {
+        bool isBiometric = await BiometricAuth.authenticateWithBiometrics();
+        if (isBiometric) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          String email = prefs.getString('email') ?? '';
+          String password = prefs.getString('password') ?? '';
+          ref
+              .read(authControllerProvider.notifier)
+              .login(email, password)
+              .then((value) {
+            if (value[0] == 'false') {
+              toast(
+                context: context,
+                label: value[1],
+                color: Colors.red,
+              );
+            } else {
+              Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+              toast(
+                context: context,
+                label: value[1],
+                color: Colors.green,
+              );
+            }
+          });
+        }
+      },
+      style: FilledButton.styleFrom(
+        backgroundColor: Colors.deepPurple.shade200,
+      ),
+      child: const Icon(
+        Icons.fingerprint_outlined,
       ),
     );
   }
