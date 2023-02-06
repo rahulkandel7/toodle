@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:toddle/constants/api_constants.dart';
@@ -76,6 +77,12 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+  }
+
+  @override
   void dispose() {
     super.dispose();
     player.stop();
@@ -111,6 +118,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                     foregroundColor: Colors.white,
                   ),
                   onPressed: () {
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.portraitUp,
+                    ]);
                     Navigator.of(context).pushReplacementNamed(
                         SetScreen.routeName,
                         arguments: examType);
@@ -395,6 +405,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                     toast(context: context, label: value[1], color: Colors.red);
                   } else {
                     List<String> msg = [value[1], value[2]];
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.portraitUp,
+                    ]);
                     Navigator.of(context).pushReplacementNamed(
                         QuizResultScreen.routeName,
                         arguments: msg);

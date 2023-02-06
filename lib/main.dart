@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_change_password.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_otp.dart';
@@ -13,6 +14,7 @@ import 'package:toddle/featurers/quiz/presnetation/screens/quiz_view_paper.dart'
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     const ProviderScope(
       child: MainApp(),
