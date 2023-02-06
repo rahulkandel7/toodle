@@ -41,6 +41,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     required String isImage,
     required Size screenSize,
     required String selectedOption,
+    required List<Questions> data,
   }) {
     return Padding(
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
@@ -49,6 +50,26 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
           setState(() {
             answer = option;
             selectedOptions = selectedOption;
+
+            //Storing Data in a MAP
+            Map<String, dynamic> ua = {
+              'questionNumber': i + 1,
+              'question': data[i].id,
+              'userAnswer': answer,
+              'option': selectedOptions,
+            };
+            if (i <= data.length - 1) {
+              userSelected.length > 1
+                  ? userSelected
+                          .firstWhere(
+                              (element) => element['question'] == data[i].id,
+                              orElse: () => {})
+                          .isNotEmpty
+                      ? userSelected[userSelected.indexWhere((element) =>
+                          element['question'] == ua['question'])] = ua
+                      : userSelected.add(ua)
+                  : userSelected.add(ua);
+            }
           });
         },
         child: ListTile(
@@ -177,7 +198,11 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                   ],
                 ),
                 body: isTotalQuestion
-                    ? totalQuestionsView(screenSize, examType)
+                    ? totalQuestionsView(
+                        screenSize: screenSize,
+                        examType: examType,
+                        data: data,
+                      )
                     : SingleChildScrollView(
                         child: Padding(
                           padding: EdgeInsets.symmetric(
@@ -252,24 +277,28 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           isImage: data[i].isImage,
                                           screenSize: screenSize,
                                           selectedOption: 'option1',
+                                          data: data,
                                         ),
                                         optionBox(
                                           option: data[i].option2,
                                           isImage: data[i].isImage,
                                           screenSize: screenSize,
                                           selectedOption: 'option2',
+                                          data: data,
                                         ),
                                         optionBox(
                                           option: data[i].option3,
                                           isImage: data[i].isImage,
                                           screenSize: screenSize,
                                           selectedOption: 'option3',
+                                          data: data,
                                         ),
                                         optionBox(
                                           option: data[i].option4,
                                           isImage: data[i].isImage,
                                           screenSize: screenSize,
                                           selectedOption: 'option4',
+                                          data: data,
                                         ),
                                       ],
                                     ),
@@ -338,29 +367,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         child: FilledButton.tonalIcon(
           onPressed: () {
             setState(() {
-              Map<String, dynamic> ua = {
-                'questionNumber': i + 1,
-                'question': data[i].id,
-                'userAnswer': answer,
-                'option': selectedOptions,
-              };
               if (i < data.length - 1) {
                 i++;
-
                 int selectedQuestion = data[i].id;
-
-                userSelected.length > 1
-                    ? userSelected
-                            .firstWhere(
-                                (element) =>
-                                    element['question'] == selectedQuestion,
-                                orElse: () => {})
-                            .isNotEmpty
-                        ? userSelected[userSelected.indexWhere((element) =>
-                            element['question'] == ua['question'])] = ua
-                        : userSelected.add(ua)
-                    : userSelected.add(ua);
-
                 if (userSelected.length > 1) {
                   answer = userSelected.firstWhere(
                       (element) => element['question'] == selectedQuestion,
@@ -412,34 +421,6 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
           builder: (context, ref, child) {
             return FilledButton.tonal(
               onPressed: () {
-                setState(() {
-                  Map<String, dynamic> ua = {
-                    'questionNumber': i + 1,
-                    'question': data[i].id,
-                    'userAnswer': answer,
-                    'option': selectedOptions,
-                  };
-
-                  userSelected.length > 1
-                      ? userSelected
-                              .firstWhere(
-                                  (element) =>
-                                      element['question'] == ua['question'],
-                                  orElse: () => {})
-                              .isNotEmpty
-                          ? userSelected[userSelected.indexWhere((element) =>
-                              element['question'] == ua['question'])] = ua
-                          : userSelected.add(ua)
-                      : userSelected.add(ua);
-
-                  if (userSelected.length > 1) {
-                    for (var users in userSelected) {
-                      answer = userSelected.firstWhere((element) =>
-                          element['question'] ==
-                          users['question'])['userAnswer'];
-                    }
-                  }
-                });
                 List<String> questionIds = [];
                 List<String> selectedAnswers = [];
 
@@ -476,7 +457,10 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     );
   }
 
-  Padding totalQuestionsView(Size screenSize, ExamType examType) {
+  Padding totalQuestionsView(
+      {required Size screenSize,
+      required ExamType examType,
+      required List<Questions> data}) {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: screenSize.width * 0.04,
@@ -522,6 +506,17 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                               setState(() {
                                 isTotalQuestion = false;
                                 i = index;
+
+                                if (i < data.length - 1) {
+                                  int selectedQuestion = data[i].id;
+                                  if (userSelected.length > 1) {
+                                    answer = userSelected.firstWhere(
+                                        (element) =>
+                                            element['question'] ==
+                                            selectedQuestion,
+                                        orElse: () => {})['userAnswer'];
+                                  }
+                                }
                               });
                             },
                             child: Card(
@@ -591,6 +586,16 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                               setState(() {
                                 isTotalQuestion = false;
                                 i = index;
+                                if (i < data.length - 1) {
+                                  int selectedQuestion = data[i].id;
+                                  if (userSelected.length > 1) {
+                                    answer = userSelected.firstWhere(
+                                        (element) =>
+                                            element['question'] ==
+                                            selectedQuestion,
+                                        orElse: () => {})['userAnswer'];
+                                  }
+                                }
                               });
                             },
                             child: Card(
