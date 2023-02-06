@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class CountDownTimer extends StatefulWidget {
   final Duration time;
-  const CountDownTimer({required this.time, super.key});
+  final Function onSubmit;
+  const CountDownTimer({required this.time, required this.onSubmit, super.key});
 
   @override
   State<CountDownTimer> createState() => _CountDownTimerState();
@@ -29,6 +30,7 @@ class _CountDownTimerState extends State<CountDownTimer> {
     setState(() {
       final seconds = duration.inSeconds - reduceSecondsBy;
       if (seconds < 0) {
+        widget.onSubmit();
         countDownTimer!.cancel();
       } else {
         duration = Duration(seconds: seconds);

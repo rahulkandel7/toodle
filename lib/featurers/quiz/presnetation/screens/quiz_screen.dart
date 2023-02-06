@@ -124,8 +124,35 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     ExamType examType = args['exam'];
 
     //Getting Timer Data
-    CountDownTimer counter =
-        CountDownTimer(time: Duration(minutes: examType.time));
+    CountDownTimer counter = CountDownTimer(
+      time: Duration(minutes: examType.time),
+      onSubmit: () {
+        List<String> questionIds = [];
+        List<String> selectedAnswers = [];
+
+        for (var userAnswer in userSelected) {
+          questionIds.add(userAnswer['question'].toString());
+          selectedAnswers.add(userAnswer['option'].toString());
+        }
+
+        ref
+            .read(questionControllerProvider(examType.id).notifier)
+            .submitAnswer(questions: questionIds, answers: selectedAnswers)
+            .then((value) {
+          if (value[0] == 'false') {
+            toast(context: context, label: value[1], color: Colors.red);
+          } else {
+            List<String> msg = [value[1], value[2]];
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp,
+            ]);
+            Navigator.of(context).pushReplacementNamed(
+                QuizResultScreen.routeName,
+                arguments: msg);
+          }
+        });
+      },
+    );
 
     return ref.watch(questionControllerProvider(examType.id)).when(
           data: (data) {
