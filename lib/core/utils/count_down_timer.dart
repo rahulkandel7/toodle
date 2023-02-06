@@ -59,10 +59,15 @@ class _CountDownTimerState extends State<CountDownTimer> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          'Remaining Time: $hours:$minutes:$seconds',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
+        hours == '00'
+            ? Text(
+                '$minutes:$seconds',
+                style: Theme.of(context).textTheme.bodyLarge,
+              )
+            : Text(
+                '$hours:$minutes:$seconds',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
       ],
     );
   }
