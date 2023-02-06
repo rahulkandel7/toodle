@@ -158,17 +158,20 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                   automaticallyImplyLeading: false,
                   actions: [
                     Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Aman Dai'),
-                          Text('Total Question: ${data.length}'),
-                          Text('Solved Question: ${userSelected.length}'),
-                          Text(
-                              'Unsolved Question: ${data.length - userSelected.length}'),
-                          // CountDownTimer(time: Duration(minutes: examType.time)),
-                          counter,
-                        ],
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Toddle'),
+                            Text('Total Question: ${data.length}'),
+                            Text('Solved Question: ${userSelected.length}'),
+                            Text(
+                                'Unsolved Question: ${data.length - userSelected.length}'),
+                            // CountDownTimer(time: Duration(minutes: examType.time)),
+                            counter,
+                          ],
+                        ),
                       ),
                     )
                   ],
@@ -184,9 +187,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Divider(),
+                              // const Divider(),
                               SizedBox(
-                                height: screenSize.height * 0.64,
+                                height: screenSize.height * 0.6,
                                 child: GridView(
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
@@ -199,19 +202,14 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                         //Showing Question
                                         Padding(
                                           padding: EdgeInsets.symmetric(
-                                              vertical:
-                                                  screenSize.height * 0.03),
-                                          child: Center(
-                                            child: Text(
+                                            vertical: screenSize.height * 0.03,
+                                            horizontal: 3.0,
+                                          ),
+                                          child: Text(
                                               '${i + 1}. ${data[i].question}',
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headlineSmall!
-                                                  .copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                          ),
+                                                  .bodyLarge),
                                         ),
 
                                         data[i].isAudio == 'Yes'
@@ -234,6 +232,8 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                         '${ApiConstants.questionFileUrl}${data[i].filePath}',
                                                     height: screenSize.height *
                                                         0.17,
+                                                    width:
+                                                        screenSize.width * 0.4,
                                                     placeholder:
                                                         (context, url) =>
                                                             const Center(
@@ -484,7 +484,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
       child: Column(
         children: [
           SizedBox(
-            height: screenSize.height * 0.7,
+            height: screenSize.height * 0.68,
             child: GridView(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
