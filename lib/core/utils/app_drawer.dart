@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:toddle/core/utils/toaster.dart';
 import 'package:toddle/featurers/auth/presentation/controllers/auth_controller.dart';
+import 'package:toddle/featurers/auth/presentation/screens/edit_profile.dart';
 import 'package:toddle/featurers/auth/presentation/screens/login_screen.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -79,6 +80,9 @@ class _AppDrawerState extends State<AppDrawer> {
                     context: context,
                     text: 'Edit Profile',
                     icon: Icons.person_2_outlined,
+                    function: () {
+                      Navigator.of(context).pushNamed(EditProfile.routename);
+                    },
                   ),
                   textButton(
                     context: context,

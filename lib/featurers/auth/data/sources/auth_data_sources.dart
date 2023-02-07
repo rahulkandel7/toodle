@@ -3,12 +3,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/core/api/api_services.dart';
 
 abstract class AuthDataSource {
+  //For Login user
   Future<String> login(var data);
+
+  //FOr Register user
   Future<String> register(var data);
+
+  //For Logout User
   Future<String> logout();
+
+  //For Sending Code in gmail
   Future<String> sendPasswordResetLink(var data);
+
+  //For Checking Code
   Future<String> checkCode(var data);
+
+  //For Changeing Forget Password
   Future<String> forgetChnagePassword(var data);
+
+  //For Changing Password through edit profile
+  Future<String> changePassword(var data);
 }
 
 final authDataSourceProvider = Provider<AuthDataSource>((ref) {
@@ -18,6 +32,7 @@ final authDataSourceProvider = Provider<AuthDataSource>((ref) {
 class AuthDataSourceImpl implements AuthDataSource {
   final ApiServices _apiServices;
   AuthDataSourceImpl(this._apiServices);
+
   @override
   Future<String> login(data) async {
     final result = await _apiServices.postData(endPoint: 'login', data: data);
@@ -61,6 +76,13 @@ class AuthDataSourceImpl implements AuthDataSource {
   Future<String> logout() async {
     final result = await _apiServices.postDataWithAuthorize(endpoint: 'logout');
 
+    return result['message'];
+  }
+
+  @override
+  Future<String> changePassword(data) async {
+    final result = await _apiServices.postDataWithAuthorize(
+        endpoint: 'change/password', data: data);
     return result['message'];
   }
 }

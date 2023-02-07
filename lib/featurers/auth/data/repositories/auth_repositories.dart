@@ -12,6 +12,7 @@ abstract class AuthRepositories {
   Future<Either<ApiError, String>> sendPasswordResetLink(var data);
   Future<Either<ApiError, String>> codeCheck(var data);
   Future<Either<ApiError, String>> forgetChangePassword(var data);
+  Future<Either<ApiError, String>> changePassword(var data);
 }
 
 final authRepositoriesProvider = Provider<AuthRepositories>((ref) {
@@ -95,6 +96,18 @@ class AuthRepositoriesImpl implements AuthRepositories {
       return right(result);
     } on DioException catch (e) {
       return left(ApiError(message: e.message!));
+    }
+  }
+
+  @override
+  Future<Either<ApiError, String>> changePassword(data) async {
+    try {
+      final result = await _authDataSource.changePassword(data);
+      return right(result);
+    } on DioException catch (e) {
+      return left(
+        ApiError(message: e.message!),
+      );
     }
   }
 }

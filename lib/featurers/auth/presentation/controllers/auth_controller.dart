@@ -99,6 +99,20 @@ class AuthController extends StateNotifier<AsyncValue> {
       return msg;
     });
   }
+
+  //For Changing Password
+  Future<List<String>> changePassword(
+      {required String oldPassword, required String newPassword}) async {
+    var data = {'current_password': oldPassword, 'new_password': newPassword};
+    final result = await _authRepositories.changePassword(data);
+    return result.fold((error) {
+      List<String> msg = ['false', error.message];
+      return msg;
+    }, (success) {
+      List<String> msg = ['true', success];
+      return msg;
+    });
+  }
 }
 
 final authControllerProvider =

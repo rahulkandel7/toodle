@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toddle/featurers/auth/presentation/screens/edit_profile.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_change_password.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_otp.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_password_screen.dart';
@@ -48,6 +49,7 @@ class MainApp extends StatelessWidget {
         QuizScreen.routeName: (ctx) => const QuizScreen(),
         QuizResultScreen.routeName: (ctx) => const QuizResultScreen(),
         QuizViewPaper.routeName: (ctx) => const QuizViewPaper(),
+        EditProfile.routename: (ctx) => const EditProfile(),
       },
     );
   }
