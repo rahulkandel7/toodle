@@ -1,9 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toddle/featurers/auth/data/models/user.dart';
 import 'package:toddle/featurers/auth/data/repositories/auth_repositories.dart';
 
-class AuthController extends StateNotifier<AsyncValue> {
-  AuthController(this._authRepositories) : super(const AsyncData<void>(null));
+class AuthController extends StateNotifier<AsyncValue<User>> {
+  AuthController(this._authRepositories) : super(const AsyncLoading()) {
+    getUser();
+  }
 
   final AuthRepositories _authRepositories;
 
@@ -113,9 +116,22 @@ class AuthController extends StateNotifier<AsyncValue> {
       return msg;
     });
   }
+
+  //Get Useser Info
+  getUser() async {
+    final result = await _authRepositories.getUser();
+    result.fold(
+        (error) => state = AsyncError(
+              error.message,
+              StackTrace.fromString(
+                error.message,
+              ),
+            ),
+        (success) => state = AsyncData(success));
+  }
 }
 
 final authControllerProvider =
-    StateNotifierProvider<AuthController, AsyncValue<void>>((ref) {
+    StateNotifierProvider<AuthController, AsyncValue<User>>((ref) {
   return AuthController(ref.watch(authRepositoriesProvider));
 });

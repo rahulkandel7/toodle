@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/core/api/api_services.dart';
 
+import '../models/user.dart';
+
 abstract class AuthDataSource {
   //For Login user
   Future<String> login(var data);
@@ -23,6 +25,9 @@ abstract class AuthDataSource {
 
   //For Changing Password through edit profile
   Future<String> changePassword(var data);
+
+  //Get User Info
+  Future<User> getUser();
 }
 
 final authDataSourceProvider = Provider<AuthDataSource>((ref) {
@@ -84,5 +89,11 @@ class AuthDataSourceImpl implements AuthDataSource {
     final result = await _apiServices.postDataWithAuthorize(
         endpoint: 'change/password', data: data);
     return result['message'];
+  }
+
+  @override
+  Future<User> getUser() async {
+    final result = await _apiServices.getDataWithAuthorize(endpoint: 'user');
+    return User.fromMap(result['data']);
   }
 }

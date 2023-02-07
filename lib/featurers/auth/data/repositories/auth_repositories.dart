@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toddle/core/api/api_error.dart';
 import 'package:toddle/core/api/dio_exception.dart';
 
+import '../models/user.dart';
 import '../sources/auth_data_sources.dart';
 
 abstract class AuthRepositories {
@@ -13,6 +14,7 @@ abstract class AuthRepositories {
   Future<Either<ApiError, String>> codeCheck(var data);
   Future<Either<ApiError, String>> forgetChangePassword(var data);
   Future<Either<ApiError, String>> changePassword(var data);
+  Future<Either<ApiError, User>> getUser();
 }
 
 final authRepositoriesProvider = Provider<AuthRepositories>((ref) {
@@ -108,6 +110,16 @@ class AuthRepositoriesImpl implements AuthRepositories {
       return left(
         ApiError(message: e.message!),
       );
+    }
+  }
+
+  @override
+  Future<Either<ApiError, User>> getUser() async {
+    try {
+      final result = await _authDataSource.getUser();
+      return right(result);
+    } on DioException catch (e) {
+      return left(ApiError(message: e.message!));
     }
   }
 }
