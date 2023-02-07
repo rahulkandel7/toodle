@@ -5,6 +5,7 @@ import 'package:toddle/core/utils/toaster.dart';
 import 'package:toddle/featurers/auth/presentation/controllers/auth_controller.dart';
 import 'package:toddle/featurers/auth/presentation/screens/edit_profile.dart';
 import 'package:toddle/featurers/auth/presentation/screens/login_screen.dart';
+import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_history.dart';
 
 class AppDrawer extends StatefulWidget {
   final Size screenSize;
@@ -86,8 +87,10 @@ class _AppDrawerState extends State<AppDrawer> {
                   ),
                   textButton(
                     context: context,
-                    text: 'View Result',
+                    text: 'View Papers',
                     icon: Icons.newspaper_outlined,
+                    function: () => Navigator.of(context)
+                        .pushNamed(ViewPaperHistory.routeName),
                   ),
                   textButton(
                     context: context,

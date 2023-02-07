@@ -31,8 +31,12 @@ class QuizResultScreen extends StatelessWidget {
           Center(
             child: ElevatedButton(
               onPressed: () {
+                Map<String, dynamic> data = {
+                  'isHistory': false,
+                  'id': message[1],
+                };
                 Navigator.of(context)
-                    .pushNamed(QuizViewPaper.routeName, arguments: message[1]);
+                    .pushNamed(QuizViewPaper.routeName, arguments: data);
               },
               child: const Text(
                 'View paper',

@@ -14,11 +14,20 @@ class QuizViewPaper extends ConsumerWidget {
     Size screenSize = MediaQuery.of(context).size;
 
     //Taking Arguments
-    String examId = ModalRoute.of(context)!.settings.arguments as String;
+    Map<String, dynamic> navData =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+    //Getting exam id
+    String examId = navData['id'].toString();
+
+    //getting isHistory
+    bool isHistory = navData['isHistory'];
 
     return WillPopScope(
       onWillPop: () async {
-        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+        isHistory
+            ? Navigator.of(context).pop()
+            : Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
         return false;
       },
       child: Scaffold(

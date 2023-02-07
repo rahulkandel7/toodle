@@ -9,6 +9,7 @@ import 'package:toddle/featurers/auth/presentation/screens/login_screen.dart';
 import 'package:toddle/featurers/auth/presentation/screens/register_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/set_screen.dart';
+import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_history.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_result_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_view_paper.dart';
@@ -50,6 +51,7 @@ class MainApp extends StatelessWidget {
         QuizResultScreen.routeName: (ctx) => const QuizResultScreen(),
         QuizViewPaper.routeName: (ctx) => const QuizViewPaper(),
         EditProfile.routename: (ctx) => const EditProfile(),
+        ViewPaperHistory.routeName: (ctx) => const ViewPaperHistory(),
       },
     );
   }
