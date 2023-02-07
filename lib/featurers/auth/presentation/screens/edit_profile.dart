@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toddle/core/utils/toaster.dart';
+import 'package:toddle/featurers/auth/data/models/user.dart';
 import 'package:toddle/featurers/auth/presentation/controllers/auth_controller.dart';
 
 class EditProfile extends ConsumerStatefulWidget {
@@ -15,10 +16,10 @@ class EditProfileState extends ConsumerState<EditProfile> {
   final editProfileKey = GlobalKey<FormState>();
   final chnagePasswordKey = GlobalKey<FormState>();
 
-  late String name;
-  late String email;
-  late String phone;
-  late String address;
+  String name = '';
+  String email = '';
+  String phone = '';
+  String address = '';
   late String password;
   late String confirmPassword;
   late String oldPassword;
@@ -116,6 +117,7 @@ class EditProfileState extends ConsumerState<EditProfile> {
                                     Icons.email_outlined,
                                   ),
                                 ),
+                                readOnly: true,
                                 onSaved: (newValue) {
                                   email = newValue!;
                                 },
@@ -208,7 +210,36 @@ class EditProfileState extends ConsumerState<EditProfile> {
                                       10,
                                     ),
                                   )),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    editProfileKey.currentState!.save();
+                                    if (!editProfileKey.currentState!
+                                        .validate()) {
+                                      return;
+                                    }
+                                    ref
+                                        .read(authControllerProvider.notifier)
+                                        .updateInfo(
+                                            user: User(
+                                                id: 1,
+                                                name: name,
+                                                email: email,
+                                                phoneNumber: phone,
+                                                address: address))
+                                        .then((value) {
+                                      if (value[0] == 'false') {
+                                        toast(
+                                            context: context,
+                                            label: value[1],
+                                            color: Colors.red);
+                                      } else {
+                                        Navigator.of(context).pop();
+                                        toast(
+                                            context: context,
+                                            label: value[1],
+                                            color: Colors.green);
+                                      }
+                                    });
+                                  },
                                   child: Text(
                                     'Update Info',
                                     style:

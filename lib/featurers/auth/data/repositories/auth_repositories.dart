@@ -15,6 +15,7 @@ abstract class AuthRepositories {
   Future<Either<ApiError, String>> forgetChangePassword(var data);
   Future<Either<ApiError, String>> changePassword(var data);
   Future<Either<ApiError, User>> getUser();
+  Future<Either<ApiError, String>> updateInfo(var data);
 }
 
 final authRepositoriesProvider = Provider<AuthRepositories>((ref) {
@@ -117,6 +118,16 @@ class AuthRepositoriesImpl implements AuthRepositories {
   Future<Either<ApiError, User>> getUser() async {
     try {
       final result = await _authDataSource.getUser();
+      return right(result);
+    } on DioException catch (e) {
+      return left(ApiError(message: e.message!));
+    }
+  }
+
+  @override
+  Future<Either<ApiError, String>> updateInfo(data) async {
+    try {
+      final result = await _authDataSource.updateInfo(data);
       return right(result);
     } on DioException catch (e) {
       return left(ApiError(message: e.message!));

@@ -28,6 +28,9 @@ abstract class AuthDataSource {
 
   //Get User Info
   Future<User> getUser();
+
+  //Update user info
+  Future<String> updateInfo(var data);
 }
 
 final authDataSourceProvider = Provider<AuthDataSource>((ref) {
@@ -95,5 +98,12 @@ class AuthDataSourceImpl implements AuthDataSource {
   Future<User> getUser() async {
     final result = await _apiServices.getDataWithAuthorize(endpoint: 'user');
     return User.fromMap(result['data']);
+  }
+
+  @override
+  Future<String> updateInfo(data) async {
+    final result = await _apiServices.postDataWithAuthorize(
+        endpoint: 'user/update', data: data);
+    return result['message'];
   }
 }
