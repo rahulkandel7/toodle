@@ -1,34 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/controllers/view_paper_controller.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/widgets/view_paper_widget.dart';
 
-class QuizViewPaper extends ConsumerStatefulWidget {
+class QuizViewPaper extends ConsumerWidget {
   static const routeName = '/view-quiz-paper';
   const QuizViewPaper({super.key});
 
   @override
-  QuizViewPaperState createState() => QuizViewPaperState();
-}
-
-class QuizViewPaperState extends ConsumerState<QuizViewPaper> {
-  int i = 0;
-
-  String? answer;
-  String? selectedOptions;
-
-  final player = AudioPlayer();
-
-  @override
-  void dispose() {
-    super.dispose();
-    player.stop();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     //MeidaQuery Screen Size
     Size screenSize = MediaQuery.of(context).size;
 

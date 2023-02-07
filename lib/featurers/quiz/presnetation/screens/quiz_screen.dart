@@ -41,6 +41,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     required String isImage,
     required Size screenSize,
     required String selectedOption,
+    required String isOptionAudio,
     required List<Questions> data,
   }) {
     return Padding(
@@ -73,15 +74,29 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
           });
         },
         child: ListTile(
-          title: isImage == 'No'
-              ? Text(option)
-              : CachedNetworkImage(
-                  imageUrl: '${ApiConstants.answerImageUrl}$option',
-                  height: screenSize.height * 0.1,
-                  placeholder: (context, url) => const Center(
-                    child: CircularProgressIndicator(),
+          title: data[i].isOptionAudio == 'Yes'
+              ? IconButton(
+                  onPressed: () async {
+                    //For Audio Playing
+                    await player.setUrl(
+                      '${ApiConstants.questionFileUrl}${data[i].filePath}',
+                    );
+                    player.play();
+                  },
+                  icon: const Icon(
+                    Icons.play_circle_outline,
+                    size: 32,
                   ),
-                ),
+                )
+              : isImage == 'No'
+                  ? Text(option)
+                  : CachedNetworkImage(
+                      imageUrl: '${ApiConstants.answerImageUrl}$option',
+                      height: screenSize.height * 0.1,
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
           selected: answer == option ? true : false,
           selectedColor: Colors.white,
           shape: RoundedRectangleBorder(
@@ -264,7 +279,8 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   .bodyLarge),
                                         ),
 
-                                        data[i].isAudio == 'Yes'
+                                        data[i].isAudio == 'Yes' ||
+                                                data[i].isOptionAudio == 'Yes'
                                             ? IconButton(
                                                 onPressed: () async {
                                                   //For Audio Playing
@@ -304,12 +320,14 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           isImage: data[i].isImage,
                                           screenSize: screenSize,
                                           selectedOption: 'option1',
+                                          isOptionAudio: data[i].isOptionAudio,
                                           data: data,
                                         ),
                                         optionBox(
                                           option: data[i].option2,
                                           isImage: data[i].isImage,
                                           screenSize: screenSize,
+                                          isOptionAudio: data[i].isOptionAudio,
                                           selectedOption: 'option2',
                                           data: data,
                                         ),
@@ -317,6 +335,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           option: data[i].option3,
                                           isImage: data[i].isImage,
                                           screenSize: screenSize,
+                                          isOptionAudio: data[i].isOptionAudio,
                                           selectedOption: 'option3',
                                           data: data,
                                         ),
@@ -324,6 +343,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           option: data[i].option4,
                                           isImage: data[i].isImage,
                                           screenSize: screenSize,
+                                          isOptionAudio: data[i].isOptionAudio,
                                           selectedOption: 'option4',
                                           data: data,
                                         ),

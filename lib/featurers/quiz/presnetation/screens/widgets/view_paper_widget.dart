@@ -1,13 +1,27 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:toddle/featurers/quiz/data/models/questions.dart';
 
 import '../../../../../constants/api_constants.dart';
 import '../../../../../constants/app_constants.dart';
 
-class ViewPaperWidget extends StatelessWidget {
+class ViewPaperWidget extends StatefulWidget {
   final Questions questions;
   const ViewPaperWidget({required this.questions, super.key});
+
+  @override
+  State<ViewPaperWidget> createState() => _ViewPaperWidgetState();
+}
+
+class _ViewPaperWidgetState extends State<ViewPaperWidget> {
+  final player = AudioPlayer();
+
+  @override
+  void dispose() {
+    super.dispose();
+    player.stop();
+  }
 
   //Widget For Option Box
   Widget optionBox({
@@ -15,21 +29,36 @@ class ViewPaperWidget extends StatelessWidget {
     required Size screenSize,
     required String option,
     required String options,
+    required String isOptionAudio,
     required String userSelected,
     required String correctOption,
   }) {
     return Padding(
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
       child: ListTile(
-        title: isImage == 'No'
-            ? Text(option)
-            : CachedNetworkImage(
-                imageUrl: '${ApiConstants.answerImageUrl}$option',
-                height: screenSize.height * 0.1,
-                placeholder: (context, url) => const Center(
-                  child: CircularProgressIndicator(),
+        title: widget.questions.isOptionAudio == 'Yes'
+            ? IconButton(
+                onPressed: () async {
+                  //For Audio Playing
+                  await player.setUrl(
+                    '${ApiConstants.questionFileUrl}${widget.questions.filePath}',
+                  );
+                  player.play();
+                },
+                icon: const Icon(
+                  Icons.play_circle_outline,
+                  size: 32,
                 ),
-              ),
+              )
+            : isImage == 'No'
+                ? Text(option)
+                : CachedNetworkImage(
+                    imageUrl: '${ApiConstants.answerImageUrl}$option',
+                    height: screenSize.height * 0.1,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
         textColor: options == correctOption
             ? Colors.white
             : options == userSelected
@@ -69,7 +98,7 @@ class ViewPaperWidget extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.03),
           child: Center(
             child: Text(
-              questions.question,
+              widget.questions.question,
               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -77,20 +106,25 @@ class ViewPaperWidget extends StatelessWidget {
           ),
         ),
 
-        questions.isAudio == 'Yes'
+        widget.questions.isAudio == 'Yes' ||
+                widget.questions.isOptionAudio == 'Yes'
             ? IconButton(
                 onPressed: () async {
                   //For Audio Playing
+                  await player.setUrl(
+                    '${ApiConstants.questionFileUrl}${widget.questions.filePath}',
+                  );
+                  player.play();
                 },
                 icon: const Icon(
                   Icons.play_circle_outline,
                   size: 32,
                 ),
               )
-            : questions.filePath != null
+            : widget.questions.filePath != null
                 ? CachedNetworkImage(
                     imageUrl:
-                        '${ApiConstants.questionFileUrl}${questions.filePath}',
+                        '${ApiConstants.questionFileUrl}${widget.questions.filePath}',
                     height: screenSize.height * 0.17,
                     placeholder: (context, url) => const Center(
                       child: CircularProgressIndicator(),
@@ -99,36 +133,40 @@ class ViewPaperWidget extends StatelessWidget {
                 : const SizedBox(),
         //Option Box
         optionBox(
-          isImage: questions.isImage,
+          isImage: widget.questions.isImage,
           screenSize: screenSize,
-          option: questions.option1,
+          option: widget.questions.option1,
           options: 'option1',
-          correctOption: questions.correctOption,
-          userSelected: questions.selectedOption!,
+          correctOption: widget.questions.correctOption,
+          userSelected: widget.questions.selectedOption!,
+          isOptionAudio: widget.questions.isOptionAudio,
         ),
         optionBox(
-          isImage: questions.isImage,
+          isImage: widget.questions.isImage,
           screenSize: screenSize,
-          option: questions.option2,
+          option: widget.questions.option2,
           options: 'option2',
-          userSelected: questions.selectedOption!,
-          correctOption: questions.correctOption,
+          userSelected: widget.questions.selectedOption!,
+          isOptionAudio: widget.questions.isOptionAudio,
+          correctOption: widget.questions.correctOption,
         ),
         optionBox(
-          isImage: questions.isImage,
+          isImage: widget.questions.isImage,
           screenSize: screenSize,
-          option: questions.option3,
+          option: widget.questions.option3,
           options: 'option3',
-          userSelected: questions.selectedOption!,
-          correctOption: questions.correctOption,
+          userSelected: widget.questions.selectedOption!,
+          correctOption: widget.questions.correctOption,
+          isOptionAudio: widget.questions.isOptionAudio,
         ),
         optionBox(
-          isImage: questions.isImage,
+          isImage: widget.questions.isImage,
           screenSize: screenSize,
-          option: questions.option4,
+          option: widget.questions.option4,
           options: 'option4',
-          userSelected: questions.selectedOption!,
-          correctOption: questions.correctOption,
+          userSelected: widget.questions.selectedOption!,
+          isOptionAudio: widget.questions.isOptionAudio,
+          correctOption: widget.questions.correctOption,
         ),
       ],
     );
