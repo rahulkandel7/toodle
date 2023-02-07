@@ -35,6 +35,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
   //For Total Question Showing
   bool isTotalQuestion = false;
 
+  // Audio bool for question
+  bool isQusPlaying = false;
+
   //Widget For Option Box
   Widget optionBox({
     required String option,
@@ -60,15 +63,13 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               'option': selectedOptions,
             };
             if (i <= data.length - 1) {
-              userSelected.length > 1
-                  ? userSelected
-                          .firstWhere(
-                              (element) => element['question'] == data[i].id,
-                              orElse: () => {})
-                          .isNotEmpty
-                      ? userSelected[userSelected.indexWhere((element) =>
-                          element['question'] == ua['question'])] = ua
-                      : userSelected.add(ua)
+              userSelected
+                      .firstWhere(
+                          (element) => element['question'] == data[i].id,
+                          orElse: () => {})
+                      .isNotEmpty
+                  ? userSelected[userSelected.indexWhere(
+                      (element) => element['question'] == ua['question'])] = ua
                   : userSelected.add(ua);
             }
           });
@@ -79,10 +80,11 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                   onPressed: () async {
                     //For Audio Playing
                     await player.setUrl(
-                      '${ApiConstants.questionFileUrl}${data[i].filePath}',
+                      '${ApiConstants.questionFileUrl}$option',
                     );
                     player.play();
                   },
+                  padding: const EdgeInsets.all(0),
                   icon: const Icon(
                     Icons.play_circle_outline,
                     size: 32,
@@ -287,10 +289,20 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   await player.setUrl(
                                                     '${ApiConstants.questionFileUrl}${data[i].filePath}',
                                                   );
-                                                  player.play();
+                                                  isQusPlaying
+                                                      ? player.stop()
+                                                      : player.play();
+                                                  setState(() {
+                                                    isQusPlaying =
+                                                        !isQusPlaying;
+                                                  });
                                                 },
-                                                icon: const Icon(
-                                                  Icons.play_circle_outline,
+                                                icon: Icon(
+                                                  isQusPlaying
+                                                      ? Icons
+                                                          .pause_circle_filled_rounded
+                                                      : Icons
+                                                          .play_circle_outline,
                                                   size: 32,
                                                 ),
                                               )

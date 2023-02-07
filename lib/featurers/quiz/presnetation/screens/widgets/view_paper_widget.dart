@@ -23,6 +23,9 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
     player.stop();
   }
 
+  // Audio bool for question
+  bool isQusPlaying = false;
+
   //Widget For Option Box
   Widget optionBox({
     required String isImage,
@@ -36,12 +39,12 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
     return Padding(
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
       child: ListTile(
-        title: widget.questions.isOptionAudio == 'Yes'
+        title: isOptionAudio == 'Yes'
             ? IconButton(
                 onPressed: () async {
                   //For Audio Playing
                   await player.setUrl(
-                    '${ApiConstants.questionFileUrl}${widget.questions.filePath}',
+                    '${ApiConstants.questionFileUrl}$option',
                   );
                   player.play();
                 },
@@ -114,7 +117,10 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
                   await player.setUrl(
                     '${ApiConstants.questionFileUrl}${widget.questions.filePath}',
                   );
-                  player.play();
+                  isQusPlaying ? player.stop() : player.play();
+                  setState(() {
+                    isQusPlaying = !isQusPlaying;
+                  });
                 },
                 icon: const Icon(
                   Icons.play_circle_outline,
