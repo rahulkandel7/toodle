@@ -458,8 +458,11 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               if (i > 0) {
                 i--;
               }
+              int selectedQuestion = data[i].id;
               if (userSelected.isNotEmpty) {
-                answer = userSelected[i]['userAnswer'];
+                answer = userSelected.firstWhere(
+                    (element) => element['question'] == selectedQuestion,
+                    orElse: () => {})['userAnswer'];
               }
             });
           },
