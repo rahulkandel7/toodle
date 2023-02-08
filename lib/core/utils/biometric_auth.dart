@@ -15,7 +15,6 @@ class BiometricAuth {
           options: const AuthenticationOptions(
             stickyAuth: true,
             useErrorDialogs: true,
-            biometricOnly: false,
           ),
         );
       } on PlatformException {
