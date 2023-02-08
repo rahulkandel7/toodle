@@ -217,50 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           return;
                                         }
 
-                                        isLogged
-                                            ? loginFunction(ref, context, true)
-                                            : showDialog(
-                                                context: context,
-                                                builder: (context) =>
-                                                    AlertDialog(
-                                                  title: Text(
-                                                    'Do you want to use biometric login ?',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyLarge,
-                                                  ),
-                                                  actions: [
-                                                    ElevatedButton(
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        backgroundColor:
-                                                            Colors.red,
-                                                        foregroundColor:
-                                                            Colors.white,
-                                                      ),
-                                                      onPressed: () {
-                                                        loginFunction(
-                                                            ref, context, true);
-                                                      },
-                                                      child: const Text(
-                                                        'Yes',
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 5,
-                                                    ),
-                                                    ElevatedButton(
-                                                      onPressed: () {
-                                                        loginFunction(ref,
-                                                            context, false);
-                                                      },
-                                                      child: const Text(
-                                                        'No',
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
+                                        loginFunction(ref, context);
                                       },
                                       child: Row(
                                         mainAxisAlignment:
@@ -316,10 +273,10 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void loginFunction(WidgetRef ref, BuildContext context, bool isBio) {
+  void loginFunction(WidgetRef ref, BuildContext context) {
     ref
         .read(authControllerProvider.notifier)
-        .login(email: email, password: password, isBio: isBio)
+        .login(email: email, password: password)
         .then((value) {
       if (value[0] == 'false') {
         toast(
@@ -348,7 +305,10 @@ class _LoginScreenState extends State<LoginScreen> {
           String password = prefs.getString('password') ?? '';
           ref
               .read(authControllerProvider.notifier)
-              .login(email: email, password: password, isBio: true)
+              .login(
+                email: email,
+                password: password,
+              )
               .then((value) {
             if (value[0] == 'false') {
               toast(
