@@ -193,6 +193,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             SystemChrome.setPreferredOrientations([
                               DeviceOrientation.portraitUp,
                             ]);
+                            ref.invalidate(questionControllerProvider);
                             Navigator.of(context).pushReplacementNamed(
                                 SetScreen.routeName,
                                 arguments: examType);
