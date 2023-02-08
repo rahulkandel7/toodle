@@ -484,31 +484,40 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
           builder: (context, ref, child) {
             return FilledButton.tonal(
               onPressed: () {
-                List<String> questionIds = [];
-                List<String> selectedAnswers = [];
+                //For empty submiting quiz
+                if (userSelected.length < 2) {
+                  toast(
+                      context: context,
+                      label: 'At least 2 question should be solved',
+                      color: Colors.red);
+                } else {
+                  List<String> questionIds = [];
+                  List<String> selectedAnswers = [];
 
-                for (var userAnswer in userSelected) {
-                  questionIds.add(userAnswer['question'].toString());
-                  selectedAnswers.add(userAnswer['option'].toString());
-                }
-
-                ref
-                    .read(questionControllerProvider(examType.id).notifier)
-                    .submitAnswer(
-                        questions: questionIds, answers: selectedAnswers)
-                    .then((value) {
-                  if (value[0] == 'false') {
-                    toast(context: context, label: value[1], color: Colors.red);
-                  } else {
-                    List<String> msg = [value[1], value[2]];
-                    SystemChrome.setPreferredOrientations([
-                      DeviceOrientation.portraitUp,
-                    ]);
-                    Navigator.of(context).pushReplacementNamed(
-                        QuizResultScreen.routeName,
-                        arguments: msg);
+                  for (var userAnswer in userSelected) {
+                    questionIds.add(userAnswer['question'].toString());
+                    selectedAnswers.add(userAnswer['option'].toString());
                   }
-                });
+
+                  ref
+                      .read(questionControllerProvider(examType.id).notifier)
+                      .submitAnswer(
+                          questions: questionIds, answers: selectedAnswers)
+                      .then((value) {
+                    if (value[0] == 'false') {
+                      toast(
+                          context: context, label: value[1], color: Colors.red);
+                    } else {
+                      List<String> msg = [value[1], value[2]];
+                      SystemChrome.setPreferredOrientations([
+                        DeviceOrientation.portraitUp,
+                      ]);
+                      Navigator.of(context).pushReplacementNamed(
+                          QuizResultScreen.routeName,
+                          arguments: msg);
+                    }
+                  });
+                }
               },
               child: const Text(
                 'Submit',
@@ -704,34 +713,43 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               alignment: Alignment.centerRight,
               child: FilledButton.tonal(
                   onPressed: () {
-                    List<String> questionIds = [];
-                    List<String> selectedAnswers = [];
+                    //For empty submiting quiz
+                    if (userSelected.length < 2) {
+                      toast(
+                          context: context,
+                          label: 'At least 2 question should be solved',
+                          color: Colors.red);
+                    } else {
+                      List<String> questionIds = [];
+                      List<String> selectedAnswers = [];
 
-                    for (var userAnswer in userSelected) {
-                      questionIds.add(userAnswer['question'].toString());
-                      selectedAnswers.add(userAnswer['option'].toString());
-                    }
-
-                    ref
-                        .read(questionControllerProvider(examType.id).notifier)
-                        .submitAnswer(
-                            questions: questionIds, answers: selectedAnswers)
-                        .then((value) {
-                      if (value[0] == 'false') {
-                        toast(
-                            context: context,
-                            label: value[1],
-                            color: Colors.red);
-                      } else {
-                        List<String> msg = [value[1], value[2]];
-                        SystemChrome.setPreferredOrientations([
-                          DeviceOrientation.portraitUp,
-                        ]);
-                        Navigator.of(context).pushReplacementNamed(
-                            QuizResultScreen.routeName,
-                            arguments: msg);
+                      for (var userAnswer in userSelected) {
+                        questionIds.add(userAnswer['question'].toString());
+                        selectedAnswers.add(userAnswer['option'].toString());
                       }
-                    });
+
+                      ref
+                          .read(
+                              questionControllerProvider(examType.id).notifier)
+                          .submitAnswer(
+                              questions: questionIds, answers: selectedAnswers)
+                          .then((value) {
+                        if (value[0] == 'false') {
+                          toast(
+                              context: context,
+                              label: value[1],
+                              color: Colors.red);
+                        } else {
+                          List<String> msg = [value[1], value[2]];
+                          SystemChrome.setPreferredOrientations([
+                            DeviceOrientation.portraitUp,
+                          ]);
+                          Navigator.of(context).pushReplacementNamed(
+                              QuizResultScreen.routeName,
+                              arguments: msg);
+                        }
+                      });
+                    }
                   },
                   child: const Text('Submit Answer')),
             ),
