@@ -62,193 +62,280 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: screenSize.height * 0.02,
-            horizontal: screenSize.width * 0.04,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //Center Text For App Name
-              Center(
-                child: Text(
-                  'Toddle App',
-                  style: Theme.of(context)
-                      .textTheme
-                      .displaySmall!
-                      .copyWith(fontWeight: FontWeight.bold),
-                ),
+        child: Stack(
+          alignment: Alignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Positioned(
+              top: -screenSize.height * 0.1,
+              left: -screenSize.width * 0.33,
+              child: CircleAvatar(
+                maxRadius: screenSize.width * 0.3,
               ),
-              const SizedBox(
-                height: 5,
+            ),
+            Positioned(
+              bottom: -screenSize.height * 0.1,
+              right: -screenSize.width * 0.33,
+              child: CircleAvatar(
+                maxRadius: screenSize.width * 0.3,
               ),
-              //Text For Login Screen
-              Text(
-                'Proceed to Login,',
-                style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            //App Logo,form and buttons
+
+            Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: screenSize.height * 0.02,
+                horizontal: screenSize.width * 0.04,
               ),
-
-              //Form For Login
-              Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    //Field For Email
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: screenSize.height * 0.03,
-                      ),
-                      child: TextFormField(
-                        focusNode: emailNode,
-                        decoration: const InputDecoration(
-                          labelText: 'Email Address',
-                          prefixIcon: Icon(
-                            Icons.email_outlined,
-                          ),
-                        ),
-                        onSaved: (newValue) {
-                          email = newValue!;
-                        },
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please Provide Email Address';
-                          } else if (!value.contains('@')) {
-                            return 'Please Provide valid Email Address';
-                          } else {
-                            return null;
-                          }
-                        },
-                        keyboardType: TextInputType.emailAddress,
-                        onEditingComplete: () {
-                          FocusScope.of(context).requestFocus(passwordNode);
-                        },
-                      ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: screenSize.height * 0.1,
+                  ),
+                  //Center Text For App Name
+                  Center(
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: screenSize.width * 0.58,
                     ),
-
-                    //Field For Password
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: screenSize.height * 0.03,
-                      ),
-                      child: TextFormField(
-                        focusNode: passwordNode,
-                        decoration: const InputDecoration(
-                          labelText: 'Password',
-                          prefixIcon: Icon(
-                            Icons.password_outlined,
-                          ),
-                        ),
-                        obscureText: true,
-                        onSaved: (newValue) {
-                          password = newValue!;
-                        },
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please Provide Password';
-                          } else {
-                            return null;
-                          }
-                        },
-                        keyboardType: TextInputType.visiblePassword,
-                      ),
-                    ),
-
-                    //Forget Password Button
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.of(context)
-                              .pushNamed(ForgetPasswordScreen.routeName);
-                        },
-                        child: const Text(
-                          'Forget Password?',
-                        ),
-                      ),
-                    ),
-
-                    //Login Button
-                    Consumer(
-                      builder: (context, ref, child) {
-                        return Padding(
-                          padding:
-                              EdgeInsets.only(top: screenSize.height * 0.00),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: FilledButton.tonalIcon(
-                                  onPressed: () async {
-                                    formKey.currentState!.save();
-                                    if (!formKey.currentState!.validate()) {
-                                      return;
-                                    }
-                                    ref
-                                        .read(authControllerProvider.notifier)
-                                        .login(email, password)
-                                        .then((value) {
-                                      if (value[0] == 'false') {
-                                        toast(
-                                          context: context,
-                                          label: value[1],
-                                          color: Colors.red,
-                                        );
-                                      } else {
-                                        Navigator.of(context)
-                                            .pushReplacementNamed(
-                                                HomeScreen.routeName);
-                                        toast(
-                                          context: context,
-                                          label: value[1],
-                                          color: Colors.green,
-                                        );
-                                      }
-                                    });
-                                  },
-                                  icon: const Icon(Icons.login),
-                                  label: const Text(
-                                    'Login',
-                                  ),
-                                ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  //Text For Login Screen
+                  Center(
+                    child: Text(
+                      'Welcome to Toodle',
+                      style:
+                          Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                fontWeight: FontWeight.w500,
                               ),
-                              isLogged
-                                  ? Row(
-                                      children: [
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        biometricLogin(ref, context),
-                                      ],
-                                    )
-                                  : const SizedBox.shrink(),
-                            ],
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      'Dreams Come True',
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            fontWeight: FontWeight.w500,
                           ),
-                        );
-                      },
                     ),
+                  ),
 
-                    //Signup Button
-                    Align(
-                      alignment: Alignment.center,
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.of(context)
-                              .pushNamed(RegisterScreen.routeName);
-                        },
-                        child: const Text(
-                          "Don't Have an Account? Create Now",
+                  //Form For Login
+                  Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        //Field For Email
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: screenSize.height * 0.03,
+                          ),
+                          child: TextFormField(
+                            focusNode: emailNode,
+                            decoration: const InputDecoration(
+                              labelText: 'Email Address',
+                              prefixIcon: Icon(
+                                Icons.email_outlined,
+                              ),
+                            ),
+                            onSaved: (newValue) {
+                              email = newValue!;
+                            },
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please Provide Email Address';
+                              } else if (!value.contains('@')) {
+                                return 'Please Provide valid Email Address';
+                              } else {
+                                return null;
+                              }
+                            },
+                            keyboardType: TextInputType.emailAddress,
+                            onEditingComplete: () {
+                              FocusScope.of(context).requestFocus(passwordNode);
+                            },
+                          ),
                         ),
-                      ),
+
+                        //Field For Password
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: screenSize.height * 0.03,
+                          ),
+                          child: TextFormField(
+                            focusNode: passwordNode,
+                            decoration: const InputDecoration(
+                              labelText: 'Password',
+                              prefixIcon: Icon(
+                                Icons.password_outlined,
+                              ),
+                            ),
+                            obscureText: true,
+                            onSaved: (newValue) {
+                              password = newValue!;
+                            },
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please Provide Password';
+                              } else {
+                                return null;
+                              }
+                            },
+                            keyboardType: TextInputType.visiblePassword,
+                          ),
+                        ),
+
+                        //Forget Password Button
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(ForgetPasswordScreen.routeName);
+                            },
+                            child: const Text(
+                              'Forget Password?',
+                            ),
+                          ),
+                        ),
+
+                        //Login Button
+                        Consumer(
+                          builder: (context, ref, child) {
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                  top: screenSize.height * 0.00),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: FilledButton(
+                                      onPressed: () async {
+                                        formKey.currentState!.save();
+                                        if (!formKey.currentState!.validate()) {
+                                          return;
+                                        }
+
+                                        isLogged
+                                            ? loginFunction(ref, context, true)
+                                            : showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    AlertDialog(
+                                                  title: Text(
+                                                    'Do you want to use biometric login ?',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge,
+                                                  ),
+                                                  actions: [
+                                                    ElevatedButton(
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        backgroundColor:
+                                                            Colors.red,
+                                                        foregroundColor:
+                                                            Colors.white,
+                                                      ),
+                                                      onPressed: () {
+                                                        loginFunction(
+                                                            ref, context, true);
+                                                      },
+                                                      child: const Text(
+                                                        'Yes',
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    ElevatedButton(
+                                                      onPressed: () {
+                                                        loginFunction(ref,
+                                                            context, false);
+                                                      },
+                                                      child: const Text(
+                                                        'No',
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: const [
+                                          Icon(Icons.login),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text('Login'),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  isLogged
+                                      ? Row(
+                                          children: [
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            biometricLogin(ref, context),
+                                          ],
+                                        )
+                                      : const SizedBox.shrink(),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+
+                        //Signup Button
+                        Align(
+                          alignment: Alignment.center,
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(RegisterScreen.routeName);
+                            },
+                            child: const Text(
+                              "Don't Have an Account? Create Now",
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );
+  }
+
+  void loginFunction(WidgetRef ref, BuildContext context, bool isBio) {
+    ref
+        .read(authControllerProvider.notifier)
+        .login(email: email, password: password, isBio: isBio)
+        .then((value) {
+      if (value[0] == 'false') {
+        toast(
+          context: context,
+          label: value[1],
+          color: Colors.red,
+        );
+      } else {
+        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+        toast(
+          context: context,
+          label: value[1],
+          color: Colors.green,
+        );
+      }
+    });
   }
 
   FilledButton biometricLogin(WidgetRef ref, BuildContext context) {
@@ -261,7 +348,7 @@ class _LoginScreenState extends State<LoginScreen> {
           String password = prefs.getString('password') ?? '';
           ref
               .read(authControllerProvider.notifier)
-              .login(email, password)
+              .login(email: email, password: password, isBio: true)
               .then((value) {
             if (value[0] == 'false') {
               toast(
@@ -280,9 +367,6 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         }
       },
-      style: FilledButton.styleFrom(
-        backgroundColor: Colors.deepPurple.shade200,
-      ),
       child: const Icon(
         Icons.fingerprint_outlined,
       ),

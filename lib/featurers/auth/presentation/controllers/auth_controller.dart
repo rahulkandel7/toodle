@@ -11,7 +11,10 @@ class AuthController extends StateNotifier<AsyncValue<User>> {
   final AuthRepositories _authRepositories;
 
 //Login Method
-  Future<List<String>> login(String email, String password) async {
+  Future<List<String>> login(
+      {required String email,
+      required String password,
+      required bool isBio}) async {
     var data = {
       'email': email,
       'password': password,
@@ -24,7 +27,7 @@ class AuthController extends StateNotifier<AsyncValue<User>> {
       return msg;
     }, (success) {
       //Adding Data to Shared Prefs
-      prefs.setBool('isBio', true);
+      prefs.setBool('isBio', isBio);
       prefs.setString('email', email);
       prefs.setString('password', password);
       List<String> msg = ['true', success];
