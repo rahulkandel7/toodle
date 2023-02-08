@@ -40,25 +40,22 @@ class QuizViewPaper extends ConsumerWidget {
         ),
         body: ref.watch(viewPaperControllerProvider(examId)).when(
               data: (data) {
-                return SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: screenSize.width * 0.04),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: screenSize.height * 0.8,
-                          child: ListView.builder(
-                            itemBuilder: (ctx, i) {
-                              return ViewPaperWidget(questions: data[i]);
-                            },
-                            itemCount: data.length,
-                          ),
+                return Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: screenSize.width * 0.04),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          itemBuilder: (ctx, i) {
+                            return ViewPaperWidget(questions: data[i]);
+                          },
+                          itemCount: data.length,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 );
               },

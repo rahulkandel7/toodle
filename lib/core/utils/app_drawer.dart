@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/core/utils/toaster.dart';
 import 'package:toddle/featurers/auth/presentation/controllers/auth_controller.dart';
 import 'package:toddle/featurers/auth/presentation/screens/edit_profile.dart';
@@ -25,10 +26,27 @@ class _AppDrawerState extends State<AppDrawer> {
     });
   }
 
+  bool isBio = false;
+
+  _isBio() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (prefs.getBool('isBio')! == true) {
+      setState(() {
+        isBio = true;
+      });
+    } else {
+      setState(() {
+        isBio = false;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     getAppVersion();
+    _isBio();
   }
 
   Widget textButton({
@@ -169,6 +187,30 @@ class _AppDrawerState extends State<AppDrawer> {
                         },
                       );
                     },
+                  ),
+                  const Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Biometric Login',
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  color: Colors.deepPurple,
+                                ),
+                      ),
+                      Switch(
+                        value: isBio,
+                        onChanged: (value) async {
+                          setState(() {
+                            isBio = value;
+                          });
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          prefs.setBool('isBio', value);
+                        },
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: widget.screenSize.height * 0.03,
