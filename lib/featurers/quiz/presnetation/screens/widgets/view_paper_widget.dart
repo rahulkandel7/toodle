@@ -44,9 +44,9 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
                 onPressed: () async {
                   //For Audio Playing
                   await player.setUrl(
-                    '${ApiConstants.questionFileUrl}$option',
+                    '${ApiConstants.answerImageUrl}$option',
                   );
-                  player.play();
+                  player.playing ? player.stop() : player.play();
                 },
                 icon: const Icon(
                   Icons.play_circle_outline,

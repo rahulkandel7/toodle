@@ -80,9 +80,32 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                   onPressed: () async {
                     //For Audio Playing
                     await player.setUrl(
-                      '${ApiConstants.questionFileUrl}$option',
+                      '${ApiConstants.answerImageUrl}$option',
                     );
-                    player.play();
+                    player.playing ? player.stop() : player.play();
+                    setState(() {
+                      answer = option;
+                      selectedOptions = selectedOption;
+
+                      //Storing Data in a MAP
+                      Map<String, dynamic> ua = {
+                        'questionNumber': i + 1,
+                        'question': data[i].id,
+                        'userAnswer': answer,
+                        'option': selectedOptions,
+                      };
+                      if (i <= data.length - 1) {
+                        userSelected
+                                .firstWhere(
+                                    (element) =>
+                                        element['question'] == data[i].id,
+                                    orElse: () => {})
+                                .isNotEmpty
+                            ? userSelected[userSelected.indexWhere((element) =>
+                                element['question'] == ua['question'])] = ua
+                            : userSelected.add(ua);
+                      }
+                    });
                   },
                   padding: const EdgeInsets.all(0),
                   icon: const Icon(
@@ -427,6 +450,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         child: FilledButton.tonalIcon(
           onPressed: () {
             setState(() {
+              player.stop();
               if (i < data.length - 1) {
                 i++;
                 int selectedQuestion = data[i].id;
@@ -455,6 +479,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         child: FilledButton.tonalIcon(
           onPressed: () {
             setState(() {
+              player.stop();
               if (i > 0) {
                 i--;
               }

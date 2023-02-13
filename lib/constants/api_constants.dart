@@ -1,7 +1,8 @@
 class ApiConstants {
-  static const String url = "http://192.168.1.5:8000/api/v1/";
+  static const String url = "https://toddle.bitmapitsolution.com/api/v1/";
   static const String answerImageUrl =
-      "http://192.168.1.5:8000/images/quiz_images/";
+      "https://toddle.bitmapitsolution.com/images/quiz_images/";
 
-  static const String questionFileUrl = "http://192.168.1.5:8000/files/";
+  static const String questionFileUrl =
+      "https://toddle.bitmapitsolution.com/files/";
 }
