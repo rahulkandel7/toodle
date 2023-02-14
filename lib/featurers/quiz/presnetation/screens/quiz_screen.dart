@@ -38,6 +38,13 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
   // Audio bool for question
   bool isQusPlaying = false;
 
+  //For Checking audio is played twice or not
+  int q = 0;
+  int o1 = 0;
+  int o2 = 0;
+  int o3 = 0;
+  int o4 = 0;
+
   //Widget For Option Box
   Widget optionBox({
     required String option,
@@ -82,7 +89,63 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                     await player.setUrl(
                       '${ApiConstants.answerImageUrl}$option',
                     );
-                    player.playing ? player.stop() : player.play();
+
+                    //For Option 1
+                    if (selectedOption == 'option1') {
+                      if (o1 < 2) {
+                        player.playing ? player.stop() : player.play();
+                        setState(() {
+                          if (player.playing) {
+                            o1++;
+                          }
+                        });
+                      } else {
+                        player.stop();
+                      }
+                    }
+
+                    //For Option 2
+                    if (selectedOption == 'option2') {
+                      if (o2 < 2) {
+                        player.playing ? player.stop() : player.play();
+                        setState(() {
+                          if (player.playing) {
+                            o2++;
+                          }
+                        });
+                      } else {
+                        player.stop();
+                      }
+                    }
+
+                    //For Option 3
+                    if (selectedOption == 'option3') {
+                      if (o3 < 2) {
+                        player.playing ? player.stop() : player.play();
+                        setState(() {
+                          if (player.playing) {
+                            o3++;
+                          }
+                        });
+                      } else {
+                        player.stop();
+                      }
+                    }
+
+                    //For Option 1
+                    if (selectedOption == 'option4') {
+                      if (o4 < 2) {
+                        player.playing ? player.stop() : player.play();
+                        setState(() {
+                          if (player.playing) {
+                            o4++;
+                          }
+                        });
+                      } else {
+                        player.stop();
+                      }
+                    }
+
                     setState(() {
                       answer = option;
                       selectedOptions = selectedOption;
@@ -330,13 +393,23 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   await player.setUrl(
                                                     '${ApiConstants.questionFileUrl}${data[i].filePath}',
                                                   );
-                                                  isQusPlaying
-                                                      ? player.stop()
-                                                      : player.play();
-                                                  setState(() {
-                                                    isQusPlaying =
-                                                        !isQusPlaying;
-                                                  });
+                                                  if (q < 2) {
+                                                    isQusPlaying
+                                                        ? player.stop()
+                                                        : player.play();
+                                                    setState(() {
+                                                      isQusPlaying =
+                                                          !isQusPlaying;
+                                                      if (isQusPlaying) {
+                                                        q++;
+                                                      }
+                                                    });
+                                                  } else {
+                                                    player.stop();
+                                                    setState(() {
+                                                      isQusPlaying = false;
+                                                    });
+                                                  }
                                                 },
                                                 icon: Icon(
                                                   isQusPlaying
@@ -488,6 +561,13 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         child: FilledButton.tonalIcon(
           onPressed: () {
             setState(() {
+              //Setting audio values to 0
+              q = 0;
+              o1 = 0;
+              o2 = 0;
+              o3 = 0;
+              o4 = 0;
+
               player.stop();
               if (i < data.length - 1) {
                 i++;
@@ -517,6 +597,12 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         child: FilledButton.tonalIcon(
           onPressed: () {
             setState(() {
+              //For setting audio vales to 0
+              q = 0;
+              o1 = 0;
+              o2 = 0;
+              o3 = 0;
+              o4 = 0;
               player.stop();
               if (i > 0) {
                 i--;
