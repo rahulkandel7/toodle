@@ -33,7 +33,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
   List<Map<String, dynamic>> userSelected = [];
 
   //For Total Question Showing
-  bool isTotalQuestion = false;
+  bool isTotalQuestion = true;
 
   // Audio bool for question
   bool isQusPlaying = false;

@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/core/utils/biometric_auth.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_password_screen.dart';
 import 'package:toddle/featurers/auth/presentation/screens/register_screen.dart';
-import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
+import 'package:toddle/featurers/home/presentation/screens/first_screen.dart';
 
 import '../../../../core/utils/toaster.dart';
 import '../controllers/auth_controller.dart';
@@ -285,7 +285,7 @@ class _LoginScreenState extends State<LoginScreen> {
           color: Colors.red,
         );
       } else {
-        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+        Navigator.of(context).pushReplacementNamed(FirstScreen.routeName);
         toast(
           context: context,
           label: value[1],
@@ -317,7 +317,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: Colors.red,
               );
             } else {
-              Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+              Navigator.of(context).pushReplacementNamed(FirstScreen.routeName);
               toast(
                 context: context,
                 label: value[1],

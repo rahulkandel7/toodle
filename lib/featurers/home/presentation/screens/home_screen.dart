@@ -1,10 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/core/utils/app_drawer.dart';
 import 'package:toddle/featurers/home/presentation/controllers/exam_type_controller.dart';
+import 'package:toddle/featurers/home/presentation/screens/first_screen.dart';
 
 import 'widgets/exam_card.dart';
 
@@ -17,100 +16,22 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class HomeScreenState extends ConsumerState<HomeScreen> {
-  //Show Prompt for enable biometric login
-  showPrompt() {
-    return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Do you want to use biometric login ?',
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-        actions: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              prefs
-                  .setBool('isBio', true)
-                  .then((_) => Navigator.of(context).pop());
-            },
-            child: const Text(
-              'Yes',
-            ),
-          ),
-          const SizedBox(
-            width: 5,
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              prefs
-                  .setBool('isBio', false)
-                  .then((_) => Navigator.of(context).pop());
-            },
-            child: const Text(
-              'No',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+//For Getting User Name
+  String username = '';
 
-  Timer? time;
-  Duration duration = const Duration(seconds: 1);
-
-  //For Checking bio enable or not
-  bool isBiometric = false;
   //For getting is login info
-  _isBio() async {
+  _getName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (prefs.getBool('isBio')! == true) {
-      setState(() {
-        isBiometric = true;
-      });
-    } else {
-      setState(() {
-        isBiometric = false;
-      });
-    }
-  }
-
-  void startTimer() {
-    time = Timer.periodic(const Duration(seconds: 1), (_) => setCountDown());
-  }
-
-  void setCountDown() {
-    const reduceSecondsBy = 1;
     setState(() {
-      final seconds = duration.inSeconds - reduceSecondsBy;
-      if (seconds < 0) {
-        if (!isBiometric) {
-          showPrompt();
-        }
-        time!.cancel();
-      } else {
-        duration = Duration(seconds: seconds);
-      }
+      username = prefs.getString('name')!;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _isBio();
-    startTimer();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    time!.cancel();
+    _getName();
   }
 
   @override
@@ -119,11 +40,17 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Toddle',
+          username,
           style: Theme.of(context).textTheme.displaySmall,
         ),
-        automaticallyImplyLeading: false,
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () =>
+              Navigator.of(context).pushReplacementNamed(FirstScreen.routeName),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+          ),
+        ),
         actions: [
           Builder(builder: (context) {
             return IconButton(
@@ -147,7 +74,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Exam Resources',
+                      'Select Exam Type',
                       style: Theme.of(context)
                           .textTheme
                           .headlineMedium!
@@ -155,7 +82,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                     const Divider(),
                     SizedBox(
-                      height: 300,
+                      height: screenSize.height * 0.76,
                       child: ListView.builder(
                         itemBuilder: (ctx, i) => ExamCard(
                           examType: data[i],

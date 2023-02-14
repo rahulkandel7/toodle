@@ -46,6 +46,7 @@ class AuthDataSourceImpl implements AuthDataSource {
     final result = await _apiServices.postData(endPoint: 'login', data: data);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', result['token']);
+    prefs.setString('name', result['user']['name']);
     return result['message'];
   }
 

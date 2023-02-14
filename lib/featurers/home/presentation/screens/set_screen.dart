@@ -20,10 +20,9 @@ class SetScreen extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Toddle',
+            exam.examType,
             style: Theme.of(context).textTheme.displaySmall,
           ),
-          centerTitle: true,
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -36,7 +35,7 @@ class SetScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Select ${exam.examType} Set',
+                  'Select Exam Set',
                   style: Theme.of(context)
                       .textTheme
                       .headlineMedium!

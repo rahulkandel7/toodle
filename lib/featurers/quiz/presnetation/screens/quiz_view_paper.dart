@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
+import 'package:toddle/featurers/home/presentation/screens/first_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/controllers/view_paper_controller.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/widgets/view_paper_widget.dart';
 
@@ -27,7 +27,7 @@ class QuizViewPaper extends ConsumerWidget {
       onWillPop: () async {
         isHistory
             ? Navigator.of(context).pop()
-            : Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+            : Navigator.of(context).pushReplacementNamed(FirstScreen.routeName);
         return false;
       },
       child: Scaffold(

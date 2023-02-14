@@ -7,6 +7,7 @@ import 'package:toddle/featurers/auth/presentation/screens/forget_otp.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_password_screen.dart';
 import 'package:toddle/featurers/auth/presentation/screens/login_screen.dart';
 import 'package:toddle/featurers/auth/presentation/screens/register_screen.dart';
+import 'package:toddle/featurers/home/presentation/screens/first_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/set_screen.dart';
 import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_history.dart';
@@ -52,6 +53,7 @@ class MainApp extends StatelessWidget {
         QuizViewPaper.routeName: (ctx) => const QuizViewPaper(),
         EditProfile.routename: (ctx) => const EditProfile(),
         ViewPaperHistory.routeName: (ctx) => const ViewPaperHistory(),
+        FirstScreen.routeName: (ctx) => const FirstScreen(),
       },
     );
   }
