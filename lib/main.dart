@@ -14,6 +14,7 @@ import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_histor
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_result_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_view_paper.dart';
+import 'package:toddle/featurers/splash_screen/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +40,7 @@ class MainApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const LoginScreen(),
+      home: const SplashScreen(),
       routes: {
         LoginScreen.routeName: (ctx) => const LoginScreen(),
         RegisterScreen.routeName: (ctx) => const RegisterScreen(),
