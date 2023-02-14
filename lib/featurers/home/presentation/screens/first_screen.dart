@@ -157,6 +157,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
               info: 'My Profile',
               function: () =>
                   Navigator.of(context).pushNamed(EditProfile.routename),
+              icon: Icons.person,
             ),
             SizedBox(
               height: screenSize.height * 0.05,
@@ -166,6 +167,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
               info: 'Take Exam',
               function: () =>
                   Navigator.of(context).pushNamed(HomeScreen.routeName),
+              icon: Icons.book,
             ),
           ],
         ),
@@ -180,6 +182,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
     required Size screenSize,
     required String info,
     required Function()? function,
+    required IconData icon,
   }) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.01),
@@ -201,14 +204,27 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.01),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
                 children: [
-                  Text(
-                    info,
-                    style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                          color: Colors.white,
-                        ),
+                  Icon(
+                    icon,
+                    size: Theme.of(context).textTheme.displayLarge!.fontSize,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        info,
+                        style:
+                            Theme.of(context).textTheme.headlineLarge!.copyWith(
+                                  color: Colors.white,
+                                ),
+                      ),
+                    ],
                   ),
                 ],
               ),

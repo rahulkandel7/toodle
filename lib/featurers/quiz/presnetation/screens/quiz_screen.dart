@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -100,6 +102,10 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           }
                         });
                       } else {
+                        toast(
+                            context: context,
+                            label: 'You cannot play audio more than twice',
+                            color: Colors.red);
                         player.stop();
                       }
                     }
@@ -114,6 +120,10 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           }
                         });
                       } else {
+                        toast(
+                            context: context,
+                            label: 'You cannot play audio more than twice',
+                            color: Colors.red);
                         player.stop();
                       }
                     }
@@ -128,6 +138,10 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           }
                         });
                       } else {
+                        toast(
+                            context: context,
+                            label: 'You cannot play audio more than twice',
+                            color: Colors.red);
                         player.stop();
                       }
                     }
@@ -142,6 +156,10 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           }
                         });
                       } else {
+                        toast(
+                            context: context,
+                            label: 'You cannot play audio more than twice',
+                            color: Colors.red);
                         player.stop();
                       }
                     }
@@ -409,6 +427,11 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                     setState(() {
                                                       isQusPlaying = false;
                                                     });
+                                                    toast(
+                                                        context: context,
+                                                        label:
+                                                            'You cannot play audio more than twice',
+                                                        color: Colors.red);
                                                   }
                                                 },
                                                 icon: Icon(
