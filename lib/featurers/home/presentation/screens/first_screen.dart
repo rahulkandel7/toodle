@@ -5,8 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/constants/app_constants.dart';
 import 'package:toddle/core/utils/app_drawer.dart';
-import 'package:toddle/featurers/auth/presentation/screens/edit_profile.dart';
-import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
+
+import '../../../auth/presentation/screens/edit_profile.dart';
+import 'home_screen.dart';
 
 class FirstScreen extends ConsumerStatefulWidget {
   static const routeName = '/first-page';
