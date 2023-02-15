@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toddle/featurers/my_paper/data/models/exam.dart';
 import 'package:toddle/featurers/my_paper/presentation/controllers/my_paper_controller.dart';
 import 'package:toddle/featurers/my_paper/presentation/screens/widgets/view_history_card.dart';
 
@@ -32,13 +33,15 @@ class ViewPaperHistoryState extends ConsumerState<ViewPaperHistory> {
         ),
         child: ref.watch(myPaperControllerProvider).when(
               data: (data) {
+                List<Exam> exams =
+                    data.where((element) => element.examType != '').toList();
                 return ListView.builder(
                   itemBuilder: (ctx, i) => ViewHistoryCard(
-                    date: data[i].examDate,
-                    examType: data[i].examType,
-                    id: data[i].id,
+                    date: exams[i].examDate,
+                    examType: exams[i].examType,
+                    id: exams[i].id,
                   ),
-                  itemCount: data.length,
+                  itemCount: exams.length,
                 );
               },
               error: (e, s) => Text(e.toString()),

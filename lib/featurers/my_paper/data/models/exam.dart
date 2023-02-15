@@ -13,7 +13,7 @@ class Exam {
     return Exam(
       id: map['id'] as int,
       examDate: map['exam_date'] as String,
-      examType: map['examType'] as String,
+      examType: map['examType'] == null ? '' : map['examType'] as String,
     );
   }
 }
