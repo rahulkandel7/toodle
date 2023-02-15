@@ -55,11 +55,28 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
               )
             : isImage == 'No'
                 ? Text(option)
-                : CachedNetworkImage(
-                    imageUrl: '${ApiConstants.answerImageUrl}$option',
-                    height: screenSize.height * 0.1,
-                    placeholder: (context, url) => const Center(
-                      child: CircularProgressIndicator(),
+                : InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            content: InteractiveViewer(
+                              child: Image.network(
+                                '${ApiConstants.answerImageUrl}$option',
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: CachedNetworkImage(
+                      imageUrl: '${ApiConstants.answerImageUrl}$option',
+                      height: screenSize.height * 0.1,
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
                     ),
                   ),
         textColor: options == correctOption
@@ -128,12 +145,29 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
                 ),
               )
             : widget.questions.filePath != null
-                ? CachedNetworkImage(
-                    imageUrl:
-                        '${ApiConstants.questionFileUrl}${widget.questions.filePath}',
-                    height: screenSize.height * 0.17,
-                    placeholder: (context, url) => const Center(
-                      child: CircularProgressIndicator(),
+                ? InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            content: InteractiveViewer(
+                              child: Image.network(
+                                '${ApiConstants.questionFileUrl}${widget.questions.filePath}',
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          '${ApiConstants.questionFileUrl}${widget.questions.filePath}',
+                      height: screenSize.height * 0.17,
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
                     ),
                   )
                 : const SizedBox(),

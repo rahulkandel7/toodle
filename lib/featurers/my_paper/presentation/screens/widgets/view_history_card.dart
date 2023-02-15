@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toddle/constants/app_constants.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_view_paper.dart';
 
 class ViewHistoryCard extends StatelessWidget {
@@ -23,28 +24,45 @@ class ViewHistoryCard extends StatelessWidget {
             10,
           ),
         ),
-        title: Text(
-          examType,
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        subtitle: Text(
-          date,
-          style: TextStyle(
-            color: Colors.grey.shade700,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 18.0),
+          child: Text(
+            examType,
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
         ),
-        trailing: OutlinedButton(
-          onPressed: () {
-            Map<String, dynamic> data = {
-              'isHistory': true,
-              'id': id,
-            };
-            Navigator.of(context).pushNamed(
-              QuizViewPaper.routeName,
-              arguments: data,
-            );
-          },
-          child: const Text('View Paper'),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(bottom: 18.0),
+          child: Text(
+            date,
+            style: TextStyle(
+              color: Colors.grey.shade700,
+            ),
+          ),
+        ),
+        trailing: Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              backgroundColor: AppConstants.primaryColor,
+            ),
+            onPressed: () {
+              Map<String, dynamic> data = {
+                'isHistory': true,
+                'id': id,
+              };
+              Navigator.of(context).pushNamed(
+                QuizViewPaper.routeName,
+                arguments: data,
+              );
+            },
+            child: const Text(
+              'View Paper',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
         ),
       ),
     );
