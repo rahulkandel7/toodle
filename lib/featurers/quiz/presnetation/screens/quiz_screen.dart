@@ -146,7 +146,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                       }
                     }
 
-                    //For Option 1
+                    //For Option 4
                     if (selectedOption == 'option4') {
                       if (o4 < 2) {
                         player.playing ? player.stop() : player.play();
@@ -211,6 +211,31 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             );
                           },
                         );
+                        setState(() {
+                          answer = option;
+                          selectedOptions = selectedOption;
+
+                          //Storing Data in a MAP
+                          Map<String, dynamic> ua = {
+                            'questionNumber': i + 1,
+                            'question': data[i].id,
+                            'userAnswer': answer,
+                            'option': selectedOptions,
+                          };
+                          if (i <= data.length - 1) {
+                            userSelected
+                                    .firstWhere(
+                                        (element) =>
+                                            element['question'] == data[i].id,
+                                        orElse: () => {})
+                                    .isNotEmpty
+                                ? userSelected[userSelected.indexWhere(
+                                    (element) =>
+                                        element['question'] ==
+                                        ua['question'])] = ua
+                                : userSelected.add(ua);
+                          }
+                        });
                       },
                       child: CachedNetworkImage(
                         imageUrl: '${ApiConstants.answerImageUrl}$option',
@@ -712,7 +737,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
       child: Column(
         children: [
           SizedBox(
-            height: screenSize.height * 0.68,
+            height: screenSize.height * 0.67,
             child: GridView(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -722,7 +747,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                 Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 10.0),
+                      padding: const EdgeInsets.only(top: 3.0, bottom: 5.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
@@ -802,7 +827,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                 Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 10.0),
+                      padding: const EdgeInsets.only(top: 3.0, bottom: 5.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
@@ -880,7 +905,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 4.0),
+            padding: const EdgeInsets.only(top: 2.0),
             child: Align(
               alignment: Alignment.centerRight,
               child: FilledButton.tonal(

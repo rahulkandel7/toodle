@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/constants/app_constants.dart';
 import 'package:toddle/core/utils/app_drawer.dart';
+import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_history.dart';
 
-import '../../../auth/presentation/screens/edit_profile.dart';
 import 'home_screen.dart';
 
 class FirstScreen extends ConsumerStatefulWidget {
@@ -154,10 +154,10 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
           children: [
             infocard(
               screenSize: screenSize,
-              info: 'My Profile',
+              info: 'My Papers',
               function: () =>
-                  Navigator.of(context).pushNamed(EditProfile.routename),
-              icon: Icons.person,
+                  Navigator.of(context).pushNamed(ViewPaperHistory.routeName),
+              icon: Icons.newspaper,
             ),
             SizedBox(
               height: screenSize.height * 0.05,

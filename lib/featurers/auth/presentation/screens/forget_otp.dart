@@ -102,6 +102,7 @@ class _ForgetOtpState extends State<ForgetOtp> {
                           onSaved: (newValue) {
                             code1 = newValue!;
                           },
+                          textAlign: TextAlign.center,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return '';
@@ -112,6 +113,11 @@ class _ForgetOtpState extends State<ForgetOtp> {
                           keyboardType: TextInputType.number,
                           onEditingComplete: () {
                             FocusScope.of(context).requestFocus(code2Node);
+                          },
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              FocusScope.of(context).requestFocus(code2Node);
+                            }
                           },
                         ),
                       ),
@@ -130,6 +136,7 @@ class _ForgetOtpState extends State<ForgetOtp> {
                           decoration: const InputDecoration(
                             counterText: '',
                           ),
+                          textAlign: TextAlign.center,
                           onSaved: (newValue) {
                             code2 = newValue!;
                           },
@@ -143,6 +150,11 @@ class _ForgetOtpState extends State<ForgetOtp> {
                           keyboardType: TextInputType.number,
                           onEditingComplete: () {
                             FocusScope.of(context).requestFocus(code3Node);
+                          },
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              FocusScope.of(context).requestFocus(code3Node);
+                            }
                           },
                         ),
                       ),
@@ -164,6 +176,7 @@ class _ForgetOtpState extends State<ForgetOtp> {
                           onSaved: (newValue) {
                             code3 = newValue!;
                           },
+                          textAlign: TextAlign.center,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return '';
@@ -174,6 +187,11 @@ class _ForgetOtpState extends State<ForgetOtp> {
                           keyboardType: TextInputType.number,
                           onEditingComplete: () {
                             FocusScope.of(context).requestFocus(code4Node);
+                          },
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              FocusScope.of(context).requestFocus(code4Node);
+                            }
                           },
                         ),
                       ),
@@ -202,9 +220,15 @@ class _ForgetOtpState extends State<ForgetOtp> {
                               return null;
                             }
                           },
+                          textAlign: TextAlign.center,
                           keyboardType: TextInputType.number,
                           onEditingComplete: () {
                             FocusScope.of(context).requestFocus(code5Node);
+                          },
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              FocusScope.of(context).requestFocus(code5Node);
+                            }
                           },
                         ),
                       ),
@@ -226,6 +250,7 @@ class _ForgetOtpState extends State<ForgetOtp> {
                           onSaved: (newValue) {
                             code5 = newValue!;
                           },
+                          textAlign: TextAlign.center,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return '';
@@ -236,6 +261,11 @@ class _ForgetOtpState extends State<ForgetOtp> {
                           keyboardType: TextInputType.number,
                           onEditingComplete: () {
                             FocusScope.of(context).requestFocus(code6Node);
+                          },
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              FocusScope.of(context).requestFocus(code6Node);
+                            }
                           },
                         ),
                       ),
@@ -257,6 +287,7 @@ class _ForgetOtpState extends State<ForgetOtp> {
                           onSaved: (newValue) {
                             code6 = newValue!;
                           },
+                          textAlign: TextAlign.center,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return '';
