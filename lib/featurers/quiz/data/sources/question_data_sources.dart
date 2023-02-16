@@ -22,7 +22,8 @@ class QuestionDataSourceImpl implements QuestionDataSource {
         await _apiServices.getDataWithAuthorize(endpoint: '/start-exam/$id');
 
     final questions = result['data'] as List<dynamic>;
-    return questions.map((question) => Questions.fromMap(question)).toList();
+    final allQuestions = questions.where((element) => element != null);
+    return allQuestions.map((question) => Questions.fromMap(question)).toList();
   }
 
   @override
