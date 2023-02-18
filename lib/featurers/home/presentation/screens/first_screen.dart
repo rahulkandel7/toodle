@@ -157,7 +157,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
               info: 'My Papers',
               function: () =>
                   Navigator.of(context).pushNamed(ViewPaperHistory.routeName),
-              icon: Icons.newspaper,
+              image: 'assets/images/mypaper.png',
             ),
             SizedBox(
               height: screenSize.height * 0.05,
@@ -167,7 +167,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
               info: 'Take Exam',
               function: () =>
                   Navigator.of(context).pushNamed(HomeScreen.routeName),
-              icon: Icons.book,
+              image: 'assets/images/take-exam.png',
             ),
           ],
         ),
@@ -182,7 +182,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
     required Size screenSize,
     required String info,
     required Function()? function,
-    required IconData icon,
+    required String image,
   }) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.01),
@@ -206,11 +206,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
               padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.01),
               child: Column(
                 children: [
-                  Icon(
-                    icon,
-                    size: Theme.of(context).textTheme.displayLarge!.fontSize,
-                    color: Colors.white,
-                  ),
+                  Image.asset(image),
                   const SizedBox(
                     height: 10,
                   ),
@@ -222,6 +218,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
                         style:
                             Theme.of(context).textTheme.headlineLarge!.copyWith(
                                   color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                       ),
                     ],

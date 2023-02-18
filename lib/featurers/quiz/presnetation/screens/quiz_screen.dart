@@ -55,6 +55,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     required String selectedOption,
     required String isOptionAudio,
     required List<Questions> data,
+    required String boxNumber,
   }) {
     return Padding(
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
@@ -83,134 +84,121 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
             }
           });
         },
-        child: ListTile(
-          title: data[i].isOptionAudio == 'Yes'
-              ? IconButton(
-                  onPressed: () async {
-                    //For Audio Playing
-                    await player.setUrl(
-                      '${ApiConstants.answerImageUrl}$option',
-                    );
-
-                    //For Option 1
-                    if (selectedOption == 'option1') {
-                      if (o1 < 2) {
-                        player.playing ? player.stop() : player.play();
-                        setState(() {
-                          if (player.playing) {
-                            o1++;
-                          }
-                        });
-                      } else {
-                        toast(
-                            context: context,
-                            label: 'You cannot play audio more than twice',
-                            color: Colors.red);
-                        player.stop();
-                      }
-                    }
-
-                    //For Option 2
-                    if (selectedOption == 'option2') {
-                      if (o2 < 2) {
-                        player.playing ? player.stop() : player.play();
-                        setState(() {
-                          if (player.playing) {
-                            o2++;
-                          }
-                        });
-                      } else {
-                        toast(
-                            context: context,
-                            label: 'You cannot play audio more than twice',
-                            color: Colors.red);
-                        player.stop();
-                      }
-                    }
-
-                    //For Option 3
-                    if (selectedOption == 'option3') {
-                      if (o3 < 2) {
-                        player.playing ? player.stop() : player.play();
-                        setState(() {
-                          if (player.playing) {
-                            o3++;
-                          }
-                        });
-                      } else {
-                        toast(
-                            context: context,
-                            label: 'You cannot play audio more than twice',
-                            color: Colors.red);
-                        player.stop();
-                      }
-                    }
-
-                    //For Option 4
-                    if (selectedOption == 'option4') {
-                      if (o4 < 2) {
-                        player.playing ? player.stop() : player.play();
-                        setState(() {
-                          if (player.playing) {
-                            o4++;
-                          }
-                        });
-                      } else {
-                        toast(
-                            context: context,
-                            label: 'You cannot play audio more than twice',
-                            color: Colors.red);
-                        player.stop();
-                      }
-                    }
-
-                    setState(() {
-                      answer = option;
-                      selectedOptions = selectedOption;
-
-                      //Storing Data in a MAP
-                      Map<String, dynamic> ua = {
-                        'questionNumber': i + 1,
-                        'question': data[i].id,
-                        'userAnswer': answer,
-                        'option': selectedOptions,
-                      };
-                      if (i <= data.length - 1) {
-                        userSelected
-                                .firstWhere(
-                                    (element) =>
-                                        element['question'] == data[i].id,
-                                    orElse: () => {})
-                                .isNotEmpty
-                            ? userSelected[userSelected.indexWhere((element) =>
-                                element['question'] == ua['question'])] = ua
-                            : userSelected.add(ua);
-                      }
-                    });
-                  },
-                  padding: const EdgeInsets.all(0),
-                  icon: const Icon(
-                    Icons.play_circle_outline,
-                    size: 32,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(
+            12,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.black,
+              width: 0.5,
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(right: 12),
+                width: screenSize.width * 0.04,
+                height: screenSize.height * 0.09,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100000),
+                  border: Border.all(
+                    width: 1.3,
+                    color: answer == option ? Colors.transparent : Colors.black,
                   ),
-                )
-              : isImage == 'No'
-                  ? Text(option)
-                  : InkWell(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              content: InteractiveViewer(
-                                child: Image.network(
-                                  '${ApiConstants.answerImageUrl}$option',
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            );
-                          },
+                  color: answer == option ? Colors.black : Colors.transparent,
+                ),
+                child: Center(
+                  child: Text(
+                    boxNumber,
+                    style: TextStyle(
+                      color: answer == option ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              data[i].isOptionAudio == 'Yes'
+                  ? IconButton(
+                      onPressed: () async {
+                        //For Audio Playing
+                        await player.setUrl(
+                          '${ApiConstants.answerImageUrl}$option',
                         );
+
+                        //For Option 1
+                        if (selectedOption == 'option1') {
+                          if (o1 < 2) {
+                            player.playing ? player.stop() : player.play();
+                            setState(() {
+                              if (player.playing) {
+                                o1++;
+                              }
+                            });
+                          } else {
+                            toast(
+                                context: context,
+                                label: 'You cannot play audio more than twice',
+                                color: Colors.red);
+                            player.stop();
+                          }
+                        }
+
+                        //For Option 2
+                        if (selectedOption == 'option2') {
+                          if (o2 < 2) {
+                            player.playing ? player.stop() : player.play();
+                            setState(() {
+                              if (player.playing) {
+                                o2++;
+                              }
+                            });
+                          } else {
+                            toast(
+                                context: context,
+                                label: 'You cannot play audio more than twice',
+                                color: Colors.red);
+                            player.stop();
+                          }
+                        }
+
+                        //For Option 3
+                        if (selectedOption == 'option3') {
+                          if (o3 < 2) {
+                            player.playing ? player.stop() : player.play();
+                            setState(() {
+                              if (player.playing) {
+                                o3++;
+                              }
+                            });
+                          } else {
+                            toast(
+                                context: context,
+                                label: 'You cannot play audio more than twice',
+                                color: Colors.red);
+                            player.stop();
+                          }
+                        }
+
+                        //For Option 4
+                        if (selectedOption == 'option4') {
+                          if (o4 < 2) {
+                            player.playing ? player.stop() : player.play();
+                            setState(() {
+                              if (player.playing) {
+                                o4++;
+                              }
+                            });
+                          } else {
+                            toast(
+                                context: context,
+                                label: 'You cannot play audio more than twice',
+                                color: Colors.red);
+                            player.stop();
+                          }
+                        }
+
                         setState(() {
                           answer = option;
                           selectedOptions = selectedOption;
@@ -237,28 +225,312 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           }
                         });
                       },
-                      child: CachedNetworkImage(
-                        imageUrl: '${ApiConstants.answerImageUrl}$option',
-                        height: screenSize.height * 0.1,
-                        placeholder: (context, url) => const Center(
-                          child: CircularProgressIndicator(),
-                        ),
+                      padding: const EdgeInsets.all(0),
+                      icon: const Icon(
+                        Icons.play_circle_outline,
+                        size: 32,
                       ),
-                    ),
-          selected: answer == option ? true : false,
-          selectedColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              10,
-            ),
-            side: const BorderSide(
-              color: AppConstants.optionBoxColor,
-            ),
+                    )
+                  : isImage == 'No'
+                      ? Text(option)
+                      : InkWell(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  surfaceTintColor: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: InteractiveViewer(
+                                          child: Image.network(
+                                            '${ApiConstants.answerImageUrl}$option',
+                                            width: screenSize.width * 0.4,
+                                            height: double.infinity,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: InkWell(
+                                          splashColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          onTap: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const SizedBox.expand(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                            setState(() {
+                              answer = option;
+                              selectedOptions = selectedOption;
+
+                              //Storing Data in a MAP
+                              Map<String, dynamic> ua = {
+                                'questionNumber': i + 1,
+                                'question': data[i].id,
+                                'userAnswer': answer,
+                                'option': selectedOptions,
+                              };
+                              if (i <= data.length - 1) {
+                                userSelected
+                                        .firstWhere(
+                                            (element) =>
+                                                element['question'] ==
+                                                data[i].id,
+                                            orElse: () => {})
+                                        .isNotEmpty
+                                    ? userSelected[userSelected.indexWhere(
+                                        (element) =>
+                                            element['question'] ==
+                                            ua['question'])] = ua
+                                    : userSelected.add(ua);
+                              }
+                            });
+                          },
+                          child: CachedNetworkImage(
+                            imageUrl: '${ApiConstants.answerImageUrl}$option',
+                            height: screenSize.height * 0.13,
+                            placeholder: (context, url) => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        ),
+            ],
           ),
-          enableFeedback: true,
-          selectedTileColor: AppConstants.optionBoxColor,
-          minLeadingWidth: double.infinity,
         ),
+
+        // ListTile(
+        //   title:
+        // Row(
+        //     children: [
+        //       Container(
+        //         margin: const EdgeInsets.only(right: 8),
+        //         width: screenSize.width * 0.04,
+        //         height: screenSize.height * 0.09,
+        //         decoration: BoxDecoration(
+        //           borderRadius: BorderRadius.circular(100000),
+        //           border: Border.all(
+        //             width: 2.0,
+        //             color: answer == option ? Colors.transparent : Colors.black,
+        //           ),
+        //           color: answer == option ? Colors.white : Colors.transparent,
+        //         ),
+        //         child: Center(
+        //           child: Text(
+        //             boxNumber,
+        //             style: TextStyle(
+        //               color: AppConstants.primaryColor,
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //       data[i].isOptionAudio == 'Yes'
+        //           ? IconButton(
+        //               onPressed: () async {
+        //                 //For Audio Playing
+        //                 await player.setUrl(
+        //                   '${ApiConstants.answerImageUrl}$option',
+        //                 );
+
+        //                 //For Option 1
+        //                 if (selectedOption == 'option1') {
+        //                   if (o1 < 2) {
+        //                     player.playing ? player.stop() : player.play();
+        //                     setState(() {
+        //                       if (player.playing) {
+        //                         o1++;
+        //                       }
+        //                     });
+        //                   } else {
+        //                     toast(
+        //                         context: context,
+        //                         label: 'You cannot play audio more than twice',
+        //                         color: Colors.red);
+        //                     player.stop();
+        //                   }
+        //                 }
+
+        //                 //For Option 2
+        //                 if (selectedOption == 'option2') {
+        //                   if (o2 < 2) {
+        //                     player.playing ? player.stop() : player.play();
+        //                     setState(() {
+        //                       if (player.playing) {
+        //                         o2++;
+        //                       }
+        //                     });
+        //                   } else {
+        //                     toast(
+        //                         context: context,
+        //                         label: 'You cannot play audio more than twice',
+        //                         color: Colors.red);
+        //                     player.stop();
+        //                   }
+        //                 }
+
+        //                 //For Option 3
+        //                 if (selectedOption == 'option3') {
+        //                   if (o3 < 2) {
+        //                     player.playing ? player.stop() : player.play();
+        //                     setState(() {
+        //                       if (player.playing) {
+        //                         o3++;
+        //                       }
+        //                     });
+        //                   } else {
+        //                     toast(
+        //                         context: context,
+        //                         label: 'You cannot play audio more than twice',
+        //                         color: Colors.red);
+        //                     player.stop();
+        //                   }
+        //                 }
+
+        //                 //For Option 4
+        //                 if (selectedOption == 'option4') {
+        //                   if (o4 < 2) {
+        //                     player.playing ? player.stop() : player.play();
+        //                     setState(() {
+        //                       if (player.playing) {
+        //                         o4++;
+        //                       }
+        //                     });
+        //                   } else {
+        //                     toast(
+        //                         context: context,
+        //                         label: 'You cannot play audio more than twice',
+        //                         color: Colors.red);
+        //                     player.stop();
+        //                   }
+        //                 }
+
+        //                 setState(() {
+        //                   answer = option;
+        //                   selectedOptions = selectedOption;
+
+        //                   //Storing Data in a MAP
+        //                   Map<String, dynamic> ua = {
+        //                     'questionNumber': i + 1,
+        //                     'question': data[i].id,
+        //                     'userAnswer': answer,
+        //                     'option': selectedOptions,
+        //                   };
+        //                   if (i <= data.length - 1) {
+        //                     userSelected
+        //                             .firstWhere(
+        //                                 (element) =>
+        //                                     element['question'] == data[i].id,
+        //                                 orElse: () => {})
+        //                             .isNotEmpty
+        //                         ? userSelected[userSelected.indexWhere(
+        //                             (element) =>
+        //                                 element['question'] ==
+        //                                 ua['question'])] = ua
+        //                         : userSelected.add(ua);
+        //                   }
+        //                 });
+        //               },
+        //               padding: const EdgeInsets.all(0),
+        //               icon: const Icon(
+        //                 Icons.play_circle_outline,
+        //                 size: 32,
+        //               ),
+        //             )
+        //           : isImage == 'No'
+        //               ? Text(option)
+        //               : InkWell(
+        //                   onTap: () {
+        //                     showDialog(
+        //                       context: context,
+        //                       builder: (context) {
+        //                         return Dialog(
+        //                           backgroundColor: Colors.transparent,
+        //                           surfaceTintColor: Colors.transparent,
+        //                           child: Row(
+        //                             children: [
+        //                               Align(
+        //                                 alignment: Alignment.centerLeft,
+        //                                 child: InteractiveViewer(
+        //                                   child: Image.network(
+        //                                     '${ApiConstants.answerImageUrl}$option',
+        //                                     width: screenSize.width * 0.4,
+        //                                     fit: BoxFit.fill,
+        //                                   ),
+        //                                 ),
+        //                               ),
+        //                               Expanded(
+        //                                 child: InkWell(
+        //                                   splashColor: Colors.transparent,
+        //                                   focusColor: Colors.transparent,
+        //                                   onTap: () =>
+        //                                       Navigator.of(context).pop(),
+        //                                   child: const SizedBox.expand(),
+        //                                 ),
+        //                               ),
+        //                             ],
+        //                           ),
+        //                         );
+        //                       },
+        //                     );
+        //                     setState(() {
+        //                       answer = option;
+        //                       selectedOptions = selectedOption;
+
+        //                       //Storing Data in a MAP
+        //                       Map<String, dynamic> ua = {
+        //                         'questionNumber': i + 1,
+        //                         'question': data[i].id,
+        //                         'userAnswer': answer,
+        //                         'option': selectedOptions,
+        //                       };
+        //                       if (i <= data.length - 1) {
+        //                         userSelected
+        //                                 .firstWhere(
+        //                                     (element) =>
+        //                                         element['question'] ==
+        //                                         data[i].id,
+        //                                     orElse: () => {})
+        //                                 .isNotEmpty
+        //                             ? userSelected[userSelected.indexWhere(
+        //                                 (element) =>
+        //                                     element['question'] ==
+        //                                     ua['question'])] = ua
+        //                             : userSelected.add(ua);
+        //                       }
+        //                     });
+        //                   },
+        //                   child: CachedNetworkImage(
+        //                     imageUrl: '${ApiConstants.answerImageUrl}$option',
+        //                     height: screenSize.height * 0.13,
+        //                     placeholder: (context, url) => const Center(
+        //                       child: CircularProgressIndicator(),
+        //                     ),
+        //                   ),
+        //                 ),
+        //     ],
+        //   ),
+        //   selected: answer == option ? true : false,
+        //   selectedColor: Colors.white,
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(
+        //       10,
+        //     ),
+        //     side: const BorderSide(
+        //       color: AppConstants.optionBoxColor,
+        //     ),
+        //   ),
+        //   enableFeedback: true,
+        //   selectedTileColor: AppConstants.optionBoxColor,
+        //   minLeadingWidth: double.infinity,
+        // ),
       ),
     );
   }
@@ -474,15 +746,51 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                       showDialog(
                                                         context: context,
                                                         builder: (context) {
-                                                          return AlertDialog(
-                                                            content:
-                                                                InteractiveViewer(
-                                                              child:
-                                                                  Image.network(
-                                                                '${ApiConstants.questionFileUrl}${data[i].filePath}',
-                                                                fit:
-                                                                    BoxFit.fill,
-                                                              ),
+                                                          return Dialog(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            surfaceTintColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            child: Row(
+                                                              children: [
+                                                                Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerLeft,
+                                                                  child:
+                                                                      InteractiveViewer(
+                                                                    child: Image
+                                                                        .network(
+                                                                      '${ApiConstants.questionFileUrl}${data[i].filePath}',
+                                                                      width: screenSize
+                                                                              .width *
+                                                                          0.4,
+                                                                      height: double
+                                                                          .infinity,
+                                                                      fit: BoxFit
+                                                                          .contain,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                  child:
+                                                                      InkWell(
+                                                                    splashColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    focusColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    onTap: () =>
+                                                                        Navigator.of(context)
+                                                                            .pop(),
+                                                                    child: const SizedBox
+                                                                        .expand(),
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
                                                           );
                                                         },
@@ -517,6 +825,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           selectedOption: 'option1',
                                           isOptionAudio: data[i].isOptionAudio,
                                           data: data,
+                                          boxNumber: '1',
                                         ),
                                         optionBox(
                                           option: data[i].option2,
@@ -525,6 +834,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           isOptionAudio: data[i].isOptionAudio,
                                           selectedOption: 'option2',
                                           data: data,
+                                          boxNumber: '2',
                                         ),
                                         optionBox(
                                           option: data[i].option3,
@@ -533,6 +843,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           isOptionAudio: data[i].isOptionAudio,
                                           selectedOption: 'option3',
                                           data: data,
+                                          boxNumber: '3',
                                         ),
                                         optionBox(
                                           option: data[i].option4,
@@ -541,6 +852,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           isOptionAudio: data[i].isOptionAudio,
                                           selectedOption: 'option4',
                                           data: data,
+                                          boxNumber: '4',
                                         ),
                                       ],
                                     ),
