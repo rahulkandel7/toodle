@@ -3,6 +3,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:toddle/constants/api_constants.dart';
@@ -46,6 +47,12 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
   int o2 = 0;
   int o3 = 0;
   int o4 = 0;
+
+  // cache Manager
+  late var imageCache = CacheManager(Config(
+    'imageCache',
+    stalePeriod: const Duration(days: 1),
+  ));
 
   //Widget For Option Box
   Widget optionBox({
@@ -246,11 +253,18 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: InteractiveViewer(
-                                          child: Image.network(
-                                            '${ApiConstants.answerImageUrl}$option',
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                '${ApiConstants.answerImageUrl}$option',
+                                            // cacheManager: imageCache,
                                             width: screenSize.width * 0.4,
                                             height: double.infinity,
                                             fit: BoxFit.contain,
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -297,6 +311,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           },
                           child: CachedNetworkImage(
                             imageUrl: '${ApiConstants.answerImageUrl}$option',
+                            cacheManager: imageCache,
                             height: screenSize.height * 0.13,
                             placeholder: (context, url) => const Center(
                               child: CircularProgressIndicator(),
@@ -761,9 +776,10 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                                           .centerLeft,
                                                                   child:
                                                                       InteractiveViewer(
-                                                                    child: Image
-                                                                        .network(
-                                                                      '${ApiConstants.questionFileUrl}${data[i].filePath}',
+                                                                    child:
+                                                                        CachedNetworkImage(
+                                                                      imageUrl:
+                                                                          '${ApiConstants.questionFileUrl}${data[i].filePath}',
                                                                       width: screenSize
                                                                               .width *
                                                                           0.4,
@@ -797,6 +813,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                       );
                                                     },
                                                     child: CachedNetworkImage(
+                                                      cacheManager: imageCache,
                                                       imageUrl:
                                                           '${ApiConstants.questionFileUrl}${data[i].filePath}',
                                                       height:
@@ -1049,7 +1066,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
       child: Column(
         children: [
           SizedBox(
-            height: screenSize.height * 0.67,
+            height: screenSize.height * 0.65,
             child: GridView(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -1075,7 +1092,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: screenSize.height * 0.6,
+                      height: screenSize.height * 0.55,
                       child: GridView.builder(
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
@@ -1155,7 +1172,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: screenSize.height * 0.6,
+                      height: screenSize.height * 0.55,
                       child: GridView.builder(
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
