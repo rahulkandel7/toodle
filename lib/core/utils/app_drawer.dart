@@ -6,9 +6,11 @@ import 'package:toddle/constants/app_constants.dart';
 import 'package:toddle/core/darkmode_notifier.dart';
 import 'package:toddle/core/utils/toaster.dart';
 import 'package:toddle/featurers/auth/presentation/controllers/auth_controller.dart';
-import 'package:toddle/featurers/auth/presentation/screens/edit_profile.dart';
-import 'package:toddle/featurers/auth/presentation/screens/login_screen.dart';
-import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_history.dart';
+import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
+
+import '../../featurers/auth/presentation/screens/edit_profile.dart';
+import '../../featurers/auth/presentation/screens/login_screen.dart';
+import '../../featurers/my_paper/presentation/screens/view_paper_history.dart';
 
 class AppDrawer extends ConsumerStatefulWidget {
   final Size screenSize;
@@ -21,6 +23,8 @@ class AppDrawer extends ConsumerStatefulWidget {
 
 class AppDrawerState extends ConsumerState<AppDrawer> {
   String? versionNumber;
+
+  String username = "";
   getAppVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
@@ -32,6 +36,9 @@ class AppDrawerState extends ConsumerState<AppDrawer> {
 
   _isBio() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = prefs.getString('name')!;
+    });
 
     if (prefs.getBool('isBio')! == true) {
       setState(() {
@@ -102,205 +109,301 @@ class AppDrawerState extends ConsumerState<AppDrawer> {
             vertical: widget.screenSize.height * 0.02,
             horizontal: widget.screenSize.width * 0.04,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                children: [
-                  textButton(
-                    context: context,
-                    text: 'Edit Profile',
-                    icon: Icons.person_2_outlined,
-                    function: () {
-                      Navigator.of(context).pushNamed(EditProfile.routename);
-                    },
-                  ),
-                  textButton(
-                    context: context,
-                    text: 'View Papers',
-                    icon: Icons.newspaper_outlined,
-                    function: () => Navigator.of(context)
-                        .pushNamed(ViewPaperHistory.routeName),
-                  ),
-                  textButton(
-                    context: context,
-                    text: 'About',
-                    icon: Icons.info_outline_rounded,
-                    function: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            icon: const Icon(Icons.info_outline_rounded),
-                            title: const Text('About Developer'),
-                            content: SizedBox(
-                              height: widget.screenSize.height * 0.2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Text('Toddle'),
-                                  Text('Version: $versionNumber'),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  const Text(
-                                      'Developed By Bitmap I.T. Solution'),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    children: const [
-                                      Icon(Icons.location_city_rounded),
-                                      Text(
-                                        'Belchowk,Narayanghat',
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    children: const [
-                                      Icon(Icons.call),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        '056-596250',
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    children: const [
-                                      Icon(Icons.phone_android_outlined),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        '9855011559, 9865042465',
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            actions: [
-                              FilledButton.tonal(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: const Text(
-                                  'Close',
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  ),
-                  const Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Biometric Login',
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Text(
+                        username,
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ),
+                    const Divider(),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 8.0,
+                      ),
+                      child: Text(
+                        'Learn',
                         style:
                             Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                  color: darkmode
-                                      ? Colors.white
-                                      : AppConstants.primaryColor,
+                                  fontWeight: FontWeight.bold,
                                 ),
+                        textAlign: TextAlign.left,
                       ),
-                      Switch(
-                        value: isBio,
-                        onChanged: (value) async {
-                          setState(() {
-                            isBio = value;
-                          });
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          prefs.setBool('isBio', value);
-                        },
+                    ),
+                    textButton(
+                      context: context,
+                      text: 'Practice Sets',
+                      icon: Icons.pending_actions_outlined,
+                      function: () {
+                        Navigator.of(context).pushNamed(HomeScreen.routeName);
+                      },
+                    ),
+                    textButton(
+                      context: context,
+                      text: 'My Papers',
+                      icon: Icons.newspaper_outlined,
+                      function: () => Navigator.of(context)
+                          .pushNamed(ViewPaperHistory.routeName),
+                    ),
+                    textButton(
+                      context: context,
+                      text: 'Notices',
+                      icon: Icons.notifications_none_sharp,
+                      function: () => Navigator.of(context)
+                          .pushNamed(ViewPaperHistory.routeName),
+                    ),
+                    const Divider(),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 8.0,
                       ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Dark Mode',
+                      child: Text(
+                        'Settings',
                         style:
                             Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                  color: darkmode
-                                      ? Colors.white
-                                      : AppConstants.primaryColor,
+                                  fontWeight: FontWeight.bold,
                                 ),
+                        textAlign: TextAlign.left,
                       ),
-                      Switch(
-                        value: darkmode,
-                        onChanged: (value) async {
-                          ref.read(darkmodeNotifierProvider.notifier).toggle();
-                        },
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: widget.screenSize.height * 0.03,
-                  ),
-                  Consumer(
-                    builder: (context, ref, child) {
-                      return textButton(
-                          context: context,
-                          text: 'Log Out',
-                          icon: Icons.logout_outlined,
-                          function: () {
+                    ),
+                    textButton(
+                      context: context,
+                      text: 'Edit Profile',
+                      icon: Icons.person_2_outlined,
+                      function: () {
+                        Navigator.of(context).pushNamed(EditProfile.routename);
+                      },
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Biometric Login',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall!
+                              .copyWith(
+                                color: darkmode
+                                    ? Colors.white
+                                    : AppConstants.primaryColor,
+                              ),
+                        ),
+                        Switch(
+                          value: isBio,
+                          onChanged: (value) async {
+                            setState(() {
+                              isBio = value;
+                            });
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setBool('isBio', value);
+                          },
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Dark Mode',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall!
+                              .copyWith(
+                                color: darkmode
+                                    ? Colors.white
+                                    : AppConstants.primaryColor,
+                              ),
+                        ),
+                        Switch(
+                          value: darkmode,
+                          onChanged: (value) async {
                             ref
-                                .read(authControllerProvider.notifier)
-                                .logout()
-                                .then((value) {
-                              if (value[0] == 'false') {
-                                toast(
-                                  context: context,
-                                  label: value[1],
-                                  color: Colors.red,
-                                );
-                                Navigator.of(context).pop();
-                              } else {
-                                Navigator.of(context).pushReplacementNamed(
-                                    LoginScreen.routeName);
-                                toast(
+                                .read(darkmodeNotifierProvider.notifier)
+                                .toggle();
+                          },
+                        ),
+                      ],
+                    ),
+                    const Divider(),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 8.0,
+                      ),
+                      child: Text(
+                        'General',
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    textButton(
+                      context: context,
+                      text: 'About',
+                      icon: Icons.info_outline_rounded,
+                      function: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              icon: const Icon(Icons.info_outline_rounded),
+                              title: const Text('About Developer'),
+                              content: SizedBox(
+                                height: widget.screenSize.height * 0.2,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Text('Toddle'),
+                                    Text('Version: $versionNumber'),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    const Text(
+                                        'Developed By Bitmap I.T. Solution'),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: const [
+                                        Icon(Icons.location_city_rounded),
+                                        Text(
+                                          'Belchowk,Narayanghat',
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: const [
+                                        Icon(Icons.call),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          '056-596250',
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: const [
+                                        Icon(Icons.phone_android_outlined),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          '9855011559, 9865042465',
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              actions: [
+                                FilledButton.tonal(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text(
+                                    'Close',
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    textButton(
+                      context: context,
+                      text: 'Rate Us',
+                      icon: Icons.star,
+                      function: () => Navigator.of(context)
+                          .pushNamed(ViewPaperHistory.routeName),
+                    ),
+                    textButton(
+                      context: context,
+                      text: 'Share App',
+                      icon: Icons.share,
+                      function: () => Navigator.of(context)
+                          .pushNamed(ViewPaperHistory.routeName),
+                    ),
+                    textButton(
+                      context: context,
+                      text: 'Follow Us',
+                      icon: Icons.facebook,
+                      function: () => Navigator.of(context)
+                          .pushNamed(ViewPaperHistory.routeName),
+                    ),
+                    const Divider(),
+                    SizedBox(
+                      height: widget.screenSize.height * 0.01,
+                    ),
+                    Consumer(
+                      builder: (context, ref, child) {
+                        return textButton(
+                            context: context,
+                            text: 'Log Out',
+                            icon: Icons.logout_outlined,
+                            function: () {
+                              ref
+                                  .read(authControllerProvider.notifier)
+                                  .logout()
+                                  .then((value) {
+                                if (value[0] == 'false') {
+                                  toast(
                                     context: context,
                                     label: value[1],
-                                    color: Colors.green);
-                              }
+                                    color: Colors.red,
+                                  );
+                                  Navigator.of(context).pop();
+                                } else {
+                                  Navigator.of(context).pushReplacementNamed(
+                                      LoginScreen.routeName);
+                                  toast(
+                                      context: context,
+                                      label: value[1],
+                                      color: Colors.green);
+                                }
+                              });
                             });
-                          });
-                    },
-                  ),
-                ],
-              ),
-              Column(
-                children: [
-                  Center(
-                    child: Text(
-                      'Version: $versionNumber',
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      },
                     ),
-                  ),
-                  Center(
-                    child: Text(
-                      'Powered BY: BITS',
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            color: Colors.red,
-                          ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        'Version: $versionNumber',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                     ),
-                  ),
-                ],
-              )
-            ],
+                    Center(
+                      child: Text(
+                        'Powered BY: BITS',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Colors.red,
+                            ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
