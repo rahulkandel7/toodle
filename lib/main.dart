@@ -32,6 +32,30 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      themeMode: ThemeMode.light,
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(
+              color: Colors.white,
+            ),
+          ),
+          labelStyle: const TextStyle(
+            color: Colors.white,
+          ),
+          errorStyle: TextStyle(
+            color: Colors.red.shade400,
+          ),
+          prefixIconColor: Colors.white,
+        ),
+        colorScheme: ColorScheme.fromSwatch(
+          backgroundColor: Colors.grey.shade900,
+          primaryColorDark: Colors.grey,
+          primarySwatch: Colors.grey,
+        ),
+      ),
       theme: ThemeData(
         useMaterial3: true,
         inputDecorationTheme: InputDecorationTheme(

@@ -49,10 +49,12 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
   int o4 = 0;
 
   // cache Manager
-  late var imageCache = CacheManager(Config(
-    'imageCache',
-    stalePeriod: const Duration(days: 1),
-  ));
+  late var imageCache = CacheManager(
+    Config(
+      'imageCache',
+      stalePeriod: const Duration(days: 1),
+    ),
+  );
 
   //Widget For Option Box
   Widget optionBox({
@@ -311,7 +313,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           },
                           child: CachedNetworkImage(
                             imageUrl: '${ApiConstants.answerImageUrl}$option',
-                            cacheManager: imageCache,
+                            // cacheManager: imageCache,
                             height: screenSize.height * 0.13,
                             placeholder: (context, url) => const Center(
                               child: CircularProgressIndicator(),
@@ -606,6 +608,32 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
 
     return ref.watch(questionControllerProvider(examType.id)).when(
           data: (data) {
+            for (var qus in data) {
+              if (qus.filePath != null) {
+                CachedNetworkImage(
+                  cacheManager: imageCache,
+                  imageUrl: '${ApiConstants.questionFileUrl}${qus.filePath}',
+                );
+              }
+              if (qus.isImage != "No") {
+                CachedNetworkImage(
+                  imageUrl: '${ApiConstants.answerImageUrl}${qus.option1}',
+                  cacheManager: imageCache,
+                );
+                CachedNetworkImage(
+                  imageUrl: '${ApiConstants.answerImageUrl}${qus.option2}',
+                  cacheManager: imageCache,
+                );
+                CachedNetworkImage(
+                  imageUrl: '${ApiConstants.answerImageUrl}${qus.option3}',
+                  cacheManager: imageCache,
+                );
+                CachedNetworkImage(
+                  imageUrl: '${ApiConstants.answerImageUrl}${qus.option4}',
+                  cacheManager: imageCache,
+                );
+              }
+            }
             return WillPopScope(
               onWillPop: () async {
                 showDialog(
@@ -813,7 +841,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                       );
                                                     },
                                                     child: CachedNetworkImage(
-                                                      cacheManager: imageCache,
+                                                      // cacheManager: imageCache,
                                                       imageUrl:
                                                           '${ApiConstants.questionFileUrl}${data[i].filePath}',
                                                       height:
