@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:toddle/constants/api_constants.dart';
 import 'package:toddle/constants/app_constants.dart';
+import 'package:toddle/core/darkmode_notifier.dart';
 import 'package:toddle/core/utils/toaster.dart';
 import 'package:toddle/featurers/home/data/models/exam_type.dart';
 import 'package:toddle/featurers/quiz/data/models/questions.dart';
@@ -65,6 +66,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     required String isOptionAudio,
     required List<Questions> data,
     required String boxNumber,
+    required bool darkmode,
   }) {
     return Padding(
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
@@ -101,7 +103,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: Colors.black,
+              color: darkmode ? Colors.white : Colors.black,
               width: 0.5,
             ),
           ),
@@ -115,15 +117,29 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                   borderRadius: BorderRadius.circular(100000),
                   border: Border.all(
                     width: 1.3,
-                    color: answer == option ? Colors.transparent : Colors.black,
+                    color: answer == option
+                        ? Colors.transparent
+                        : darkmode
+                            ? Colors.white
+                            : Colors.black,
                   ),
-                  color: answer == option ? Colors.black : Colors.transparent,
+                  color: answer == option
+                      ? darkmode
+                          ? Colors.white
+                          : Colors.black
+                      : Colors.transparent,
                 ),
                 child: Center(
                   child: Text(
                     boxNumber,
                     style: TextStyle(
-                      color: answer == option ? Colors.white : Colors.black,
+                      color: answer == option
+                          ? darkmode
+                              ? Colors.black
+                              : Colors.white
+                          : darkmode
+                              ? Colors.white
+                              : Colors.black,
                     ),
                   ),
                 ),
@@ -566,6 +582,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool darkmode = ref.watch(darkmodeNotifierProvider);
     //MeidaQuery Screen Size
     Size screenSize = MediaQuery.of(context).size;
 
@@ -870,6 +887,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           selectedOption: 'option1',
                                           isOptionAudio: data[i].isOptionAudio,
                                           data: data,
+                                          darkmode: darkmode,
                                           boxNumber: '1',
                                         ),
                                         optionBox(
@@ -879,6 +897,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           isOptionAudio: data[i].isOptionAudio,
                                           selectedOption: 'option2',
                                           data: data,
+                                          darkmode: darkmode,
                                           boxNumber: '2',
                                         ),
                                         optionBox(
@@ -888,6 +907,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           isOptionAudio: data[i].isOptionAudio,
                                           selectedOption: 'option3',
                                           data: data,
+                                          darkmode: darkmode,
                                           boxNumber: '3',
                                         ),
                                         optionBox(
@@ -897,6 +917,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           isOptionAudio: data[i].isOptionAudio,
                                           selectedOption: 'option4',
                                           data: data,
+                                          darkmode: darkmode,
                                           boxNumber: '4',
                                         ),
                                       ],
@@ -905,7 +926,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                 ),
                               ),
                               Container(
-                                color: Colors.white,
+                                color: darkmode
+                                    ? Colors.grey.shade900
+                                    : Colors.white,
                                 width: double.infinity,
                                 child: Row(
                                   mainAxisAlignment:
@@ -913,21 +936,27 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                   children: [
                                     i == 0
                                         ? const SizedBox.shrink()
-                                        : previousButton(data, examType),
+                                        : previousButton(data, examType,
+                                            darkmode: darkmode),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 15.0),
                                       child: OutlinedButton(
                                         style: OutlinedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              20,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                20,
+                                              ),
+                                              side: BorderSide(
+                                                color: darkmode
+                                                    ? Colors.white
+                                                    : AppConstants
+                                                        .optionBoxColor,
+                                              ),
                                             ),
-                                            side: const BorderSide(
-                                              color:
-                                                  AppConstants.optionBoxColor,
-                                            ),
-                                          ),
-                                        ),
+                                            backgroundColor: darkmode
+                                                ? Colors.grey.shade800
+                                                : Colors.transparent),
                                         onPressed: () {
                                           setState(() {
                                             isTotalQuestion = true;
@@ -939,8 +968,10 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                       ),
                                     ),
                                     i == data.length - 1
-                                        ? submitButton(data, examType)
-                                        : nextButton(data, examType),
+                                        ? submitButton(data, examType,
+                                            darkmode: darkmode)
+                                        : nextButton(data, examType,
+                                            darkmode: darkmode),
                                   ],
                                 ),
                               ),
@@ -958,12 +989,16 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         );
   }
 
-  Padding nextButton(List<Questions> data, ExamType examType) {
+  Padding nextButton(List<Questions> data, ExamType examType,
+      {required bool darkmode}) {
     return Padding(
       padding: const EdgeInsets.only(top: 15.0),
       child: Align(
         alignment: Alignment.centerRight,
         child: FilledButton.tonalIcon(
+          style: FilledButton.styleFrom(
+            backgroundColor: darkmode ? Colors.white : AppConstants.cardColor,
+          ),
           onPressed: () {
             setState(() {
               //Setting audio values to 0
@@ -994,12 +1029,16 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     );
   }
 
-  Padding previousButton(List<Questions> data, ExamType examType) {
+  Padding previousButton(List<Questions> data, ExamType examType,
+      {required bool darkmode}) {
     return Padding(
       padding: const EdgeInsets.only(top: 15.0),
       child: Align(
         alignment: Alignment.centerRight,
         child: FilledButton.tonalIcon(
+          style: FilledButton.styleFrom(
+            backgroundColor: darkmode ? Colors.white : AppConstants.cardColor,
+          ),
           onPressed: () {
             setState(() {
               //For setting audio vales to 0
@@ -1029,7 +1068,8 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     );
   }
 
-  Padding submitButton(List<Questions> data, ExamType examType) {
+  Padding submitButton(List<Questions> data, ExamType examType,
+      {required bool darkmode}) {
     return Padding(
       padding: const EdgeInsets.only(top: 15.0),
       child: Align(
@@ -1037,6 +1077,10 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         child: Consumer(
           builder: (context, ref, child) {
             return FilledButton.tonal(
+              style: FilledButton.styleFrom(
+                backgroundColor:
+                    darkmode ? Colors.white : AppConstants.cardColor,
+              ),
               onPressed: () {
                 //For empty submiting quiz
                 if (userSelected.length < 2) {

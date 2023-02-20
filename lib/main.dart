@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toddle/core/darkmode_notifier.dart';
 import 'package:toddle/featurers/auth/presentation/screens/edit_profile.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_change_password.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_otp.dart';
@@ -26,17 +27,27 @@ void main() async {
   );
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var darkmode = ref.watch(darkmodeNotifierProvider);
     return MaterialApp(
-      themeMode: ThemeMode.light,
+      themeMode: darkmode ? ThemeMode.dark : ThemeMode.light,
       darkTheme: ThemeData(
         useMaterial3: true,
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(
+              color: Colors.white,
+            ),
+          ),
+          outlineBorder: const BorderSide(
+            color: Colors.white,
+          ),
+          enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(
               color: Colors.white,
@@ -54,6 +65,8 @@ class MainApp extends StatelessWidget {
           backgroundColor: Colors.grey.shade900,
           primaryColorDark: Colors.grey,
           primarySwatch: Colors.grey,
+          accentColor: Colors.grey,
+          brightness: Brightness.dark,
         ),
       ),
       theme: ThemeData(

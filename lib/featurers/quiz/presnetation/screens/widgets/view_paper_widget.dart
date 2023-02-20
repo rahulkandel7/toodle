@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:toddle/core/darkmode_notifier.dart';
 import 'package:toddle/featurers/quiz/data/models/questions.dart';
 
 import '../../../../../constants/api_constants.dart';
@@ -36,75 +38,84 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
     required String userSelected,
     required String correctOption,
   }) {
-    return Padding(
-      padding: EdgeInsets.only(top: screenSize.height * 0.02),
-      child: ListTile(
-        title: isOptionAudio == 'Yes'
-            ? IconButton(
-                onPressed: () async {
-                  //For Audio Playing
-                  await player.setUrl(
-                    '${ApiConstants.answerImageUrl}$option',
-                  );
-                  player.playing ? player.stop() : player.play();
-                },
-                icon: const Icon(
-                  Icons.play_circle_outline,
-                  size: 32,
-                ),
-              )
-            : isImage == 'No'
-                ? Text(option)
-                : InkWell(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            content: InteractiveViewer(
-                              child: Image.network(
-                                '${ApiConstants.answerImageUrl}$option',
-                                fit: BoxFit.fill,
-                              ),
-                            ),
+    return Consumer(
+      builder: (context, ref, child) {
+        bool darkmode = ref.watch(darkmodeNotifierProvider);
+        return Padding(
+          padding: EdgeInsets.only(top: screenSize.height * 0.02),
+          child: ListTile(
+            title: isOptionAudio == 'Yes'
+                ? IconButton(
+                    onPressed: () async {
+                      //For Audio Playing
+                      await player.setUrl(
+                        '${ApiConstants.answerImageUrl}$option',
+                      );
+                      player.playing ? player.stop() : player.play();
+                    },
+                    icon: const Icon(
+                      Icons.play_circle_outline,
+                      size: 32,
+                    ),
+                  )
+                : isImage == 'No'
+                    ? Text(option)
+                    : InkWell(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                content: InteractiveViewer(
+                                  child: Image.network(
+                                    '${ApiConstants.answerImageUrl}$option',
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                    child: CachedNetworkImage(
-                      imageUrl: '${ApiConstants.answerImageUrl}$option',
-                      height: screenSize.height * 0.1,
-                      placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
+                        child: CachedNetworkImage(
+                          imageUrl: '${ApiConstants.answerImageUrl}$option',
+                          height: screenSize.height * 0.1,
+                          placeholder: (context, url) => const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-        textColor: options == correctOption
-            ? Colors.white
-            : options == userSelected
+            textColor: options == correctOption
                 ? Colors.white
-                : Colors.black,
-        tileColor: options == correctOption
-            ? Colors.green
-            : options == userSelected
-                ? Colors.red
-                : Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-            10,
-          ),
-          side: BorderSide(
-            color: options == correctOption
-                ? Colors.transparent
                 : options == userSelected
+                    ? Colors.white
+                    : darkmode
+                        ? Colors.white
+                        : Colors.black,
+            tileColor: options == correctOption
+                ? Colors.green
+                : options == userSelected
+                    ? Colors.red
+                    : Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                10,
+              ),
+              side: BorderSide(
+                color: options == correctOption
                     ? Colors.transparent
-                    : AppConstants.optionBoxColor,
+                    : options == userSelected
+                        ? Colors.transparent
+                        : darkmode
+                            ? Colors.white
+                            : AppConstants.optionBoxColor,
+              ),
+            ),
+            enableFeedback: true,
+            selectedTileColor: AppConstants.optionBoxColor,
+            minLeadingWidth: double.infinity,
           ),
-        ),
-        enableFeedback: true,
-        selectedTileColor: AppConstants.optionBoxColor,
-        minLeadingWidth: double.infinity,
-      ),
+        );
+      },
     );
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toddle/constants/app_constants.dart';
+import 'package:toddle/core/darkmode_notifier.dart';
 import 'package:toddle/featurers/home/data/models/exam_type.dart';
 import 'package:toddle/featurers/home/presentation/screens/set_screen.dart';
 
@@ -47,14 +49,23 @@ class ExamCard extends StatelessWidget {
                       examType.examType,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
-                    Icon(
-                      Icons.arrow_circle_right_outlined,
-                      color: AppConstants.primaryColor,
+                    Consumer(
+                      builder: (context, ref, child) {
+                        var darkmode = ref.read(darkmodeNotifierProvider);
+                        return Icon(
+                          Icons.arrow_circle_right_outlined,
+                          color: darkmode
+                              ? Colors.white
+                              : AppConstants.primaryColor,
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
-              const Divider(),
+              Divider(
+                color: Colors.grey.shade400,
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: 3.0),
                 child: Align(

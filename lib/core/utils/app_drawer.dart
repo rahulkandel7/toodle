@@ -2,22 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toddle/constants/app_constants.dart';
+import 'package:toddle/core/darkmode_notifier.dart';
 import 'package:toddle/core/utils/toaster.dart';
 import 'package:toddle/featurers/auth/presentation/controllers/auth_controller.dart';
 import 'package:toddle/featurers/auth/presentation/screens/edit_profile.dart';
 import 'package:toddle/featurers/auth/presentation/screens/login_screen.dart';
 import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_history.dart';
 
-class AppDrawer extends StatefulWidget {
+class AppDrawer extends ConsumerStatefulWidget {
   final Size screenSize;
 
   const AppDrawer({required this.screenSize, super.key});
 
   @override
-  State<AppDrawer> createState() => _AppDrawerState();
+  AppDrawerState createState() => AppDrawerState();
 }
 
-class _AppDrawerState extends State<AppDrawer> {
+class AppDrawerState extends ConsumerState<AppDrawer> {
   String? versionNumber;
   getAppVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -55,33 +57,44 @@ class _AppDrawerState extends State<AppDrawer> {
     required IconData icon,
     Function()? function,
   }) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: TextButton(
-        style: TextButton.styleFrom(
-          textStyle: Theme.of(context)
-              .textTheme
-              .headlineSmall!
-              .copyWith(fontWeight: FontWeight.w500),
-        ),
-        onPressed: function,
-        child: Row(
-          children: [
-            Icon(
-              icon,
+    return Consumer(
+      builder: (context, ref, child) {
+        bool darkmode = ref.watch(darkmodeNotifierProvider);
+        return Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: TextButton(
+            style: TextButton.styleFrom(
+              textStyle: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
             ),
-            SizedBox(
-              width: widget.screenSize.width * 0.03,
+            onPressed: function,
+            child: Row(
+              children: [
+                Icon(
+                  icon,
+                  color: darkmode ? Colors.white : AppConstants.primaryColor,
+                ),
+                SizedBox(
+                  width: widget.screenSize.width * 0.03,
+                ),
+                Text(
+                  text,
+                  style: TextStyle(
+                      color:
+                          darkmode ? Colors.white : AppConstants.primaryColor),
+                ),
+              ],
             ),
-            Text(text),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    var darkmode = ref.watch(darkmodeNotifierProvider);
     return Drawer(
       child: SafeArea(
         child: Padding(
@@ -196,7 +209,9 @@ class _AppDrawerState extends State<AppDrawer> {
                         'Biometric Login',
                         style:
                             Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                  color: Colors.deepPurple,
+                                  color: darkmode
+                                      ? Colors.white
+                                      : AppConstants.primaryColor,
                                 ),
                       ),
                       Switch(
@@ -208,6 +223,26 @@ class _AppDrawerState extends State<AppDrawer> {
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();
                           prefs.setBool('isBio', value);
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Dark Mode',
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  color: darkmode
+                                      ? Colors.white
+                                      : AppConstants.primaryColor,
+                                ),
+                      ),
+                      Switch(
+                        value: darkmode,
+                        onChanged: (value) async {
+                          ref.read(darkmodeNotifierProvider.notifier).toggle();
                         },
                       ),
                     ],

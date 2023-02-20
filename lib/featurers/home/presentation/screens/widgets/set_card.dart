@@ -40,7 +40,9 @@ class SetCard extends StatelessWidget {
                 ],
               ),
             ),
-            const Divider(),
+            Divider(
+              color: Colors.grey.shade400,
+            ),
             Align(
               alignment: Alignment.centerRight,
               child: FilledButton(
