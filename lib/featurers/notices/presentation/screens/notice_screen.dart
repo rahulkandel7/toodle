@@ -19,45 +19,52 @@ class NoticeScreen extends ConsumerWidget {
       body: ref.watch(noticeControllerProvider).when(
             data: (data) {
               bool darkmode = ref.watch(darkmodeNotifierProvider);
-              return RefreshIndicator(
-                onRefresh: () => ref
-                    .refresh(noticeControllerProvider.notifier)
-                    .fetchNotice(),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: screenSize.height * 0.02,
-                    horizontal: screenSize.width * 0.04,
-                  ),
-                  child: ListView.builder(
-                    itemBuilder: (ctx, i) => Padding(
-                      padding:
-                          EdgeInsets.only(bottom: screenSize.height * 0.02),
-                      child: ListTile(
-                        tileColor: darkmode
-                            ? Theme.of(context).cardColor
-                            : AppConstants.cardColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        title: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Text(
-                            data[i].notice,
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          ),
+              return data.isEmpty
+                  ? const Center(
+                      child: Text('No Notices yet!'),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () => ref
+                          .refresh(noticeControllerProvider.notifier)
+                          .fetchNotice(),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: screenSize.height * 0.02,
+                          horizontal: screenSize.width * 0.04,
                         ),
-                        subtitle: Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 6, bottom: 5),
-                            child: Text(data[i].date),
+                        child: ListView.builder(
+                          itemBuilder: (ctx, i) => Padding(
+                            padding: EdgeInsets.only(
+                                bottom: screenSize.height * 0.02),
+                            child: ListTile(
+                              tileColor: darkmode
+                                  ? Theme.of(context).cardColor
+                                  : AppConstants.cardColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              title: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text(
+                                  data[i].notice,
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
+                                ),
+                              ),
+                              subtitle: Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 6, bottom: 5),
+                                  child: Text(data[i].date),
+                                ),
+                              ),
+                            ),
                           ),
+                          itemCount: data.length,
                         ),
                       ),
-                    ),
-                    itemCount: data.length,
-                  ),
-                ),
-              );
+                    );
             },
             error: (error, stackTrace) => Text(error.toString()),
             loading: () => const Center(
