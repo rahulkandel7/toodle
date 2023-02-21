@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toddle/featurers/home/data/models/exam_type.dart';
 import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/widgets/set_card.dart';
 
-class SetScreen extends ConsumerWidget {
+class SetScreen extends ConsumerStatefulWidget {
   static const routeName = '/set';
   const SetScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  SetScreenState createState() => SetScreenState();
+}
+
+class SetScreenState extends ConsumerState<SetScreen> {
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     ExamType exam = ModalRoute.of(context)!.settings.arguments as ExamType;
     return WillPopScope(
