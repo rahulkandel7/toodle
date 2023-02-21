@@ -6,6 +6,8 @@ class ApiConstants {
 
   // static const String questionFileUrl =
   //     "https://toddle.bitmapitsolution.com/files/";
+  // static const String userImage =
+  //     "https://toddle.bitmapitsolution.com/profiles/";
 
   //* For Testing
   static const String url = "http://192.168.1.4:8000/api/v1/";
