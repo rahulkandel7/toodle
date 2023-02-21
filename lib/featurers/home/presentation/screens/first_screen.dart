@@ -206,7 +206,11 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
               padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.01),
               child: Column(
                 children: [
-                  Image.asset(image),
+                  CircleAvatar(
+                    backgroundColor: AppConstants.cardColor,
+                    radius: screenSize.height * 0.08,
+                    child: Image.asset(image),
+                  ),
                   const SizedBox(
                     height: 10,
                   ),

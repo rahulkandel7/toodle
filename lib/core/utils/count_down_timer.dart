@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:toddle/constants/app_constants.dart';
 
 class CountDownTimer extends StatefulWidget {
   final Duration time;
@@ -64,11 +65,16 @@ class _CountDownTimerState extends State<CountDownTimer> {
         hours == '00'
             ? Text(
                 '$minutes:$seconds',
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .copyWith(color: AppConstants.quizScreen),
               )
             : Text(
                 '$hours:$minutes:$seconds',
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: AppConstants.quizScreen,
+                    ),
               ),
       ],
     );

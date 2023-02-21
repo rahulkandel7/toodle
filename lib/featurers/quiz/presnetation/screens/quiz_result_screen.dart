@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toddle/featurers/home/presentation/screens/first_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_view_paper.dart';
 
 class QuizResultScreen extends StatelessWidget {
@@ -16,6 +17,12 @@ class QuizResultScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.displaySmall,
         ),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacementNamed(FirstScreen.routeName);
+          },
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

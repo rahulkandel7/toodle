@@ -18,6 +18,14 @@ class DarkmodeNotifier extends StateNotifier<bool> {
     state = !state;
     prefs.setBool("darkMode", state);
   }
+
+  void setDarkFalse() {
+    state = false;
+  }
+
+  void setDarkTrue() {
+    state = true;
+  }
 }
 
 final darkmodeNotifierProvider =
