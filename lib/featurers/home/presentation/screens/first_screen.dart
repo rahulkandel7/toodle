@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/constants/app_constants.dart';
 import 'package:toddle/core/utils/app_drawer.dart';
+import 'package:toddle/core/utils/marquee.dart';
 import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_history.dart';
 
 import 'home_screen.dart';
@@ -150,8 +151,30 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+                'Welcome to EPS Topik Practice',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall!
+                    .copyWith(fontWeight: FontWeight.w500),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            // Notices
+            Marquee(
+              child: Text(
+                'asdsadad asdsadad asdsadad asdsadad asdsadad asdsadad asdsadad asdsadad',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             infocard(
               screenSize: screenSize,
               info: 'My Papers',
@@ -160,7 +183,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
               image: 'assets/images/mypaper.png',
             ),
             SizedBox(
-              height: screenSize.height * 0.05,
+              height: screenSize.height * 0.02,
             ),
             infocard(
               screenSize: screenSize,
