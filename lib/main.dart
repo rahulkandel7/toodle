@@ -12,6 +12,7 @@ import 'package:toddle/featurers/home/presentation/screens/first_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/set_screen.dart';
 import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_history.dart';
+import 'package:toddle/featurers/notices/presentation/screens/notice_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_result_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_view_paper.dart';
@@ -92,6 +93,7 @@ class MainApp extends ConsumerWidget {
         EditProfile.routename: (ctx) => const EditProfile(),
         ViewPaperHistory.routeName: (ctx) => const ViewPaperHistory(),
         FirstScreen.routeName: (ctx) => const FirstScreen(),
+        NoticeScreen.routeName: (ctx) => const NoticeScreen(),
       },
     );
   }

@@ -6,9 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/constants/app_constants.dart';
 import 'package:toddle/core/utils/app_drawer.dart';
-import 'package:toddle/core/utils/marquee.dart';
 import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_history.dart';
+import 'package:toddle/featurers/notices/presentation/controllers/notice_controller.dart';
 
+import '../../../../core/utils/marquee.dart';
 import 'home_screen.dart';
 
 class FirstScreen extends ConsumerStatefulWidget {
@@ -126,6 +127,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -167,12 +169,21 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
               height: 10,
             ),
             // Notices
-            Marquee(
-              child: Text(
-                'asdsadad asdsadad asdsadad asdsadad asdsadad asdsadad asdsadad asdsadad',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ),
+            ref.watch(noticeControllerProvider).maybeWhen(
+                  orElse: () => const SizedBox.shrink(),
+                  data: (data) => Marquee(
+                    child: Row(
+                      children: data
+                          .map(
+                            (notice) => Text(
+                              notice.notice,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ),
             const SizedBox(
               height: 10,
             ),

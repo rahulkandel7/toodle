@@ -10,6 +10,7 @@ import 'package:toddle/core/darkmode_notifier.dart';
 import 'package:toddle/core/utils/toaster.dart';
 import 'package:toddle/featurers/auth/presentation/controllers/auth_controller.dart';
 import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
+import 'package:toddle/featurers/notices/presentation/screens/notice_screen.dart';
 
 import '../../featurers/auth/presentation/screens/edit_profile.dart';
 import '../../featurers/auth/presentation/screens/login_screen.dart';
@@ -176,7 +177,7 @@ class AppDrawerState extends ConsumerState<AppDrawer> {
                       text: 'Notices',
                       icon: Icons.notifications_none_sharp,
                       function: () => Navigator.of(context)
-                          .pushNamed(ViewPaperHistory.routeName),
+                          .pushNamed(NoticeScreen.routeName),
                     ),
                     const Divider(),
                     Padding(

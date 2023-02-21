@@ -8,7 +8,7 @@ class Marquee extends StatefulWidget {
     super.key,
     required this.child,
     this.direction = Axis.horizontal,
-    this.animationDuration = const Duration(milliseconds: 6000),
+    this.animationDuration = const Duration(seconds: 50),
     this.backDuration = const Duration(milliseconds: 800),
     this.pauseDuration = const Duration(milliseconds: 800),
   });
