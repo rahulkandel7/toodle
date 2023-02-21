@@ -327,39 +327,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       if (!formKey.currentState!.validate()) {
                                         return;
                                       }
-                                      FormData formData;
-                                      formData = FormData.fromMap({
-                                        'name': name,
-                                        'email': email,
-                                        'password': password,
-                                        'confirm_password': confirmPassword,
-                                        'phone': phone,
-                                        'address': address,
-                                        'profile_photo':
-                                            await MultipartFile.fromFile(
-                                                _image.path)
-                                      });
-                                      ref
-                                          .read(authControllerProvider.notifier)
-                                          .register(formData)
-                                          .then((value) {
-                                        if (value[0] == 'false') {
-                                          toast(
+                                      if (_image.path.isEmpty) {
+                                        toast(
                                             context: context,
-                                            label: value[1],
-                                            color: Colors.red,
-                                          );
-                                        } else {
-                                          toast(
-                                            context: context,
-                                            label: value[1],
-                                            color: Colors.green,
-                                          );
-                                          Navigator.of(context)
-                                              .pushReplacementNamed(
-                                                  LoginScreen.routeName);
-                                        }
-                                      });
+                                            label: 'Select Image',
+                                            color: Colors.red);
+                                      } else {
+                                        await registerUser(ref, context);
+                                      }
                                     },
                                     child: const Text(
                                       'Register',
@@ -394,5 +369,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> registerUser(WidgetRef ref, BuildContext context) async {
+    FormData formData;
+    formData = FormData.fromMap({
+      'name': name,
+      'email': email,
+      'password': password,
+      'confirm_password': confirmPassword,
+      'phone': phone,
+      'address': address,
+      'profile_photo': await MultipartFile.fromFile(_image.path)
+    });
+    ref.read(authControllerProvider.notifier).register(formData).then((value) {
+      if (value[0] == 'false') {
+        toast(
+          context: context,
+          label: value[1],
+          color: Colors.red,
+        );
+      } else {
+        toast(
+          context: context,
+          label: value[1],
+          color: Colors.green,
+        );
+        Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
+      }
+    });
   }
 }

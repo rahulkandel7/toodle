@@ -1,11 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/constants/api_constants.dart';
 import 'package:toddle/constants/app_constants.dart';
 import 'package:toddle/core/darkmode_notifier.dart';
@@ -27,6 +30,18 @@ class QuizScreen extends ConsumerStatefulWidget {
 }
 
 class QuizScreenState extends ConsumerState<QuizScreen> {
+  //Getting User Infos
+  String username = "";
+  String userImage = "";
+
+  _getInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = jsonDecode(prefs.getString('user')!)['name'];
+      userImage = jsonDecode(prefs.getString('user')!)['profile_photo'];
+    });
+  }
+
   int i = 0;
 
   String? answer;
@@ -331,6 +346,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
   @override
   void initState() {
     super.initState();
+    _getInfo();
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
   }
 
@@ -474,12 +490,21 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                CircleAvatar(),
-                                SizedBox(
+                              children: [
+                                CircleAvatar(
+                                  foregroundImage: NetworkImage(
+                                      '${ApiConstants.userImage}$userImage'),
+                                ),
+                                const SizedBox(
                                   width: 10,
                                 ),
-                                Text('USer Name')
+                                SizedBox(
+                                  width: screenSize.width * 0.1,
+                                  child: Text(
+                                    username,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                )
                               ],
                             ),
                             Text('Total Question: ${data.length}'),

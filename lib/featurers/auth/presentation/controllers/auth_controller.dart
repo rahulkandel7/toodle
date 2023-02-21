@@ -133,14 +133,8 @@ class AuthController extends StateNotifier<AsyncValue<User>> {
   }
 
   //Update User Info
-  Future<List<String>> updateInfo({required User user}) async {
-    var data = {
-      'name': user.name,
-      'email': user.email,
-      'phone': user.phoneNumber,
-      'address': user.address
-    };
-    final result = await _authRepositories.updateInfo(data);
+  Future<List<String>> updateInfo({required var user}) async {
+    final result = await _authRepositories.updateInfo(user);
     return result.fold((error) {
       List<String> msg = ['false', error.message];
       return msg;

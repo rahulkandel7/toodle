@@ -15,7 +15,7 @@ class ExamType {
     return ExamType(
       id: map['id'] as int,
       examType: map['exam_type'] as String,
-      time: int.parse(map['time']),
+      time: int.parse(map['time'].toString()),
       maxModelSet: map['maxmodelset'] as String,
     );
   }

@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toddle/constants/api_constants.dart';
 import 'package:toddle/constants/app_constants.dart';
 import 'package:toddle/core/darkmode_notifier.dart';
 import 'package:toddle/core/utils/toaster.dart';
@@ -25,6 +28,8 @@ class AppDrawerState extends ConsumerState<AppDrawer> {
   String? versionNumber;
 
   String username = "";
+  String userImage = "";
+
   getAppVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
@@ -37,7 +42,8 @@ class AppDrawerState extends ConsumerState<AppDrawer> {
   _isBio() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      username = prefs.getString('name')!;
+      username = jsonDecode(prefs.getString('user')!)['name'];
+      userImage = jsonDecode(prefs.getString('user')!)['profile_photo'];
     });
 
     if (prefs.getBool('isBio')! == true) {
@@ -102,6 +108,7 @@ class AppDrawerState extends ConsumerState<AppDrawer> {
   @override
   Widget build(BuildContext context) {
     var darkmode = ref.watch(darkmodeNotifierProvider);
+    Size screenSize = MediaQuery.of(context).size;
     return Drawer(
       child: SafeArea(
         child: Padding(
@@ -117,6 +124,18 @@ class AppDrawerState extends ConsumerState<AppDrawer> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    userImage.isNotEmpty
+                        ? Center(
+                            child: CircleAvatar(
+                              radius: screenSize.height * 0.05,
+                              foregroundImage: NetworkImage(
+                                  '${ApiConstants.userImage}$userImage'),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Center(
                       child: Text(
                         username,

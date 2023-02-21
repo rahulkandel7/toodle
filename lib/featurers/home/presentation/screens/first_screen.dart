@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -76,7 +77,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      username = prefs.getString('name')!;
+      username = jsonDecode(prefs.getString('user')!)['name'];
     });
 
     if (prefs.getBool('isBio')!) {
