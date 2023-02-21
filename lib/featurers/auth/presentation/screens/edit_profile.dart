@@ -41,6 +41,8 @@ class EditProfileState extends ConsumerState<EditProfile> {
   final confirmPasswordNode = FocusNode();
   final oldPasswordNode = FocusNode();
 
+  bool isLoading = false;
+
   @override
   void dispose() {
     nameNode.dispose();
@@ -262,57 +264,35 @@ class EditProfileState extends ConsumerState<EditProfile> {
                                       10,
                                     ),
                                   )),
-                                  onPressed: () async {
-                                    editProfileKey.currentState!.save();
-                                    if (!editProfileKey.currentState!
-                                        .validate()) {
-                                      return;
-                                    }
-                                    FormData formData;
-
-                                    if (_image.path.isNotEmpty) {
-                                      formData = FormData.fromMap({
-                                        'name': name,
-                                        'email': email,
-                                        'phone': phone,
-                                        'address': address,
-                                        'profile_photo':
-                                            await MultipartFile.fromFile(
-                                                _image.path)
-                                      });
-                                    } else {
-                                      formData = FormData.fromMap({
-                                        'name': name,
-                                        'email': email,
-                                        'phone': phone,
-                                        'address': address,
-                                      });
-                                    }
-                                    ref
-                                        .read(authControllerProvider.notifier)
-                                        .updateInfo(user: formData)
-                                        .then((value) {
-                                      if (value[0] == 'false') {
-                                        toast(
-                                            context: context,
-                                            label: value[1],
-                                            color: Colors.red);
-                                      } else {
-                                        Navigator.of(context)
-                                            .pushReplacementNamed(
-                                                FirstScreen.routeName);
-                                        toast(
-                                            context: context,
-                                            label: value[1],
-                                            color: Colors.green);
-                                      }
-                                    });
-                                  },
-                                  child: Text(
-                                    'Update Info',
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
+                                  onPressed: isLoading
+                                      ? null
+                                      : () async {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          editProfileKey.currentState!.save();
+                                          if (!editProfileKey.currentState!
+                                              .validate()) {
+                                            return;
+                                          }
+                                          await updateUserInfo(context);
+                                        },
+                                  child: isLoading
+                                      ? const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10.0),
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 0.6,
+                                            ),
+                                          ),
+                                        )
+                                      : Text(
+                                          'Update Info',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge,
+                                        ),
                                 ),
                               ),
                             ),
@@ -441,32 +421,20 @@ class EditProfileState extends ConsumerState<EditProfile> {
                                       10,
                                     ),
                                   )),
-                                  onPressed: () {
-                                    chnagePasswordKey.currentState!.save();
-                                    if (!chnagePasswordKey.currentState!
-                                        .validate()) {
-                                      return;
-                                    }
-                                    ref
-                                        .read(authControllerProvider.notifier)
-                                        .changePassword(
-                                            oldPassword: oldPassword,
-                                            newPassword: password)
-                                        .then((value) {
-                                      if (value[0] == 'false') {
-                                        toast(
-                                            context: context,
-                                            label: value[1],
-                                            color: Colors.red);
-                                      } else {
-                                        Navigator.of(context).pop();
-                                        toast(
-                                            context: context,
-                                            label: value[1],
-                                            color: Colors.green);
-                                      }
-                                    });
-                                  },
+                                  onPressed: isLoading
+                                      ? null
+                                      : () {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          chnagePasswordKey.currentState!
+                                              .save();
+                                          if (!chnagePasswordKey.currentState!
+                                              .validate()) {
+                                            return;
+                                          }
+                                          updatePassword(context);
+                                        },
                                   child: Text(
                                     'Update Password',
                                     style:
@@ -489,5 +457,57 @@ class EditProfileState extends ConsumerState<EditProfile> {
             ),
           ),
     );
+  }
+
+  void updatePassword(BuildContext context) {
+    ref
+        .read(authControllerProvider.notifier)
+        .changePassword(oldPassword: oldPassword, newPassword: password)
+        .then((value) {
+      if (value[0] == 'false') {
+        toast(context: context, label: value[1], color: Colors.red);
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Navigator.of(context).pop();
+        toast(context: context, label: value[1], color: Colors.green);
+      }
+    });
+  }
+
+  Future<void> updateUserInfo(BuildContext context) async {
+    FormData formData;
+
+    if (_image.path.isNotEmpty) {
+      formData = FormData.fromMap({
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'address': address,
+        'profile_photo': await MultipartFile.fromFile(_image.path)
+      });
+    } else {
+      formData = FormData.fromMap({
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'address': address,
+      });
+    }
+    ref
+        .read(authControllerProvider.notifier)
+        .updateInfo(user: formData)
+        .then((value) {
+      if (value[0] == 'false') {
+        toast(context: context, label: value[1], color: Colors.red);
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Navigator.of(context).pushReplacementNamed(FirstScreen.routeName);
+        toast(context: context, label: value[1], color: Colors.green);
+      }
+    });
   }
 }

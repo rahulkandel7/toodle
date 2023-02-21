@@ -267,7 +267,10 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
                   CircleAvatar(
                     backgroundColor: AppConstants.cardColor,
                     radius: screenSize.height * 0.05,
-                    child: Image.asset(image),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset(image),
+                    ),
                   ),
                   const SizedBox(
                     height: 10,
