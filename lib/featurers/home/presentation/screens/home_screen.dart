@@ -53,16 +53,16 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             Icons.arrow_back_ios,
           ),
         ),
-        actions: [
-          Builder(builder: (context) {
-            return IconButton(
-              onPressed: () => Scaffold.of(context).openDrawer(),
-              icon: const Icon(
-                Icons.person_2_outlined,
-              ),
-            );
-          }),
-        ],
+        // actions: [
+        //   Builder(builder: (context) {
+        //     return IconButton(
+        //       onPressed: () => Scaffold.of(context).openDrawer(),
+        //       icon: const Icon(
+        //         Icons.person_2_outlined,
+        //       ),
+        //     );
+        //   }),
+        // ],
       ),
       body: ref.watch(examTypeControllerProvider).when(
             data: (data) {
