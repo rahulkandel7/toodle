@@ -49,5 +49,7 @@
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>For Logging the user</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow this app to access your photos</string>
 </dict>
 </plist>

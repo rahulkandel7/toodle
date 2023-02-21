@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:toddle/featurers/auth/presentation/screens/login_screen.dart';
 
 import '../../../../core/utils/toaster.dart';
@@ -30,6 +34,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final addressNode = FocusNode();
   final passwordNode = FocusNode();
   final confirmPasswordNode = FocusNode();
+
+  //File Picker
+  File _image = File('');
+
+  final ImagePicker imagePicker = ImagePicker();
 
   @override
   void dispose() {
@@ -263,6 +272,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
 
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: screenSize.height * 0.03,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Container(
+                              width: screenSize.width * 0.5,
+                              height: screenSize.height * 0.2,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.grey.shade400,
+                                ),
+                                shape: BoxShape.rectangle,
+                              ),
+                              child: _image.path.isNotEmpty
+                                  ? Image.file(
+                                      _image,
+                                    )
+                                  : const Center(child: Text('No Image')),
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                final picked = await imagePicker.pickImage(
+                                    source: ImageSource.gallery);
+                                if (picked != null) {
+                                  setState(() {
+                                    _image = File(picked.path);
+                                  });
+                                }
+                              },
+                              child: const Text(
+                                'Select Image',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
                       //REGISTER Button
                       Consumer(
                         builder: (context, ref, child) {
@@ -273,22 +322,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               children: [
                                 Expanded(
                                   child: FilledButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       formKey.currentState!.save();
                                       if (!formKey.currentState!.validate()) {
                                         return;
                                       }
-                                      var data = {
+                                      FormData formData;
+                                      formData = FormData.fromMap({
                                         'name': name,
                                         'email': email,
                                         'password': password,
                                         'confirm_password': confirmPassword,
                                         'phone': phone,
-                                        'address': address
-                                      };
+                                        'address': address,
+                                        'profile_photo':
+                                            await MultipartFile.fromFile(
+                                                _image.path)
+                                      });
                                       ref
                                           .read(authControllerProvider.notifier)
-                                          .register(data)
+                                          .register(formData)
                                           .then((value) {
                                         if (value[0] == 'false') {
                                           toast(
