@@ -157,69 +157,71 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: screenSize.height * 0.02,
-          horizontal: screenSize.width * 0.04,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                'Welcome to EPS Topik Practice',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall!
-                    .copyWith(fontWeight: FontWeight.w500),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: screenSize.height * 0.02,
+            horizontal: screenSize.width * 0.04,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  'Welcome to EPS Topik Practice',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineSmall!
+                      .copyWith(fontWeight: FontWeight.w500),
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                infocard(
-                  screenSize: screenSize,
-                  info: 'My Papers',
-                  function: () => Navigator.of(context)
-                      .pushNamed(ViewPaperHistory.routeName),
-                  image: 'assets/images/mypaper.png',
-                ),
-                infocard(
-                  screenSize: screenSize,
-                  info: 'Take Exam',
-                  function: () =>
-                      Navigator.of(context).pushNamed(HomeScreen.routeName),
-                  image: 'assets/images/take-exam.png',
-                ),
-              ],
-            ),
-            SizedBox(
-              height: screenSize.height * 0.02,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                infocard(
-                  screenSize: screenSize,
-                  info: 'Notices',
-                  function: () =>
-                      Navigator.of(context).pushNamed(NoticeScreen.routeName),
-                  image: 'assets/images/notice.png',
-                ),
-                infocard(
-                  screenSize: screenSize,
-                  info: 'Edit Profile',
-                  function: () =>
-                      Navigator.of(context).pushNamed(EditProfile.routename),
-                  image: 'assets/images/edit-profile.png',
-                ),
-              ],
-            ),
-          ],
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  infocard(
+                    screenSize: screenSize,
+                    info: 'My Papers',
+                    function: () => Navigator.of(context)
+                        .pushNamed(ViewPaperHistory.routeName),
+                    image: 'assets/images/mypaper.png',
+                  ),
+                  infocard(
+                    screenSize: screenSize,
+                    info: 'Take Exam',
+                    function: () =>
+                        Navigator.of(context).pushNamed(HomeScreen.routeName),
+                    image: 'assets/images/take-exam.png',
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: screenSize.height * 0.02,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  infocard(
+                    screenSize: screenSize,
+                    info: 'Notices',
+                    function: () =>
+                        Navigator.of(context).pushNamed(NoticeScreen.routeName),
+                    image: 'assets/images/notice.png',
+                  ),
+                  infocard(
+                    screenSize: screenSize,
+                    info: 'Edit Profile',
+                    function: () =>
+                        Navigator.of(context).pushNamed(EditProfile.routename),
+                    image: 'assets/images/edit-profile.png',
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       drawer: AppDrawer(
