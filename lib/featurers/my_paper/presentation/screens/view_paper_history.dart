@@ -44,6 +44,8 @@ class ViewPaperHistoryState extends ConsumerState<ViewPaperHistory> {
                           date: exams[i].examDate,
                           examType: exams[i].examType,
                           id: exams[i].id,
+                          obtainedMark: exams[i].obtainedMarks,
+                          show: exams[i].show,
                         ),
                         itemCount: exams.length,
                       );

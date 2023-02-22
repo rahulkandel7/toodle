@@ -366,39 +366,46 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     //Geting ExamType
     ExamType examType = args['exam'];
 
-    //Getting Timer Data
-    CountDownTimer counter = CountDownTimer(
-      time: Duration(minutes: examType.time),
-      onSubmit: () {
-        List<String> questionIds = [];
-        List<String> selectedAnswers = [];
-
-        for (var userAnswer in userSelected) {
-          questionIds.add(userAnswer['question'].toString());
-          selectedAnswers.add(userAnswer['option'].toString());
-        }
-
-        ref
-            .read(questionControllerProvider(examType.id).notifier)
-            .submitAnswer(questions: questionIds, answers: selectedAnswers)
-            .then((value) {
-          if (value[0] == 'false') {
-            toast(context: context, label: value[1], color: Colors.red);
-          } else {
-            List<String> msg = [value[1], value[2]];
-            SystemChrome.setPreferredOrientations([
-              DeviceOrientation.portraitUp,
-            ]);
-            Navigator.of(context).pushReplacementNamed(
-                QuizResultScreen.routeName,
-                arguments: msg);
-          }
-        });
-      },
-    );
-
     return ref.watch(questionControllerProvider(examType.id)).when(
           data: (data) {
+            //Getting Timer Data
+            CountDownTimer counter = CountDownTimer(
+              time: Duration(minutes: examType.time),
+              onSubmit: () {
+                List<String> questionIds = [];
+                List<String> selectedAnswers = [];
+
+                for (var userAnswer in userSelected) {
+                  questionIds.add(userAnswer['question'].toString());
+                  selectedAnswers.add(userAnswer['option'].toString());
+                }
+
+                for (var qus in data) {
+                  if (!questionIds.contains(qus.id.toString())) {
+                    questionIds.add(qus.id.toString());
+                  }
+                }
+
+                ref
+                    .read(questionControllerProvider(examType.id).notifier)
+                    .submitAnswer(
+                        questions: questionIds, answers: selectedAnswers)
+                    .then((value) {
+                  if (value[0] == 'false') {
+                    toast(context: context, label: value[1], color: Colors.red);
+                  } else {
+                    List<String> msg = [value[1], value[2]];
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.portraitUp,
+                    ]);
+                    Navigator.of(context).pushReplacementNamed(
+                        QuizResultScreen.routeName,
+                        arguments: msg);
+                  }
+                });
+              },
+            );
+
             for (var qus in data) {
               if (qus.filePath != null) {
                 CachedNetworkImage(
@@ -543,6 +550,23 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                     children: [
                                       Column(
                                         children: [
+                                          //Showing Category
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical:
+                                                  screenSize.height * 0.01,
+                                            ),
+                                            child: Text(
+                                              data[i].category,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                          ),
+
                                           //Showing Question
                                           Padding(
                                             padding: EdgeInsets.symmetric(
@@ -879,66 +903,6 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     );
   }
 
-  // Padding submitButton(
-  //   List<Questions> data,
-  //   ExamType examType,
-  // ) {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(top: 15.0),
-  //     child: Align(
-  //       alignment: Alignment.centerRight,
-  //       child: Consumer(
-  //         builder: (context, ref, child) {
-  //           return FilledButton.tonal(
-  //             style: FilledButton.styleFrom(
-  //               backgroundColor: AppConstants.cardColor,
-  //             ),
-  //             onPressed: () {
-  //               //For empty submiting quiz
-  //               if (userSelected.length < 2) {
-  //                 toast(
-  //                     context: context,
-  //                     label: 'At least 2 question should be solved',
-  //                     color: Colors.red);
-  //               } else {
-  //                 List<String> questionIds = [];
-  //                 List<String> selectedAnswers = [];
-
-  //                 for (var userAnswer in userSelected) {
-  //                   questionIds.add(userAnswer['question'].toString());
-  //                   selectedAnswers.add(userAnswer['option'].toString());
-  //                 }
-
-  //                 ref
-  //                     .read(questionControllerProvider(examType.id).notifier)
-  //                     .submitAnswer(
-  //                         questions: questionIds, answers: selectedAnswers)
-  //                     .then((value) {
-  //                   if (value[0] == 'false') {
-  //                     toast(
-  //                         context: context, label: value[1], color: Colors.red);
-  //                   } else {
-  //                     List<String> msg = [value[1], value[2]];
-  //                     SystemChrome.setPreferredOrientations([
-  //                       DeviceOrientation.portraitUp,
-  //                     ]);
-  //                     Navigator.of(context).pushReplacementNamed(
-  //                         QuizResultScreen.routeName,
-  //                         arguments: msg);
-  //                   }
-  //                 });
-  //               }
-  //             },
-  //             child: const Text(
-  //               'Submit',
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Padding totalQuestionsView(
       {required Size screenSize,
       required ExamType examType,
@@ -1156,7 +1120,8 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                               actions: [
                                 TextButton(
                                   onPressed: () {
-                                    submitAnswers(examType);
+                                    submitAnswers(
+                                        examType: examType, data: data);
                                   },
                                   child: const Text(
                                     'Yes',
@@ -1178,7 +1143,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           },
                         );
                       } else {
-                        submitAnswers(examType);
+                        submitAnswers(examType: examType, data: data);
                       }
                     }
                   },
@@ -1190,13 +1155,20 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     );
   }
 
-  void submitAnswers(ExamType examType) {
+  void submitAnswers(
+      {required ExamType examType, required List<Questions> data}) {
     List<String> questionIds = [];
     List<String> selectedAnswers = [];
 
     for (var userAnswer in userSelected) {
       questionIds.add(userAnswer['question'].toString());
       selectedAnswers.add(userAnswer['option'].toString());
+    }
+
+    for (var qus in data) {
+      if (!questionIds.contains(qus.id.toString())) {
+        questionIds.add(qus.id.toString());
+      }
     }
 
     ref

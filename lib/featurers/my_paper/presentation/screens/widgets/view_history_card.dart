@@ -6,10 +6,14 @@ class ViewHistoryCard extends StatelessWidget {
   final int id;
   final String date;
   final String examType;
+  final String obtainedMark;
+  final bool show;
   const ViewHistoryCard(
       {required this.id,
       required this.date,
       required this.examType,
+      required this.obtainedMark,
+      required this.show,
       super.key});
 
   @override
@@ -26,42 +30,58 @@ class ViewHistoryCard extends StatelessWidget {
         ),
         title: Padding(
           padding: const EdgeInsets.only(top: 18.0),
-          child: Text(
-            examType,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-        ),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(bottom: 18.0),
-          child: Text(
-            date,
-            style: TextStyle(
-              color: Colors.grey.shade700,
-            ),
-          ),
-        ),
-        trailing: Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              backgroundColor: AppConstants.primaryColor,
-            ),
-            onPressed: () {
-              Map<String, dynamic> data = {
-                'isHistory': true,
-                'id': id,
-              };
-              Navigator.of(context).pushNamed(
-                QuizViewPaper.routeName,
-                arguments: data,
-              );
-            },
-            child: const Text(
-              'View Paper',
-              style: TextStyle(
-                color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    examType,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3.0),
+                    child: Text(
+                      'You Have Got $obtainedMark out of 40',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 18.0, top: 8.0),
+                    child: Text(
+                      date,
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
+              show
+                  ? OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: AppConstants.primaryColor,
+                      ),
+                      onPressed: () {
+                        Map<String, dynamic> data = {
+                          'isHistory': true,
+                          'id': id,
+                        };
+                        Navigator.of(context).pushNamed(
+                          QuizViewPaper.routeName,
+                          arguments: data,
+                        );
+                      },
+                      child: const Text(
+                        'View Paper',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ],
           ),
         ),
       ),
