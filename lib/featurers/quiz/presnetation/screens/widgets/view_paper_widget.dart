@@ -123,10 +123,21 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        //Showing Category
+        Padding(
+          padding: EdgeInsets.only(top: screenSize.height * 0.03),
+          child: Text(
+            widget.questions.category,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+        ),
         //Showing Question
         Padding(
-          padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.03),
+          padding: EdgeInsets.only(bottom: screenSize.height * 0.01),
           child: Center(
             child: Text(
               widget.questions.question,
@@ -172,12 +183,19 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
                         },
                       );
                     },
-                    child: CachedNetworkImage(
-                      imageUrl:
-                          '${ApiConstants.questionFileUrl}${widget.questions.filePath}',
-                      height: screenSize.height * 0.17,
-                      placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade400),
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            '${ApiConstants.questionFileUrl}${widget.questions.filePath}',
+                        height: screenSize.height * 0.17,
+                        placeholder: (context, url) => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
                     ),
                   )

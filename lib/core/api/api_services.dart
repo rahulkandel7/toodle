@@ -65,4 +65,23 @@ class ApiServices {
       throw DioException.fromDioError(e);
     }
   }
+
+  //Get data
+  getData({required String endpoint}) async {
+    final Dio dio = Dio(
+      BaseOptions(
+        baseUrl: ApiConstants.url,
+        headers: {
+          'accept': 'application/json',
+        },
+      ),
+    );
+
+    try {
+      final result = await dio.get(endpoint);
+      return result.data;
+    } on DioError catch (e) {
+      throw DioException.fromDioError(e);
+    }
+  }
 }

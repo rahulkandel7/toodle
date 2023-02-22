@@ -1,14 +1,16 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/constants/api_constants.dart';
 import 'package:toddle/constants/app_constants.dart';
-import 'package:toddle/core/darkmode_notifier.dart';
 import 'package:toddle/core/utils/toaster.dart';
 import 'package:toddle/featurers/home/data/models/exam_type.dart';
 import 'package:toddle/featurers/quiz/data/models/questions.dart';
@@ -27,6 +29,18 @@ class QuizScreen extends ConsumerStatefulWidget {
 }
 
 class QuizScreenState extends ConsumerState<QuizScreen> {
+  //Getting User Infos
+  String username = "";
+  String userImage = "";
+
+  _getInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = jsonDecode(prefs.getString('user')!)['name'];
+      userImage = jsonDecode(prefs.getString('user')!)['profile_photo'];
+    });
+  }
+
   int i = 0;
 
   String? answer;
@@ -66,7 +80,6 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     required String isOptionAudio,
     required List<Questions> data,
     required String boxNumber,
-    required bool darkmode,
   }) {
     return Padding(
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
@@ -103,7 +116,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: darkmode ? Colors.white : Colors.black,
+              color: Colors.black,
               width: 0.5,
             ),
           ),
@@ -114,32 +127,18 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                 width: screenSize.width * 0.04,
                 height: screenSize.height * 0.09,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100000),
+                  shape: BoxShape.circle,
                   border: Border.all(
                     width: 1.3,
-                    color: answer == option
-                        ? Colors.transparent
-                        : darkmode
-                            ? Colors.white
-                            : Colors.black,
+                    color: answer == option ? Colors.transparent : Colors.black,
                   ),
-                  color: answer == option
-                      ? darkmode
-                          ? Colors.white
-                          : Colors.black
-                      : Colors.transparent,
+                  color: answer == option ? Colors.black : Colors.transparent,
                 ),
                 child: Center(
                   child: Text(
                     boxNumber,
                     style: TextStyle(
-                      color: answer == option
-                          ? darkmode
-                              ? Colors.black
-                              : Colors.white
-                          : darkmode
-                              ? Colors.white
-                              : Colors.black,
+                      color: answer == option ? Colors.white : Colors.black,
                     ),
                   ),
                 ),
@@ -339,231 +338,6 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
             ],
           ),
         ),
-
-        // ListTile(
-        //   title:
-        // Row(
-        //     children: [
-        //       Container(
-        //         margin: const EdgeInsets.only(right: 8),
-        //         width: screenSize.width * 0.04,
-        //         height: screenSize.height * 0.09,
-        //         decoration: BoxDecoration(
-        //           borderRadius: BorderRadius.circular(100000),
-        //           border: Border.all(
-        //             width: 2.0,
-        //             color: answer == option ? Colors.transparent : Colors.black,
-        //           ),
-        //           color: answer == option ? Colors.white : Colors.transparent,
-        //         ),
-        //         child: Center(
-        //           child: Text(
-        //             boxNumber,
-        //             style: TextStyle(
-        //               color: AppConstants.primaryColor,
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //       data[i].isOptionAudio == 'Yes'
-        //           ? IconButton(
-        //               onPressed: () async {
-        //                 //For Audio Playing
-        //                 await player.setUrl(
-        //                   '${ApiConstants.answerImageUrl}$option',
-        //                 );
-
-        //                 //For Option 1
-        //                 if (selectedOption == 'option1') {
-        //                   if (o1 < 2) {
-        //                     player.playing ? player.stop() : player.play();
-        //                     setState(() {
-        //                       if (player.playing) {
-        //                         o1++;
-        //                       }
-        //                     });
-        //                   } else {
-        //                     toast(
-        //                         context: context,
-        //                         label: 'You cannot play audio more than twice',
-        //                         color: Colors.red);
-        //                     player.stop();
-        //                   }
-        //                 }
-
-        //                 //For Option 2
-        //                 if (selectedOption == 'option2') {
-        //                   if (o2 < 2) {
-        //                     player.playing ? player.stop() : player.play();
-        //                     setState(() {
-        //                       if (player.playing) {
-        //                         o2++;
-        //                       }
-        //                     });
-        //                   } else {
-        //                     toast(
-        //                         context: context,
-        //                         label: 'You cannot play audio more than twice',
-        //                         color: Colors.red);
-        //                     player.stop();
-        //                   }
-        //                 }
-
-        //                 //For Option 3
-        //                 if (selectedOption == 'option3') {
-        //                   if (o3 < 2) {
-        //                     player.playing ? player.stop() : player.play();
-        //                     setState(() {
-        //                       if (player.playing) {
-        //                         o3++;
-        //                       }
-        //                     });
-        //                   } else {
-        //                     toast(
-        //                         context: context,
-        //                         label: 'You cannot play audio more than twice',
-        //                         color: Colors.red);
-        //                     player.stop();
-        //                   }
-        //                 }
-
-        //                 //For Option 4
-        //                 if (selectedOption == 'option4') {
-        //                   if (o4 < 2) {
-        //                     player.playing ? player.stop() : player.play();
-        //                     setState(() {
-        //                       if (player.playing) {
-        //                         o4++;
-        //                       }
-        //                     });
-        //                   } else {
-        //                     toast(
-        //                         context: context,
-        //                         label: 'You cannot play audio more than twice',
-        //                         color: Colors.red);
-        //                     player.stop();
-        //                   }
-        //                 }
-
-        //                 setState(() {
-        //                   answer = option;
-        //                   selectedOptions = selectedOption;
-
-        //                   //Storing Data in a MAP
-        //                   Map<String, dynamic> ua = {
-        //                     'questionNumber': i + 1,
-        //                     'question': data[i].id,
-        //                     'userAnswer': answer,
-        //                     'option': selectedOptions,
-        //                   };
-        //                   if (i <= data.length - 1) {
-        //                     userSelected
-        //                             .firstWhere(
-        //                                 (element) =>
-        //                                     element['question'] == data[i].id,
-        //                                 orElse: () => {})
-        //                             .isNotEmpty
-        //                         ? userSelected[userSelected.indexWhere(
-        //                             (element) =>
-        //                                 element['question'] ==
-        //                                 ua['question'])] = ua
-        //                         : userSelected.add(ua);
-        //                   }
-        //                 });
-        //               },
-        //               padding: const EdgeInsets.all(0),
-        //               icon: const Icon(
-        //                 Icons.play_circle_outline,
-        //                 size: 32,
-        //               ),
-        //             )
-        //           : isImage == 'No'
-        //               ? Text(option)
-        //               : InkWell(
-        //                   onTap: () {
-        //                     showDialog(
-        //                       context: context,
-        //                       builder: (context) {
-        //                         return Dialog(
-        //                           backgroundColor: Colors.transparent,
-        //                           surfaceTintColor: Colors.transparent,
-        //                           child: Row(
-        //                             children: [
-        //                               Align(
-        //                                 alignment: Alignment.centerLeft,
-        //                                 child: InteractiveViewer(
-        //                                   child: Image.network(
-        //                                     '${ApiConstants.answerImageUrl}$option',
-        //                                     width: screenSize.width * 0.4,
-        //                                     fit: BoxFit.fill,
-        //                                   ),
-        //                                 ),
-        //                               ),
-        //                               Expanded(
-        //                                 child: InkWell(
-        //                                   splashColor: Colors.transparent,
-        //                                   focusColor: Colors.transparent,
-        //                                   onTap: () =>
-        //                                       Navigator.of(context).pop(),
-        //                                   child: const SizedBox.expand(),
-        //                                 ),
-        //                               ),
-        //                             ],
-        //                           ),
-        //                         );
-        //                       },
-        //                     );
-        //                     setState(() {
-        //                       answer = option;
-        //                       selectedOptions = selectedOption;
-
-        //                       //Storing Data in a MAP
-        //                       Map<String, dynamic> ua = {
-        //                         'questionNumber': i + 1,
-        //                         'question': data[i].id,
-        //                         'userAnswer': answer,
-        //                         'option': selectedOptions,
-        //                       };
-        //                       if (i <= data.length - 1) {
-        //                         userSelected
-        //                                 .firstWhere(
-        //                                     (element) =>
-        //                                         element['question'] ==
-        //                                         data[i].id,
-        //                                     orElse: () => {})
-        //                                 .isNotEmpty
-        //                             ? userSelected[userSelected.indexWhere(
-        //                                 (element) =>
-        //                                     element['question'] ==
-        //                                     ua['question'])] = ua
-        //                             : userSelected.add(ua);
-        //                       }
-        //                     });
-        //                   },
-        //                   child: CachedNetworkImage(
-        //                     imageUrl: '${ApiConstants.answerImageUrl}$option',
-        //                     height: screenSize.height * 0.13,
-        //                     placeholder: (context, url) => const Center(
-        //                       child: CircularProgressIndicator(),
-        //                     ),
-        //                   ),
-        //                 ),
-        //     ],
-        //   ),
-        //   selected: answer == option ? true : false,
-        //   selectedColor: Colors.white,
-        //   shape: RoundedRectangleBorder(
-        //     borderRadius: BorderRadius.circular(
-        //       10,
-        //     ),
-        //     side: const BorderSide(
-        //       color: AppConstants.optionBoxColor,
-        //     ),
-        //   ),
-        //   enableFeedback: true,
-        //   selectedTileColor: AppConstants.optionBoxColor,
-        //   minLeadingWidth: double.infinity,
-        // ),
       ),
     );
   }
@@ -571,6 +345,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
   @override
   void initState() {
     super.initState();
+    _getInfo();
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
   }
 
@@ -582,7 +357,6 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool darkmode = ref.watch(darkmodeNotifierProvider);
     //MeidaQuery Screen Size
     Size screenSize = MediaQuery.of(context).size;
 
@@ -592,39 +366,46 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     //Geting ExamType
     ExamType examType = args['exam'];
 
-    //Getting Timer Data
-    CountDownTimer counter = CountDownTimer(
-      time: Duration(minutes: examType.time),
-      onSubmit: () {
-        List<String> questionIds = [];
-        List<String> selectedAnswers = [];
-
-        for (var userAnswer in userSelected) {
-          questionIds.add(userAnswer['question'].toString());
-          selectedAnswers.add(userAnswer['option'].toString());
-        }
-
-        ref
-            .read(questionControllerProvider(examType.id).notifier)
-            .submitAnswer(questions: questionIds, answers: selectedAnswers)
-            .then((value) {
-          if (value[0] == 'false') {
-            toast(context: context, label: value[1], color: Colors.red);
-          } else {
-            List<String> msg = [value[1], value[2]];
-            SystemChrome.setPreferredOrientations([
-              DeviceOrientation.portraitUp,
-            ]);
-            Navigator.of(context).pushReplacementNamed(
-                QuizResultScreen.routeName,
-                arguments: msg);
-          }
-        });
-      },
-    );
-
     return ref.watch(questionControllerProvider(examType.id)).when(
           data: (data) {
+            //Getting Timer Data
+            CountDownTimer counter = CountDownTimer(
+              time: Duration(minutes: examType.time),
+              onSubmit: () {
+                List<String> questionIds = [];
+                List<String> selectedAnswers = [];
+
+                for (var userAnswer in userSelected) {
+                  questionIds.add(userAnswer['question'].toString());
+                  selectedAnswers.add(userAnswer['option'].toString());
+                }
+
+                for (var qus in data) {
+                  if (!questionIds.contains(qus.id.toString())) {
+                    questionIds.add(qus.id.toString());
+                  }
+                }
+
+                ref
+                    .read(questionControllerProvider(examType.id).notifier)
+                    .submitAnswer(
+                        questions: questionIds, answers: selectedAnswers)
+                    .then((value) {
+                  if (value[0] == 'false') {
+                    toast(context: context, label: value[1], color: Colors.red);
+                  } else {
+                    List<String> msg = [value[1], value[2]];
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.portraitUp,
+                    ]);
+                    Navigator.of(context).pushReplacementNamed(
+                        QuizResultScreen.routeName,
+                        arguments: msg);
+                  }
+                });
+              },
+            );
+
             for (var qus in data) {
               if (qus.filePath != null) {
                 CachedNetworkImage(
@@ -651,293 +432,347 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                 );
               }
             }
-            return WillPopScope(
-              onWillPop: () async {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      content: Text(
-                        'Are you sure want to exit ?',
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                      actions: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
+            return Theme(
+              data: ThemeData.light(
+                useMaterial3: true,
+              ),
+              child: WillPopScope(
+                onWillPop: () async {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content: Text(
+                          'Are you sure want to exit ?',
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        actions: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: () {
+                              SystemChrome.setPreferredOrientations([
+                                DeviceOrientation.portraitUp,
+                              ]);
+                              ref.invalidate(questionControllerProvider);
+                              Navigator.of(context).pushReplacementNamed(
+                                  SetScreen.routeName,
+                                  arguments: examType);
+                            },
+                            child: const Text(
+                              'Yes',
+                            ),
                           ),
-                          onPressed: () {
-                            SystemChrome.setPreferredOrientations([
-                              DeviceOrientation.portraitUp,
-                            ]);
-                            ref.invalidate(questionControllerProvider);
-                            Navigator.of(context).pushReplacementNamed(
-                                SetScreen.routeName,
-                                arguments: examType);
-                          },
-                          child: const Text(
-                            'Yes',
+                          const SizedBox(
+                            width: 5,
                           ),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text(
-                            'No',
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'No',
+                            ),
                           ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-                return false;
-              },
-              child: Scaffold(
-                appBar: AppBar(
-                  automaticallyImplyLeading: false,
-                  actions: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Toddle'),
-                            Text('Total Question: ${data.length}'),
-                            Text('Solved Question: ${userSelected.length}'),
-                            Text(
-                                'Unsolved Question: ${data.length - userSelected.length}'),
-                            // CountDownTimer(time: Duration(minutes: examType.time)),
-                            counter,
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                body: isTotalQuestion
-                    ? totalQuestionsView(
-                        screenSize: screenSize,
-                        examType: examType,
-                        data: data,
-                      )
-                    : SingleChildScrollView(
+                        ],
+                      );
+                    },
+                  );
+                  return false;
+                },
+                child: Scaffold(
+                  appBar: AppBar(
+                    automaticallyImplyLeading: false,
+                    actions: [
+                      Expanded(
                         child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: screenSize.width * 0.04,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // const Divider(),
-                              SizedBox(
-                                height: screenSize.height * 0.6,
-                                child: GridView(
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    mainAxisSpacing: 20.0,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircleAvatar(
+                                    foregroundImage: NetworkImage(
+                                        '${ApiConstants.userImage}$userImage'),
                                   ),
-                                  children: [
-                                    Column(
-                                      children: [
-                                        //Showing Question
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: screenSize.height * 0.03,
-                                            horizontal: 3.0,
-                                          ),
-                                          child: Text(
-                                              '${i + 1}. ${data[i].question}',
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  SizedBox(
+                                    width: screenSize.width * 0.1,
+                                    child: Text(
+                                      username,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Text('Total Question: ${data.length}'),
+                              Text('Solved Question: ${userSelected.length}'),
+                              Text(
+                                  'Unsolved Question: ${data.length - userSelected.length}'),
+                              // CountDownTimer(time: Duration(minutes: examType.time)),
+                              counter,
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  body: isTotalQuestion
+                      ? totalQuestionsView(
+                          screenSize: screenSize,
+                          examType: examType,
+                          data: data,
+                        )
+                      : SingleChildScrollView(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: screenSize.width * 0.04,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // const Divider(),
+                                SizedBox(
+                                  height: screenSize.height * 0.6,
+                                  child: GridView(
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      mainAxisSpacing: 20.0,
+                                    ),
+                                    children: [
+                                      Column(
+                                        children: [
+                                          //Showing Category
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical:
+                                                  screenSize.height * 0.01,
+                                            ),
+                                            child: Text(
+                                              data[i].category,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyLarge),
-                                        ),
+                                                  .bodyMedium!
+                                                  .copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                          ),
 
-                                        data[i].isAudio == 'Yes' ||
-                                                data[i].isOptionAudio == 'Yes'
-                                            ? IconButton(
-                                                onPressed: () async {
-                                                  //For Audio Playing
-                                                  await player.setUrl(
-                                                    '${ApiConstants.questionFileUrl}${data[i].filePath}',
-                                                  );
-                                                  if (q < 2) {
+                                          //Showing Question
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical:
+                                                  screenSize.height * 0.03,
+                                              horizontal: 3.0,
+                                            ),
+                                            child: Text(
+                                                '${i + 1}. ${data[i].question}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge),
+                                          ),
+
+                                          data[i].isAudio == 'Yes' ||
+                                                  data[i].isOptionAudio == 'Yes'
+                                              ? IconButton(
+                                                  onPressed: () async {
+                                                    //For Audio Playing
+                                                    await player.setUrl(
+                                                      '${ApiConstants.questionFileUrl}${data[i].filePath}',
+                                                    );
+                                                    if (q < 2) {
+                                                      isQusPlaying
+                                                          ? player.stop()
+                                                          : player.play();
+                                                      setState(() {
+                                                        isQusPlaying =
+                                                            !isQusPlaying;
+                                                        if (isQusPlaying) {
+                                                          q++;
+                                                        }
+                                                      });
+                                                    } else {
+                                                      player.stop();
+                                                      setState(() {
+                                                        isQusPlaying = false;
+                                                      });
+                                                      toast(
+                                                          context: context,
+                                                          label:
+                                                              'You cannot play audio more than twice',
+                                                          color: Colors.red);
+                                                    }
+                                                  },
+                                                  icon: Icon(
                                                     isQusPlaying
-                                                        ? player.stop()
-                                                        : player.play();
-                                                    setState(() {
-                                                      isQusPlaying =
-                                                          !isQusPlaying;
-                                                      if (isQusPlaying) {
-                                                        q++;
-                                                      }
-                                                    });
-                                                  } else {
-                                                    player.stop();
-                                                    setState(() {
-                                                      isQusPlaying = false;
-                                                    });
-                                                    toast(
-                                                        context: context,
-                                                        label:
-                                                            'You cannot play audio more than twice',
-                                                        color: Colors.red);
-                                                  }
-                                                },
-                                                icon: Icon(
-                                                  isQusPlaying
-                                                      ? Icons
-                                                          .pause_circle_filled_rounded
-                                                      : Icons
-                                                          .play_circle_outline,
-                                                  size: 32,
-                                                ),
-                                              )
-                                            : data[i].filePath != null
-                                                ? InkWell(
-                                                    onTap: () {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return Dialog(
-                                                            backgroundColor:
-                                                                Colors
-                                                                    .transparent,
-                                                            surfaceTintColor:
-                                                                Colors
-                                                                    .transparent,
-                                                            child: Row(
-                                                              children: [
-                                                                Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .centerLeft,
-                                                                  child:
-                                                                      InteractiveViewer(
+                                                        ? Icons
+                                                            .pause_circle_filled_rounded
+                                                        : Icons
+                                                            .play_circle_outline,
+                                                    size: 32,
+                                                  ),
+                                                )
+                                              : data[i].filePath != null
+                                                  ? InkWell(
+                                                      onTap: () {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return Dialog(
+                                                              backgroundColor:
+                                                                  Colors
+                                                                      .transparent,
+                                                              surfaceTintColor:
+                                                                  Colors
+                                                                      .transparent,
+                                                              child: Row(
+                                                                children: [
+                                                                  Align(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .centerLeft,
                                                                     child:
-                                                                        CachedNetworkImage(
-                                                                      imageUrl:
-                                                                          '${ApiConstants.questionFileUrl}${data[i].filePath}',
-                                                                      width: screenSize
-                                                                              .width *
-                                                                          0.4,
-                                                                      height: double
-                                                                          .infinity,
-                                                                      fit: BoxFit
-                                                                          .contain,
+                                                                        InteractiveViewer(
+                                                                      child:
+                                                                          CachedNetworkImage(
+                                                                        imageUrl:
+                                                                            '${ApiConstants.questionFileUrl}${data[i].filePath}',
+                                                                        width: screenSize.width *
+                                                                            0.4,
+                                                                        height:
+                                                                            double.infinity,
+                                                                        fit: BoxFit
+                                                                            .contain,
+                                                                      ),
                                                                     ),
                                                                   ),
-                                                                ),
-                                                                Expanded(
-                                                                  child:
-                                                                      InkWell(
-                                                                    splashColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    focusColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    onTap: () =>
-                                                                        Navigator.of(context)
-                                                                            .pop(),
-                                                                    child: const SizedBox
-                                                                        .expand(),
+                                                                  Expanded(
+                                                                    child:
+                                                                        InkWell(
+                                                                      splashColor:
+                                                                          Colors
+                                                                              .transparent,
+                                                                      focusColor:
+                                                                          Colors
+                                                                              .transparent,
+                                                                      onTap: () =>
+                                                                          Navigator.of(context)
+                                                                              .pop(),
+                                                                      child: const SizedBox
+                                                                          .expand(),
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          );
-                                                        },
-                                                      );
-                                                    },
-                                                    child: CachedNetworkImage(
-                                                      // cacheManager: imageCache,
-                                                      imageUrl:
-                                                          '${ApiConstants.questionFileUrl}${data[i].filePath}',
-                                                      height:
-                                                          screenSize.height *
-                                                              0.17,
-                                                      width: screenSize.width *
-                                                          0.4,
-                                                      placeholder:
-                                                          (context, url) =>
-                                                              const Center(
+                                                                ],
+                                                              ),
+                                                            );
+                                                          },
+                                                        );
+                                                      },
+                                                      child: Container(
+                                                        width: double.infinity,
+                                                        height:
+                                                            screenSize.height *
+                                                                0.4,
+                                                        margin: const EdgeInsets
+                                                            .all(
+                                                          15,
+                                                        ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          border: Border.all(
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
                                                         child:
-                                                            CircularProgressIndicator(),
+                                                            CachedNetworkImage(
+                                                          // cacheManager: imageCache,
+                                                          imageUrl:
+                                                              '${ApiConstants.questionFileUrl}${data[i].filePath}',
+                                                          width:
+                                                              double.infinity,
+                                                          fit: BoxFit.contain,
+                                                          placeholder:
+                                                              (context, url) =>
+                                                                  const Center(
+                                                            child:
+                                                                CircularProgressIndicator(),
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  )
-                                                : const SizedBox(),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        //Option Box
-                                        optionBox(
-                                          option: data[i].option1,
-                                          isImage: data[i].isImage,
-                                          screenSize: screenSize,
-                                          selectedOption: 'option1',
-                                          isOptionAudio: data[i].isOptionAudio,
-                                          data: data,
-                                          darkmode: darkmode,
-                                          boxNumber: '1',
-                                        ),
-                                        optionBox(
-                                          option: data[i].option2,
-                                          isImage: data[i].isImage,
-                                          screenSize: screenSize,
-                                          isOptionAudio: data[i].isOptionAudio,
-                                          selectedOption: 'option2',
-                                          data: data,
-                                          darkmode: darkmode,
-                                          boxNumber: '2',
-                                        ),
-                                        optionBox(
-                                          option: data[i].option3,
-                                          isImage: data[i].isImage,
-                                          screenSize: screenSize,
-                                          isOptionAudio: data[i].isOptionAudio,
-                                          selectedOption: 'option3',
-                                          data: data,
-                                          darkmode: darkmode,
-                                          boxNumber: '3',
-                                        ),
-                                        optionBox(
-                                          option: data[i].option4,
-                                          isImage: data[i].isImage,
-                                          screenSize: screenSize,
-                                          isOptionAudio: data[i].isOptionAudio,
-                                          selectedOption: 'option4',
-                                          data: data,
-                                          darkmode: darkmode,
-                                          boxNumber: '4',
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                                    )
+                                                  : const SizedBox(),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          //Option Box
+                                          optionBox(
+                                            option: data[i].option1,
+                                            isImage: data[i].isImage,
+                                            screenSize: screenSize,
+                                            selectedOption: 'option1',
+                                            isOptionAudio:
+                                                data[i].isOptionAudio,
+                                            data: data,
+                                            boxNumber: '1',
+                                          ),
+                                          optionBox(
+                                            option: data[i].option2,
+                                            isImage: data[i].isImage,
+                                            screenSize: screenSize,
+                                            isOptionAudio:
+                                                data[i].isOptionAudio,
+                                            selectedOption: 'option2',
+                                            data: data,
+                                            boxNumber: '2',
+                                          ),
+                                          optionBox(
+                                            option: data[i].option3,
+                                            isImage: data[i].isImage,
+                                            screenSize: screenSize,
+                                            isOptionAudio:
+                                                data[i].isOptionAudio,
+                                            selectedOption: 'option3',
+                                            data: data,
+                                            boxNumber: '3',
+                                          ),
+                                          optionBox(
+                                            option: data[i].option4,
+                                            isImage: data[i].isImage,
+                                            screenSize: screenSize,
+                                            isOptionAudio:
+                                                data[i].isOptionAudio,
+                                            selectedOption: 'option4',
+                                            data: data,
+                                            boxNumber: '4',
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                color: darkmode
-                                    ? Colors.grey.shade900
-                                    : Colors.white,
-                                width: double.infinity,
-                                child: Row(
+                                Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     i == 0
                                         ? const SizedBox.shrink()
-                                        : previousButton(data, examType,
-                                            darkmode: darkmode),
+                                        : previousButton(
+                                            data,
+                                            examType,
+                                          ),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 15.0),
                                       child: OutlinedButton(
@@ -947,38 +782,36 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   BorderRadius.circular(
                                                 20,
                                               ),
-                                              side: BorderSide(
-                                                color: darkmode
-                                                    ? Colors.white
-                                                    : AppConstants
-                                                        .optionBoxColor,
-                                              ),
                                             ),
-                                            backgroundColor: darkmode
-                                                ? Colors.grey.shade800
-                                                : Colors.transparent),
+                                            side: BorderSide(
+                                                color: AppConstants.quizScreen),
+                                            backgroundColor:
+                                                Colors.transparent),
                                         onPressed: () {
                                           setState(() {
                                             isTotalQuestion = true;
                                           });
                                         },
-                                        child: const Text(
+                                        child: Text(
                                           'Total Questions',
+                                          style: TextStyle(
+                                              color: AppConstants.quizScreen),
                                         ),
                                       ),
                                     ),
                                     i == data.length - 1
-                                        ? submitButton(data, examType,
-                                            darkmode: darkmode)
-                                        : nextButton(data, examType,
-                                            darkmode: darkmode),
+                                        ? const SizedBox()
+                                        : nextButton(
+                                            data,
+                                            examType,
+                                          ),
                                   ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
+                ),
               ),
             );
           },
@@ -989,15 +822,17 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         );
   }
 
-  Padding nextButton(List<Questions> data, ExamType examType,
-      {required bool darkmode}) {
+  Padding nextButton(
+    List<Questions> data,
+    ExamType examType,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(top: 15.0),
       child: Align(
         alignment: Alignment.centerRight,
-        child: FilledButton.tonalIcon(
+        child: FilledButton(
           style: FilledButton.styleFrom(
-            backgroundColor: darkmode ? Colors.white : AppConstants.cardColor,
+            backgroundColor: AppConstants.quizScreen,
           ),
           onPressed: () {
             setState(() {
@@ -1020,8 +855,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               }
             });
           },
-          icon: const Icon(Icons.next_plan_outlined),
-          label: const Text(
+          child: const Text(
             'Next',
           ),
         ),
@@ -1029,15 +863,17 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     );
   }
 
-  Padding previousButton(List<Questions> data, ExamType examType,
-      {required bool darkmode}) {
+  Padding previousButton(
+    List<Questions> data,
+    ExamType examType,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(top: 15.0),
       child: Align(
         alignment: Alignment.centerRight,
-        child: FilledButton.tonalIcon(
+        child: FilledButton(
           style: FilledButton.styleFrom(
-            backgroundColor: darkmode ? Colors.white : AppConstants.cardColor,
+            backgroundColor: AppConstants.quizScreen,
           ),
           onPressed: () {
             setState(() {
@@ -1059,69 +895,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               }
             });
           },
-          icon: const Icon(Icons.skip_previous_outlined),
-          label: const Text(
+          child: const Text(
             'Previous',
           ),
-        ),
-      ),
-    );
-  }
-
-  Padding submitButton(List<Questions> data, ExamType examType,
-      {required bool darkmode}) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 15.0),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Consumer(
-          builder: (context, ref, child) {
-            return FilledButton.tonal(
-              style: FilledButton.styleFrom(
-                backgroundColor:
-                    darkmode ? Colors.white : AppConstants.cardColor,
-              ),
-              onPressed: () {
-                //For empty submiting quiz
-                if (userSelected.length < 2) {
-                  toast(
-                      context: context,
-                      label: 'At least 2 question should be solved',
-                      color: Colors.red);
-                } else {
-                  List<String> questionIds = [];
-                  List<String> selectedAnswers = [];
-
-                  for (var userAnswer in userSelected) {
-                    questionIds.add(userAnswer['question'].toString());
-                    selectedAnswers.add(userAnswer['option'].toString());
-                  }
-
-                  ref
-                      .read(questionControllerProvider(examType.id).notifier)
-                      .submitAnswer(
-                          questions: questionIds, answers: selectedAnswers)
-                      .then((value) {
-                    if (value[0] == 'false') {
-                      toast(
-                          context: context, label: value[1], color: Colors.red);
-                    } else {
-                      List<String> msg = [value[1], value[2]];
-                      SystemChrome.setPreferredOrientations([
-                        DeviceOrientation.portraitUp,
-                      ]);
-                      Navigator.of(context).pushReplacementNamed(
-                          QuizResultScreen.routeName,
-                          arguments: msg);
-                    }
-                  });
-                }
-              },
-              child: const Text(
-                'Submit',
-              ),
-            );
-          },
         ),
       ),
     );
@@ -1151,15 +927,15 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                       padding: const EdgeInsets.only(top: 3.0, bottom: 5.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Icon(
                             Icons.chrome_reader_mode_outlined,
-                            color: AppConstants.optionBoxColor,
+                            color: AppConstants.quizScreen,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
-                          Text('(20 Questions)'),
+                          const Text('(20 Questions)'),
                         ],
                       ),
                     ),
@@ -1197,8 +973,8 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                               index + 1,
                                           orElse: () => {})
                                       .isNotEmpty
-                                  ? AppConstants.optionBoxColor
-                                  : Colors.deepPurple.shade50,
+                                  ? AppConstants.quizScreen
+                                  : Colors.grey.shade100,
                               child: Center(
                                 child: Text(
                                   '${index + 1}',
@@ -1231,15 +1007,15 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                       padding: const EdgeInsets.only(top: 3.0, bottom: 5.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Icon(
                             Icons.headphones,
-                            color: AppConstants.optionBoxColor,
+                            color: AppConstants.quizScreen,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
-                          Text('(20 Questions)'),
+                          const Text('(20 Questions)'),
                         ],
                       ),
                     ),
@@ -1276,8 +1052,8 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                               index + 21,
                                           orElse: () => {})
                                       .isNotEmpty
-                                  ? AppConstants.optionBoxColor
-                                  : Colors.deepPurple.shade50,
+                                  ? AppConstants.quizScreen
+                                  : Colors.grey.shade100,
                               child: Center(
                                 child: Text(
                                   '${index + 21}',
@@ -1309,7 +1085,10 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
             padding: const EdgeInsets.only(top: 2.0),
             child: Align(
               alignment: Alignment.centerRight,
-              child: FilledButton.tonal(
+              child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppConstants.quizScreen,
+                  ),
                   onPressed: () {
                     //For empty submiting quiz
                     if (userSelected.length < 2) {
@@ -1318,35 +1097,54 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           label: 'At least 2 question should be solved',
                           color: Colors.red);
                     } else {
-                      List<String> questionIds = [];
-                      List<String> selectedAnswers = [];
-
-                      for (var userAnswer in userSelected) {
-                        questionIds.add(userAnswer['question'].toString());
-                        selectedAnswers.add(userAnswer['option'].toString());
+                      if (userSelected.length < 40) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content: SizedBox(
+                                height: screenSize.height * 0.12,
+                                child: Column(
+                                  children: const [
+                                    Text(
+                                        'You have not answered all the questions.'),
+                                    Text('Are you sure want to submit ?'),
+                                  ],
+                                ),
+                              ),
+                              title: Text(
+                                'Warning !',
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    submitAnswers(
+                                        examType: examType, data: data);
+                                  },
+                                  child: const Text(
+                                    'Yes',
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text(
+                                    'No',
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        submitAnswers(examType: examType, data: data);
                       }
-
-                      ref
-                          .read(
-                              questionControllerProvider(examType.id).notifier)
-                          .submitAnswer(
-                              questions: questionIds, answers: selectedAnswers)
-                          .then((value) {
-                        if (value[0] == 'false') {
-                          toast(
-                              context: context,
-                              label: value[1],
-                              color: Colors.red);
-                        } else {
-                          List<String> msg = [value[1], value[2]];
-                          SystemChrome.setPreferredOrientations([
-                            DeviceOrientation.portraitUp,
-                          ]);
-                          Navigator.of(context).pushReplacementNamed(
-                              QuizResultScreen.routeName,
-                              arguments: msg);
-                        }
-                      });
                     }
                   },
                   child: const Text('Submit Answer')),
@@ -1355,5 +1153,38 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         ],
       ),
     );
+  }
+
+  void submitAnswers(
+      {required ExamType examType, required List<Questions> data}) {
+    List<String> questionIds = [];
+    List<String> selectedAnswers = [];
+
+    for (var userAnswer in userSelected) {
+      questionIds.add(userAnswer['question'].toString());
+      selectedAnswers.add(userAnswer['option'].toString());
+    }
+
+    for (var qus in data) {
+      if (!questionIds.contains(qus.id.toString())) {
+        questionIds.add(qus.id.toString());
+      }
+    }
+
+    ref
+        .read(questionControllerProvider(examType.id).notifier)
+        .submitAnswer(questions: questionIds, answers: selectedAnswers)
+        .then((value) {
+      if (value[0] == 'false') {
+        toast(context: context, label: value[1], color: Colors.red);
+      } else {
+        List<String> msg = [value[1], value[2]];
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+        ]);
+        Navigator.of(context)
+            .pushReplacementNamed(QuizResultScreen.routeName, arguments: msg);
+      }
+    });
   }
 }

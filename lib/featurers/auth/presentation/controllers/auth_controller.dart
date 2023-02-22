@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toddle/featurers/auth/data/models/group.dart';
 import 'package:toddle/featurers/auth/data/models/user.dart';
 import 'package:toddle/featurers/auth/data/repositories/auth_repositories.dart';
 
@@ -133,14 +134,8 @@ class AuthController extends StateNotifier<AsyncValue<User>> {
   }
 
   //Update User Info
-  Future<List<String>> updateInfo({required User user}) async {
-    var data = {
-      'name': user.name,
-      'email': user.email,
-      'phone': user.phoneNumber,
-      'address': user.address
-    };
-    final result = await _authRepositories.updateInfo(data);
+  Future<List<String>> updateInfo({required var user}) async {
+    final result = await _authRepositories.updateInfo(user);
     return result.fold((error) {
       List<String> msg = ['false', error.message];
       return msg;
@@ -154,4 +149,23 @@ class AuthController extends StateNotifier<AsyncValue<User>> {
 final authControllerProvider =
     StateNotifierProvider<AuthController, AsyncValue<User>>((ref) {
   return AuthController(ref.watch(authRepositoriesProvider));
+});
+
+class GropController extends StateNotifier<AsyncValue<List<Group>>> {
+  final AuthRepositories _authRepositories;
+  GropController(this._authRepositories) : super(const AsyncLoading()) {
+    fetchGroup();
+  }
+
+  fetchGroup() async {
+    final result = await _authRepositories.fetchGroup();
+    result.fold(
+        (l) => state = AsyncError(l, StackTrace.fromString(l.toString())),
+        (r) => state = AsyncData(r));
+  }
+}
+
+final groupControllerProvider =
+    StateNotifierProvider<GropController, AsyncValue<List<Group>>>((ref) {
+  return GropController(ref.watch(authRepositoriesProvider));
 });

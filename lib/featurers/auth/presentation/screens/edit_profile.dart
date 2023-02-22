@@ -1,8 +1,13 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:toddle/constants/api_constants.dart';
 import 'package:toddle/core/utils/toaster.dart';
-import 'package:toddle/featurers/auth/data/models/user.dart';
 import 'package:toddle/featurers/auth/presentation/controllers/auth_controller.dart';
+import 'package:toddle/featurers/home/presentation/screens/first_screen.dart';
 
 class EditProfile extends ConsumerStatefulWidget {
   static const routename = "/edit-profile";
@@ -15,6 +20,10 @@ class EditProfile extends ConsumerStatefulWidget {
 class EditProfileState extends ConsumerState<EditProfile> {
   final editProfileKey = GlobalKey<FormState>();
   final chnagePasswordKey = GlobalKey<FormState>();
+
+  //Fir Image Selecting
+  final ImagePicker imagePicker = ImagePicker();
+  File _image = File('');
 
   String name = '';
   String email = '';
@@ -31,6 +40,8 @@ class EditProfileState extends ConsumerState<EditProfile> {
   final passwordNode = FocusNode();
   final confirmPasswordNode = FocusNode();
   final oldPasswordNode = FocusNode();
+
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -197,6 +208,49 @@ class EditProfileState extends ConsumerState<EditProfile> {
                               ),
                             ),
 
+                            Padding(
+                              padding: EdgeInsets.only(
+                                top: screenSize.height * 0.03,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Container(
+                                    width: screenSize.width * 0.5,
+                                    height: screenSize.height * 0.2,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.grey.shade400,
+                                      ),
+                                      shape: BoxShape.rectangle,
+                                    ),
+                                    child: _image.path.isNotEmpty
+                                        ? Image.file(
+                                            _image,
+                                          )
+                                        : Image.network(
+                                            '${ApiConstants.userImage}${data.profilePhoto}'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      final picked =
+                                          await imagePicker.pickImage(
+                                              source: ImageSource.gallery);
+                                      if (picked != null) {
+                                        setState(() {
+                                          _image = File(picked.path);
+                                        });
+                                      }
+                                    },
+                                    child: const Text(
+                                      'Select Image',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
                             //Save Button
                             Padding(
                               padding: EdgeInsets.only(
@@ -210,41 +264,35 @@ class EditProfileState extends ConsumerState<EditProfile> {
                                       10,
                                     ),
                                   )),
-                                  onPressed: () {
-                                    editProfileKey.currentState!.save();
-                                    if (!editProfileKey.currentState!
-                                        .validate()) {
-                                      return;
-                                    }
-                                    ref
-                                        .read(authControllerProvider.notifier)
-                                        .updateInfo(
-                                            user: User(
-                                                id: 1,
-                                                name: name,
-                                                email: email,
-                                                phoneNumber: phone,
-                                                address: address))
-                                        .then((value) {
-                                      if (value[0] == 'false') {
-                                        toast(
-                                            context: context,
-                                            label: value[1],
-                                            color: Colors.red);
-                                      } else {
-                                        Navigator.of(context).pop();
-                                        toast(
-                                            context: context,
-                                            label: value[1],
-                                            color: Colors.green);
-                                      }
-                                    });
-                                  },
-                                  child: Text(
-                                    'Update Info',
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
+                                  onPressed: isLoading
+                                      ? null
+                                      : () async {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          editProfileKey.currentState!.save();
+                                          if (!editProfileKey.currentState!
+                                              .validate()) {
+                                            return;
+                                          }
+                                          await updateUserInfo(context);
+                                        },
+                                  child: isLoading
+                                      ? const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10.0),
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 0.6,
+                                            ),
+                                          ),
+                                        )
+                                      : Text(
+                                          'Update Info',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge,
+                                        ),
                                 ),
                               ),
                             ),
@@ -373,32 +421,20 @@ class EditProfileState extends ConsumerState<EditProfile> {
                                       10,
                                     ),
                                   )),
-                                  onPressed: () {
-                                    chnagePasswordKey.currentState!.save();
-                                    if (!chnagePasswordKey.currentState!
-                                        .validate()) {
-                                      return;
-                                    }
-                                    ref
-                                        .read(authControllerProvider.notifier)
-                                        .changePassword(
-                                            oldPassword: oldPassword,
-                                            newPassword: password)
-                                        .then((value) {
-                                      if (value[0] == 'false') {
-                                        toast(
-                                            context: context,
-                                            label: value[1],
-                                            color: Colors.red);
-                                      } else {
-                                        Navigator.of(context).pop();
-                                        toast(
-                                            context: context,
-                                            label: value[1],
-                                            color: Colors.green);
-                                      }
-                                    });
-                                  },
+                                  onPressed: isLoading
+                                      ? null
+                                      : () {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          chnagePasswordKey.currentState!
+                                              .save();
+                                          if (!chnagePasswordKey.currentState!
+                                              .validate()) {
+                                            return;
+                                          }
+                                          updatePassword(context);
+                                        },
                                   child: Text(
                                     'Update Password',
                                     style:
@@ -421,5 +457,57 @@ class EditProfileState extends ConsumerState<EditProfile> {
             ),
           ),
     );
+  }
+
+  void updatePassword(BuildContext context) {
+    ref
+        .read(authControllerProvider.notifier)
+        .changePassword(oldPassword: oldPassword, newPassword: password)
+        .then((value) {
+      if (value[0] == 'false') {
+        toast(context: context, label: value[1], color: Colors.red);
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Navigator.of(context).pop();
+        toast(context: context, label: value[1], color: Colors.green);
+      }
+    });
+  }
+
+  Future<void> updateUserInfo(BuildContext context) async {
+    FormData formData;
+
+    if (_image.path.isNotEmpty) {
+      formData = FormData.fromMap({
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'address': address,
+        'profile_photo': await MultipartFile.fromFile(_image.path)
+      });
+    } else {
+      formData = FormData.fromMap({
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'address': address,
+      });
+    }
+    ref
+        .read(authControllerProvider.notifier)
+        .updateInfo(user: formData)
+        .then((value) {
+      if (value[0] == 'false') {
+        toast(context: context, label: value[1], color: Colors.red);
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Navigator.of(context).pushReplacementNamed(FirstScreen.routeName);
+        toast(context: context, label: value[1], color: Colors.green);
+      }
+    });
   }
 }

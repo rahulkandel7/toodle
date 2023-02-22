@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/core/utils/app_drawer.dart';
+import 'package:toddle/featurers/home/data/models/exam_type.dart';
 import 'package:toddle/featurers/home/presentation/controllers/exam_type_controller.dart';
 import 'package:toddle/featurers/home/presentation/screens/first_screen.dart';
 
@@ -24,7 +27,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      username = prefs.getString('name')!;
+      username = jsonDecode(prefs.getString('user')!)['name'];
     });
   }
 
@@ -51,19 +54,21 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             Icons.arrow_back_ios,
           ),
         ),
-        actions: [
-          Builder(builder: (context) {
-            return IconButton(
-              onPressed: () => Scaffold.of(context).openDrawer(),
-              icon: const Icon(
-                Icons.person_2_outlined,
-              ),
-            );
-          }),
-        ],
+        // actions: [
+        //   Builder(builder: (context) {
+        //     return IconButton(
+        //       onPressed: () => Scaffold.of(context).openDrawer(),
+        //       icon: const Icon(
+        //         Icons.person_2_outlined,
+        //       ),
+        //     );
+        //   }),
+        // ],
       ),
       body: ref.watch(examTypeControllerProvider).when(
             data: (data) {
+              List<ExamType> examTypes =
+                  data.where((exams) => exams.valid == true).toList();
               return Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: screenSize.height * 0.02,
@@ -85,9 +90,9 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                       height: screenSize.height * 0.76,
                       child: ListView.builder(
                         itemBuilder: (ctx, i) => ExamCard(
-                          examType: data[i],
+                          examType: examTypes[i],
                         ),
-                        itemCount: data.length,
+                        itemCount: examTypes.length,
                       ),
                     ),
                   ],

@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:toddle/constants/app_constants.dart';
+import 'package:toddle/core/utils/toaster.dart';
 
 class CountDownTimer extends StatefulWidget {
   final Duration time;
@@ -29,6 +31,13 @@ class _CountDownTimerState extends State<CountDownTimer> {
     const reduceSecondsBy = 1;
     setState(() {
       final seconds = duration.inSeconds - reduceSecondsBy;
+      if (duration <= const Duration(minutes: 20, seconds: 01) &&
+          duration > const Duration(minutes: 20, seconds: 0)) {
+        toast(
+            context: context,
+            label: 'Do not move your head.',
+            color: Colors.amber);
+      }
       if (seconds < 0) {
         widget.onSubmit();
         countDownTimer!.cancel();
@@ -64,11 +73,16 @@ class _CountDownTimerState extends State<CountDownTimer> {
         hours == '00'
             ? Text(
                 '$minutes:$seconds',
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .copyWith(color: AppConstants.quizScreen),
               )
             : Text(
                 '$hours:$minutes:$seconds',
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: AppConstants.quizScreen,
+                    ),
               ),
       ],
     );

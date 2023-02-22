@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/core/api/api_services.dart';
+import 'package:toddle/featurers/auth/data/models/group.dart';
 
 import '../models/user.dart';
 
@@ -31,6 +34,9 @@ abstract class AuthDataSource {
 
   //Update user info
   Future<String> updateInfo(var data);
+
+  // Fech Group
+  Future<List<Group>> fetchGroup();
 }
 
 final authDataSourceProvider = Provider<AuthDataSource>((ref) {
@@ -46,7 +52,7 @@ class AuthDataSourceImpl implements AuthDataSource {
     final result = await _apiServices.postData(endPoint: 'login', data: data);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', result['token']);
-    prefs.setString('name', result['user']['name']);
+    prefs.setString('user', jsonEncode(result['user']));
     return result['message'];
   }
 
@@ -105,6 +111,15 @@ class AuthDataSourceImpl implements AuthDataSource {
   Future<String> updateInfo(data) async {
     final result = await _apiServices.postDataWithAuthorize(
         endpoint: 'user/update', data: data);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('user', jsonEncode(result['data']));
     return result['message'];
+  }
+
+  @override
+  Future<List<Group>> fetchGroup() async {
+    final result = await _apiServices.getData(endpoint: 'groups');
+    final groups = result['data'] as List<dynamic>;
+    return groups.map((group) => Group.fromMap(group)).toList();
   }
 }

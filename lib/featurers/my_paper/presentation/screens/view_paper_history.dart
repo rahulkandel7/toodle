@@ -35,14 +35,20 @@ class ViewPaperHistoryState extends ConsumerState<ViewPaperHistory> {
               data: (data) {
                 List<Exam> exams =
                     data.where((element) => element.examType != '').toList();
-                return ListView.builder(
-                  itemBuilder: (ctx, i) => ViewHistoryCard(
-                    date: exams[i].examDate,
-                    examType: exams[i].examType,
-                    id: exams[i].id,
-                  ),
-                  itemCount: exams.length,
-                );
+                return data.isEmpty
+                    ? const Center(
+                        child: Text('You have not taken any exam.'),
+                      )
+                    : ListView.builder(
+                        itemBuilder: (ctx, i) => ViewHistoryCard(
+                          date: exams[i].examDate,
+                          examType: exams[i].examType,
+                          id: exams[i].id,
+                          obtainedMark: exams[i].obtainedMarks,
+                          show: exams[i].show,
+                        ),
+                        itemCount: exams.length,
+                      );
               },
               error: (e, s) => Text(e.toString()),
               loading: () => const Center(

@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toddle/constants/api_constants.dart';
 import 'package:toddle/constants/app_constants.dart';
 import 'package:toddle/core/utils/app_drawer.dart';
+import 'package:toddle/featurers/auth/presentation/screens/edit_profile.dart';
 import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_history.dart';
+import 'package:toddle/featurers/notices/presentation/screens/notice_screen.dart';
 
 import 'home_screen.dart';
 
@@ -64,6 +68,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
 
 //For Getting User Name
   String username = '';
+  String userImage = '';
 
   Timer? time;
   Duration duration = const Duration(seconds: 1);
@@ -75,7 +80,8 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      username = prefs.getString('name')!;
+      username = jsonDecode(prefs.getString('user')!)['name'];
+      userImage = jsonDecode(prefs.getString('user')!)['profile_photo'];
     });
 
     if (prefs.getBool('isBio')!) {
@@ -124,6 +130,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -131,16 +138,23 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
           style: Theme.of(context).textTheme.displaySmall,
         ),
         automaticallyImplyLeading: false,
+        leading: Builder(builder: (context) {
+          return IconButton(
+            onPressed: () => Scaffold.of(context).openDrawer(),
+            icon: const Icon(
+              Icons.menu,
+            ),
+          );
+        }),
         centerTitle: true,
         actions: [
-          Builder(builder: (context) {
-            return IconButton(
-              onPressed: () => Scaffold.of(context).openDrawer(),
-              icon: const Icon(
-                Icons.person_2_outlined,
-              ),
-            );
-          }),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: CircleAvatar(
+              foregroundImage:
+                  NetworkImage('${ApiConstants.userImage}$userImage'),
+            ),
+          ),
         ],
       ),
       body: Padding(
@@ -150,24 +164,60 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            infocard(
-              screenSize: screenSize,
-              info: 'My Papers',
-              function: () =>
-                  Navigator.of(context).pushNamed(ViewPaperHistory.routeName),
-              image: 'assets/images/mypaper.png',
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+                'Welcome to EPS Topik Practice',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall!
+                    .copyWith(fontWeight: FontWeight.w500),
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                infocard(
+                  screenSize: screenSize,
+                  info: 'My Papers',
+                  function: () => Navigator.of(context)
+                      .pushNamed(ViewPaperHistory.routeName),
+                  image: 'assets/images/mypaper.png',
+                ),
+                infocard(
+                  screenSize: screenSize,
+                  info: 'Take Exam',
+                  function: () =>
+                      Navigator.of(context).pushNamed(HomeScreen.routeName),
+                  image: 'assets/images/take-exam.png',
+                ),
+              ],
             ),
             SizedBox(
-              height: screenSize.height * 0.05,
+              height: screenSize.height * 0.02,
             ),
-            infocard(
-              screenSize: screenSize,
-              info: 'Take Exam',
-              function: () =>
-                  Navigator.of(context).pushNamed(HomeScreen.routeName),
-              image: 'assets/images/take-exam.png',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                infocard(
+                  screenSize: screenSize,
+                  info: 'Notices',
+                  function: () =>
+                      Navigator.of(context).pushNamed(NoticeScreen.routeName),
+                  image: 'assets/images/notice.png',
+                ),
+                infocard(
+                  screenSize: screenSize,
+                  info: 'Edit Profile',
+                  function: () =>
+                      Navigator.of(context).pushNamed(EditProfile.routename),
+                  image: 'assets/images/edit-profile.png',
+                ),
+              ],
             ),
           ],
         ),
@@ -188,14 +238,22 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
       padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.01),
       child: InkWell(
         onTap: function,
-        child: Card(
-          color: AppConstants.primaryColor,
-          elevation: 5,
-          shadowColor: Colors.grey.shade100,
-          shape: RoundedRectangleBorder(
+        child: Container(
+          width: screenSize.width * 0.44,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade400,
+                blurRadius: 4,
+                offset: const Offset(1, 2),
+                // blurStyle: BlurStyle.outer,
+                spreadRadius: 1,
+              ),
+            ],
             borderRadius: BorderRadius.circular(
               10,
             ),
+            color: AppConstants.primaryColor,
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -206,7 +264,14 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
               padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.01),
               child: Column(
                 children: [
-                  Image.asset(image),
+                  CircleAvatar(
+                    backgroundColor: AppConstants.cardColor,
+                    radius: screenSize.height * 0.05,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset(image),
+                    ),
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
@@ -216,7 +281,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
                       Text(
                         info,
                         style:
-                            Theme.of(context).textTheme.headlineLarge!.copyWith(
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
