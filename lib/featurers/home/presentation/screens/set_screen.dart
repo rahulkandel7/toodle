@@ -35,6 +35,14 @@ class SetScreenState extends ConsumerState<SetScreen> {
             exam.examType,
             style: Theme.of(context).textTheme.displaySmall,
           ),
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            onPressed: () => Navigator.of(context)
+                .pushReplacementNamed(HomeScreen.routeName),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+            ),
+          ),
         ),
         body: SingleChildScrollView(
           child: Padding(

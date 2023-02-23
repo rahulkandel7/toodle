@@ -38,13 +38,18 @@ class ViewHistoryCard extends StatelessWidget {
                 children: [
                   Text(
                     examType,
-                    style: Theme.of(context).textTheme.headlineSmall,
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                          color: Colors.black,
+                        ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 3.0),
                     child: Text(
                       'You Have Got $obtainedMark out of 40',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge!
+                          .copyWith(color: Colors.grey.shade700),
                     ),
                   ),
                   Padding(

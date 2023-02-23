@@ -84,7 +84,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
       userImage = jsonDecode(prefs.getString('user')!)['profile_photo'];
     });
 
-    if (prefs.getBool('isBio')!) {
+    if (prefs.getBool('isBio') != null) {
       setState(() {
         isBiometric = true;
       });

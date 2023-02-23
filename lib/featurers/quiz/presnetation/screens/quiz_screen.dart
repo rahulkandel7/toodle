@@ -445,12 +445,13 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                     ),
                                     children: [
                                       Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           //? Showing Category
                                           Padding(
-                                            padding: EdgeInsets.symmetric(
-                                              vertical:
-                                                  screenSize.height * 0.01,
+                                            padding: EdgeInsets.only(
+                                              top: screenSize.height * 0.01,
                                             ),
                                             child: Text(
                                               data[i].category,
@@ -459,22 +460,25 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   .bodyMedium!
                                                   .copyWith(
                                                     fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
                                                   ),
                                             ),
                                           ),
 
                                           //? Showing Question
                                           Padding(
-                                            padding: EdgeInsets.symmetric(
-                                              vertical:
-                                                  screenSize.height * 0.03,
-                                              horizontal: 3.0,
+                                            padding: EdgeInsets.only(
+                                              bottom: screenSize.height * 0.03,
                                             ),
                                             child: Text(
-                                                '${i + 1}. ${data[i].question}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyLarge),
+                                              '${i + 1}. ${data[i].question}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge!
+                                                  .copyWith(
+                                                    color: Colors.black,
+                                                  ),
+                                            ),
                                           ),
 
                                           data[i].isAudio == 'Yes' ||
@@ -715,8 +719,16 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               ),
             );
           },
-          error: (e, s) => Scaffold(
-            body: Center(child: Text(e.toString())),
+          error: (e, s) => WillPopScope(
+            onWillPop: () async {
+              SystemChrome.setPreferredOrientations(
+                  [DeviceOrientation.portraitUp]);
+              ref.invalidate(questionControllerProvider);
+              return true;
+            },
+            child: Scaffold(
+              body: Center(child: Text(e.toString())),
+            ),
           ),
           loading: () => const Center(
             child: CircularProgressIndicator(),
@@ -799,6 +811,8 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
           '${ApiConstants.questionFileUrl}${qus.filePath}',
           key: qus.filePath,
         );
+      }
+      if (qus.isOptionAudio == 'Yes') {
         imageCache.downloadFile(
           '${ApiConstants.answerImageUrl}${qus.option1}',
           key: qus.option1,
@@ -1157,6 +1171,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     List<String> questionIds = [];
     List<String> selectedAnswers = [];
 
+    player.stop();
     for (var userAnswer in userSelected) {
       questionIds.add(userAnswer['question'].toString());
       selectedAnswers.add(userAnswer['option'].toString());

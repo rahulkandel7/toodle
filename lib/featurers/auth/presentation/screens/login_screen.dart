@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   _isBio() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (prefs.getBool('isBio')! == true) {
+    if (prefs.getBool('isBio') == true) {
       setState(() {
         isLogged = true;
       });
