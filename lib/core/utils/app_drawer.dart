@@ -222,6 +222,7 @@ class AppDrawerState extends ConsumerState<AppDrawer> {
                                       color: darkmode
                                           ? Colors.white
                                           : AppConstants.primaryColor,
+                                      fontWeight: FontWeight.w500,
                                     ),
                               ),
                               Switch(
@@ -250,6 +251,7 @@ class AppDrawerState extends ConsumerState<AppDrawer> {
                                 color: darkmode
                                     ? Colors.white
                                     : AppConstants.primaryColor,
+                                fontWeight: FontWeight.w500,
                               ),
                         ),
                         Switch(

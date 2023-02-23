@@ -172,15 +172,25 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
             horizontal: screenSize.width * 0.04,
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
-                  'Welcome to EPS Topik Practice',
+                  'Welcome to ',
                   style: Theme.of(context)
                       .textTheme
-                      .headlineSmall!
+                      .headlineLarge!
+                      .copyWith(fontWeight: FontWeight.w500),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  'EPS Topik Practice',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineLarge!
                       .copyWith(fontWeight: FontWeight.w500),
                 ),
               ),
