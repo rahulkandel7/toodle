@@ -47,6 +47,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           style: Theme.of(context).textTheme.displaySmall,
         ),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: () =>
               Navigator.of(context).pushReplacementNamed(FirstScreen.routeName),
@@ -54,16 +55,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             Icons.arrow_back_ios,
           ),
         ),
-        // actions: [
-        //   Builder(builder: (context) {
-        //     return IconButton(
-        //       onPressed: () => Scaffold.of(context).openDrawer(),
-        //       icon: const Icon(
-        //         Icons.person_2_outlined,
-        //       ),
-        //     );
-        //   }),
-        // ],
       ),
       body: ref.watch(examTypeControllerProvider).when(
             data: (data) {

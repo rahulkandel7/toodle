@@ -9,15 +9,15 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toddle/constants/api_constants.dart';
-import 'package:toddle/constants/app_constants.dart';
-import 'package:toddle/core/utils/toaster.dart';
-import 'package:toddle/featurers/home/data/models/exam_type.dart';
-import 'package:toddle/featurers/quiz/data/models/questions.dart';
-import 'package:toddle/featurers/quiz/presnetation/controllers/question_controller.dart';
-import 'package:toddle/featurers/quiz/presnetation/screens/quiz_result_screen.dart';
 
+import '../../../../constants/api_constants.dart';
+import '../../../../constants/app_constants.dart';
 import '../../../../core/utils/count_down_timer.dart';
+import '../../../../core/utils/toaster.dart';
+import '../../../../featurers/home/data/models/exam_type.dart';
+import '../../../../featurers/quiz/data/models/questions.dart';
+import '../../../../featurers/quiz/presnetation/controllers/question_controller.dart';
+import '../../../../featurers/quiz/presnetation/screens/quiz_result_screen.dart';
 import '../../../home/presentation/screens/set_screen.dart';
 
 class QuizScreen extends ConsumerStatefulWidget {
@@ -29,10 +29,11 @@ class QuizScreen extends ConsumerStatefulWidget {
 }
 
 class QuizScreenState extends ConsumerState<QuizScreen> {
-  //Getting User Infos
+  //? Getting User Infos
   String username = "";
   String userImage = "";
 
+  //? Getting username and user photo
   _getInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -41,29 +42,33 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     });
   }
 
+  //? For Chaning the question the i in initilized
   int i = 0;
 
+  //? For selecting answers and finding selectedoptions
   String? answer;
   String? selectedOptions;
 
+  //? Initilize audioplayer for playing audio
   final player = AudioPlayer();
 
+  //? For saving user selected options
   List<Map<String, dynamic>> userSelected = [];
 
-  //For Total Question Showing
+  //? For Total Question Showing
   bool isTotalQuestion = true;
 
-  // Audio bool for question
+  //? Audio bool for question
   bool isQusPlaying = false;
 
-  //For Checking audio is played twice or not
-  int q = 0;
-  int o1 = 0;
-  int o2 = 0;
-  int o3 = 0;
-  int o4 = 0;
+  //? For Checking audio is played twice or not
+  int q = 0; //* For Question
+  int o1 = 0; //* For option 1
+  int o2 = 0; //* For option 2
+  int o3 = 0; //* For option 3
+  int o4 = 0; //* For option 4
 
-  // cache Manager
+  //? For Initilizating cache Manager
   late var imageCache = CacheManager(
     Config(
       'imageCache',
@@ -71,7 +76,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     ),
   );
 
-  //Widget For Option Box
+  //? Widget For Option Box
   Widget optionBox({
     required String option,
     required String isImage,
@@ -85,28 +90,8 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
       child: InkWell(
         onTap: () {
-          setState(() {
-            answer = option;
-            selectedOptions = selectedOption;
-
-            //Storing Data in a MAP
-            Map<String, dynamic> ua = {
-              'questionNumber': i + 1,
-              'question': data[i].id,
-              'userAnswer': answer,
-              'option': selectedOptions,
-            };
-            if (i <= data.length - 1) {
-              userSelected
-                      .firstWhere(
-                          (element) => element['question'] == data[i].id,
-                          orElse: () => {})
-                      .isNotEmpty
-                  ? userSelected[userSelected.indexWhere(
-                      (element) => element['question'] == ua['question'])] = ua
-                  : userSelected.add(ua);
-            }
-          });
+          //? For Selecting the options
+          selectOption(option, selectedOption, data);
         },
         child: Container(
           width: double.infinity,
@@ -146,12 +131,12 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               data[i].isOptionAudio == 'Yes'
                   ? IconButton(
                       onPressed: () async {
-                        //For Audio Playing
-                        await player.setUrl(
-                          '${ApiConstants.answerImageUrl}$option',
-                        );
+                        //? For Audio Playing
+                        var filePath =
+                            await imageCache.getFileFromCache(option);
+                        await player.setFilePath(filePath!.file.path);
 
-                        //For Option 1
+                        //* For Option 1
                         if (selectedOption == 'option1') {
                           if (o1 < 2) {
                             player.playing ? player.stop() : player.play();
@@ -169,7 +154,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           }
                         }
 
-                        //For Option 2
+                        //* For Option 2
                         if (selectedOption == 'option2') {
                           if (o2 < 2) {
                             player.playing ? player.stop() : player.play();
@@ -187,7 +172,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           }
                         }
 
-                        //For Option 3
+                        //* For Option 3
                         if (selectedOption == 'option3') {
                           if (o3 < 2) {
                             player.playing ? player.stop() : player.play();
@@ -205,7 +190,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           }
                         }
 
-                        //For Option 4
+                        //* For Option 4
                         if (selectedOption == 'option4') {
                           if (o4 < 2) {
                             player.playing ? player.stop() : player.play();
@@ -223,31 +208,8 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           }
                         }
 
-                        setState(() {
-                          answer = option;
-                          selectedOptions = selectedOption;
-
-                          //Storing Data in a MAP
-                          Map<String, dynamic> ua = {
-                            'questionNumber': i + 1,
-                            'question': data[i].id,
-                            'userAnswer': answer,
-                            'option': selectedOptions,
-                          };
-                          if (i <= data.length - 1) {
-                            userSelected
-                                    .firstWhere(
-                                        (element) =>
-                                            element['question'] == data[i].id,
-                                        orElse: () => {})
-                                    .isNotEmpty
-                                ? userSelected[userSelected.indexWhere(
-                                    (element) =>
-                                        element['question'] ==
-                                        ua['question'])] = ua
-                                : userSelected.add(ua);
-                          }
-                        });
+                        //? For Selecting the options
+                        selectOption(option, selectedOption, data);
                       },
                       padding: const EdgeInsets.all(0),
                       icon: const Icon(
@@ -299,32 +261,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                 );
                               },
                             );
-                            setState(() {
-                              answer = option;
-                              selectedOptions = selectedOption;
-
-                              //Storing Data in a MAP
-                              Map<String, dynamic> ua = {
-                                'questionNumber': i + 1,
-                                'question': data[i].id,
-                                'userAnswer': answer,
-                                'option': selectedOptions,
-                              };
-                              if (i <= data.length - 1) {
-                                userSelected
-                                        .firstWhere(
-                                            (element) =>
-                                                element['question'] ==
-                                                data[i].id,
-                                            orElse: () => {})
-                                        .isNotEmpty
-                                    ? userSelected[userSelected.indexWhere(
-                                        (element) =>
-                                            element['question'] ==
-                                            ua['question'])] = ua
-                                    : userSelected.add(ua);
-                              }
-                            });
+                            selectOption(option, selectedOption, data);
                           },
                           child: CachedNetworkImage(
                             imageUrl: '${ApiConstants.answerImageUrl}$option',
@@ -342,6 +279,31 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     );
   }
 
+  void selectOption(
+      String option, String selectedOption, List<Questions> data) {
+    setState(() {
+      answer = option;
+      selectedOptions = selectedOption;
+
+      //? Storing Data in a MAP
+      Map<String, dynamic> ua = {
+        'questionNumber': i + 1,
+        'question': data[i].id,
+        'userAnswer': answer,
+        'option': selectedOptions,
+      };
+      if (i <= data.length - 1) {
+        userSelected
+                .firstWhere((element) => element['question'] == data[i].id,
+                    orElse: () => {})
+                .isNotEmpty
+            ? userSelected[userSelected.indexWhere(
+                (element) => element['question'] == ua['question'])] = ua
+            : userSelected.add(ua);
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -357,18 +319,18 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //MeidaQuery Screen Size
+    //? MeidaQuery Screen Size
     Size screenSize = MediaQuery.of(context).size;
 
-    //Taking Arguments
+    //? Taking Arguments
     Map args = ModalRoute.of(context)!.settings.arguments as Map;
 
-    //Geting ExamType
+    //? Geting ExamType
     ExamType examType = args['exam'];
 
     return ref.watch(questionControllerProvider(examType.id)).when(
           data: (data) {
-            //Getting Timer Data
+            //? Getting Timer Data
             CountDownTimer counter = CountDownTimer(
               time: Duration(minutes: examType.time),
               onSubmit: () {
@@ -406,80 +368,14 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               },
             );
 
-            for (var qus in data) {
-              if (qus.filePath != null) {
-                CachedNetworkImage(
-                  cacheManager: imageCache,
-                  imageUrl: '${ApiConstants.questionFileUrl}${qus.filePath}',
-                );
-              }
-              if (qus.isImage != "No") {
-                CachedNetworkImage(
-                  imageUrl: '${ApiConstants.answerImageUrl}${qus.option1}',
-                  cacheManager: imageCache,
-                );
-                CachedNetworkImage(
-                  imageUrl: '${ApiConstants.answerImageUrl}${qus.option2}',
-                  cacheManager: imageCache,
-                );
-                CachedNetworkImage(
-                  imageUrl: '${ApiConstants.answerImageUrl}${qus.option3}',
-                  cacheManager: imageCache,
-                );
-                CachedNetworkImage(
-                  imageUrl: '${ApiConstants.answerImageUrl}${qus.option4}',
-                  cacheManager: imageCache,
-                );
-              }
-            }
+            cachingDatas(data);
             return Theme(
               data: ThemeData.light(
                 useMaterial3: true,
               ),
               child: WillPopScope(
                 onWillPop: () async {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        content: Text(
-                          'Are you sure want to exit ?',
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                        actions: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () {
-                              SystemChrome.setPreferredOrientations([
-                                DeviceOrientation.portraitUp,
-                              ]);
-                              ref.invalidate(questionControllerProvider);
-                              Navigator.of(context).pushReplacementNamed(
-                                  SetScreen.routeName,
-                                  arguments: examType);
-                            },
-                            child: const Text(
-                              'Yes',
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text(
-                              'No',
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  backPrompt(context, examType);
                   return false;
                 },
                 child: Scaffold(
@@ -549,12 +445,13 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                     ),
                                     children: [
                                       Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          //Showing Category
+                                          //? Showing Category
                                           Padding(
-                                            padding: EdgeInsets.symmetric(
-                                              vertical:
-                                                  screenSize.height * 0.01,
+                                            padding: EdgeInsets.only(
+                                              top: screenSize.height * 0.01,
                                             ),
                                             child: Text(
                                               data[i].category,
@@ -563,32 +460,39 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   .bodyMedium!
                                                   .copyWith(
                                                     fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
                                                   ),
                                             ),
                                           ),
 
-                                          //Showing Question
+                                          //? Showing Question
                                           Padding(
-                                            padding: EdgeInsets.symmetric(
-                                              vertical:
-                                                  screenSize.height * 0.03,
-                                              horizontal: 3.0,
+                                            padding: EdgeInsets.only(
+                                              bottom: screenSize.height * 0.03,
                                             ),
                                             child: Text(
-                                                '${i + 1}. ${data[i].question}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyLarge),
+                                              '${i + 1}. ${data[i].question}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge!
+                                                  .copyWith(
+                                                    color: Colors.black,
+                                                  ),
+                                            ),
                                           ),
 
                                           data[i].isAudio == 'Yes' ||
                                                   data[i].isOptionAudio == 'Yes'
                                               ? IconButton(
                                                   onPressed: () async {
-                                                    //For Audio Playing
-                                                    await player.setUrl(
-                                                      '${ApiConstants.questionFileUrl}${data[i].filePath}',
-                                                    );
+                                                    //? For Audio Playing
+                                                    var filePath =
+                                                        await imageCache
+                                                            .getFileFromCache(
+                                                                data[i]
+                                                                    .filePath!);
+                                                    await player.setFilePath(
+                                                        filePath!.file.path);
                                                     if (q < 2) {
                                                       isQusPlaying
                                                           ? player.stop()
@@ -815,11 +719,121 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               ),
             );
           },
-          error: (e, s) => Text(e.toString()),
+          error: (e, s) => WillPopScope(
+            onWillPop: () async {
+              SystemChrome.setPreferredOrientations(
+                  [DeviceOrientation.portraitUp]);
+              ref.invalidate(questionControllerProvider);
+              return true;
+            },
+            child: Scaffold(
+              body: Center(child: Text(e.toString())),
+            ),
+          ),
           loading: () => const Center(
             child: CircularProgressIndicator(),
           ),
         );
+  }
+
+  void backPrompt(BuildContext context, ExamType examType) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Text(
+            'Are you sure want to exit ?',
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                SystemChrome.setPreferredOrientations([
+                  DeviceOrientation.portraitUp,
+                ]);
+                ref.invalidate(questionControllerProvider);
+                Navigator.of(context).popUntil(
+                  ModalRoute.withName(
+                    SetScreen.routeName,
+                  ),
+                );
+              },
+              child: const Text(
+                'Yes',
+              ),
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'No',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void cachingDatas(List<Questions> data) {
+    for (var qus in data) {
+      if (qus.filePath != null) {
+        CachedNetworkImage(
+          cacheManager: imageCache,
+          imageUrl: '${ApiConstants.questionFileUrl}${qus.filePath}',
+        );
+      }
+      if (qus.isImage != "No") {
+        CachedNetworkImage(
+          imageUrl: '${ApiConstants.answerImageUrl}${qus.option1}',
+          cacheManager: imageCache,
+        );
+        CachedNetworkImage(
+          imageUrl: '${ApiConstants.answerImageUrl}${qus.option2}',
+          cacheManager: imageCache,
+        );
+        CachedNetworkImage(
+          imageUrl: '${ApiConstants.answerImageUrl}${qus.option3}',
+          cacheManager: imageCache,
+        );
+        CachedNetworkImage(
+          imageUrl: '${ApiConstants.answerImageUrl}${qus.option4}',
+          cacheManager: imageCache,
+        );
+      }
+      if (qus.isAudio == 'Yes' || qus.isOptionAudio == 'Yes') {
+        imageCache.downloadFile(
+          '${ApiConstants.questionFileUrl}${qus.filePath}',
+          key: qus.filePath,
+        );
+      }
+      if (qus.isOptionAudio == 'Yes') {
+        imageCache.downloadFile(
+          '${ApiConstants.answerImageUrl}${qus.option1}',
+          key: qus.option1,
+        );
+        imageCache.downloadFile(
+          '${ApiConstants.answerImageUrl}${qus.option2}',
+          key: qus.option2,
+        );
+        imageCache.downloadFile(
+          '${ApiConstants.answerImageUrl}${qus.option3}',
+          key: qus.option3,
+        );
+        imageCache.downloadFile(
+          '${ApiConstants.answerImageUrl}${qus.option4}',
+          key: qus.option4,
+        );
+      }
+    }
   }
 
   Padding nextButton(
@@ -1160,6 +1174,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     List<String> questionIds = [];
     List<String> selectedAnswers = [];
 
+    player.stop();
     for (var userAnswer in userSelected) {
       questionIds.add(userAnswer['question'].toString());
       selectedAnswers.add(userAnswer['option'].toString());

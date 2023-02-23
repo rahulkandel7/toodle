@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/constants/api_constants.dart';
 import 'package:toddle/constants/app_constants.dart';
@@ -75,16 +76,21 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
 
   //For Checking bio enable or not
   bool isBiometric = false;
+  bool supportBiometric = false;
   //For getting is login info
   _isBio() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
+    final LocalAuthentication auth = LocalAuthentication();
+    final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
+    bool isBioSupport =
+        canAuthenticateWithBiometrics || await auth.isDeviceSupported();
     setState(() {
       username = jsonDecode(prefs.getString('user')!)['name'];
       userImage = jsonDecode(prefs.getString('user')!)['profile_photo'];
+      supportBiometric = isBioSupport;
     });
 
-    if (prefs.getBool('isBio')!) {
+    if (prefs.getBool('isBio') != null) {
       setState(() {
         isBiometric = true;
       });
@@ -118,7 +124,9 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
   void initState() {
     super.initState();
     _isBio();
-    startTimer();
+    if (supportBiometric) {
+      startTimer();
+    }
   }
 
   @override
@@ -157,69 +165,81 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: screenSize.height * 0.02,
-          horizontal: screenSize.width * 0.04,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                'Welcome to EPS Topik Practice',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall!
-                    .copyWith(fontWeight: FontWeight.w500),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: screenSize.height * 0.02,
+            horizontal: screenSize.width * 0.04,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  'Welcome to ',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineLarge!
+                      .copyWith(fontWeight: FontWeight.w500),
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                infocard(
-                  screenSize: screenSize,
-                  info: 'My Papers',
-                  function: () => Navigator.of(context)
-                      .pushNamed(ViewPaperHistory.routeName),
-                  image: 'assets/images/mypaper.png',
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  'EPS Topik Practice',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineLarge!
+                      .copyWith(fontWeight: FontWeight.w500),
                 ),
-                infocard(
-                  screenSize: screenSize,
-                  info: 'Take Exam',
-                  function: () =>
-                      Navigator.of(context).pushNamed(HomeScreen.routeName),
-                  image: 'assets/images/take-exam.png',
-                ),
-              ],
-            ),
-            SizedBox(
-              height: screenSize.height * 0.02,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                infocard(
-                  screenSize: screenSize,
-                  info: 'Notices',
-                  function: () =>
-                      Navigator.of(context).pushNamed(NoticeScreen.routeName),
-                  image: 'assets/images/notice.png',
-                ),
-                infocard(
-                  screenSize: screenSize,
-                  info: 'Edit Profile',
-                  function: () =>
-                      Navigator.of(context).pushNamed(EditProfile.routename),
-                  image: 'assets/images/edit-profile.png',
-                ),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  infocard(
+                    screenSize: screenSize,
+                    info: 'My Papers',
+                    function: () => Navigator.of(context)
+                        .pushNamed(ViewPaperHistory.routeName),
+                    image: 'assets/images/mypaper.png',
+                  ),
+                  infocard(
+                    screenSize: screenSize,
+                    info: 'Take Exam',
+                    function: () =>
+                        Navigator.of(context).pushNamed(HomeScreen.routeName),
+                    image: 'assets/images/take-exam.png',
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: screenSize.height * 0.02,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  infocard(
+                    screenSize: screenSize,
+                    info: 'Notices',
+                    function: () =>
+                        Navigator.of(context).pushNamed(NoticeScreen.routeName),
+                    image: 'assets/images/notice.png',
+                  ),
+                  infocard(
+                    screenSize: screenSize,
+                    info: 'Edit Profile',
+                    function: () =>
+                        Navigator.of(context).pushNamed(EditProfile.routename),
+                    image: 'assets/images/edit-profile.png',
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       drawer: AppDrawer(
