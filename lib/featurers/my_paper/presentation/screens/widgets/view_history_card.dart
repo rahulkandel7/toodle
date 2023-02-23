@@ -8,12 +8,14 @@ class ViewHistoryCard extends StatelessWidget {
   final String examType;
   final String obtainedMark;
   final bool show;
+  final bool darkMode;
   const ViewHistoryCard(
       {required this.id,
       required this.date,
       required this.examType,
       required this.obtainedMark,
       required this.show,
+      required this.darkMode,
       super.key});
 
   @override
@@ -22,7 +24,7 @@ class ViewHistoryCard extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.01),
       child: ListTile(
-        tileColor: Colors.indigo.shade50,
+        tileColor: darkMode ? Colors.grey.shade800 : Colors.indigo.shade50,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
             10,
@@ -39,17 +41,17 @@ class ViewHistoryCard extends StatelessWidget {
                   Text(
                     examType,
                     style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          color: Colors.black,
+                          color: darkMode ? Colors.white : Colors.black,
                         ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 3.0),
                     child: Text(
                       'You Have Got $obtainedMark out of 40',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .copyWith(color: Colors.grey.shade700),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: darkMode
+                              ? Colors.grey.shade200
+                              : Colors.grey.shade700),
                     ),
                   ),
                   Padding(
@@ -57,7 +59,9 @@ class ViewHistoryCard extends StatelessWidget {
                     child: Text(
                       date,
                       style: TextStyle(
-                        color: Colors.grey.shade700,
+                        color: darkMode
+                            ? Colors.grey.shade200
+                            : Colors.grey.shade700,
                       ),
                     ),
                   ),

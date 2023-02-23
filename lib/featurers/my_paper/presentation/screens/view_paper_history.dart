@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toddle/core/darkmode_notifier.dart';
 import 'package:toddle/featurers/my_paper/data/models/exam.dart';
 import 'package:toddle/featurers/my_paper/presentation/controllers/my_paper_controller.dart';
 import 'package:toddle/featurers/my_paper/presentation/screens/widgets/view_history_card.dart';
@@ -22,6 +23,7 @@ class ViewPaperHistoryState extends ConsumerState<ViewPaperHistory> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
+    bool darkMode = ref.watch(darkmodeNotifierProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Papers'),
@@ -46,6 +48,7 @@ class ViewPaperHistoryState extends ConsumerState<ViewPaperHistory> {
                           id: exams[i].id,
                           obtainedMark: exams[i].obtainedMarks,
                           show: exams[i].show,
+                          darkMode: darkMode,
                         ),
                         itemCount: exams.length,
                       );
