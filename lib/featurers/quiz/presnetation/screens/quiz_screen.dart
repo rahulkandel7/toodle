@@ -756,8 +756,11 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                   DeviceOrientation.portraitUp,
                 ]);
                 ref.invalidate(questionControllerProvider);
-                Navigator.of(context).pushReplacementNamed(SetScreen.routeName,
-                    arguments: examType);
+                Navigator.of(context).popUntil(
+                  ModalRoute.withName(
+                    SetScreen.routeName,
+                  ),
+                );
               },
               child: const Text(
                 'Yes',
