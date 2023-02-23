@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/constants/api_constants.dart';
@@ -39,12 +40,19 @@ class AppDrawerState extends ConsumerState<AppDrawer> {
   }
 
   bool isBio = false;
+  bool supportBio = false;
 
   _isBio() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    final LocalAuthentication auth = LocalAuthentication();
+    final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
+    bool isBioMetric =
+        canAuthenticateWithBiometrics || await auth.isDeviceSupported();
+
     setState(() {
       username = jsonDecode(prefs.getString('user')!)['name'];
       userImage = jsonDecode(prefs.getString('user')!)['profile_photo'];
+      supportBio = isBioMetric;
     });
 
     if (prefs.getBool('isBio')! == true) {
@@ -201,33 +209,35 @@ class AppDrawerState extends ConsumerState<AppDrawer> {
                         Navigator.of(context).pushNamed(EditProfile.routename);
                       },
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Biometric Login',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall!
-                              .copyWith(
-                                color: darkmode
-                                    ? Colors.white
-                                    : AppConstants.primaryColor,
+                    supportBio
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Biometric Login',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                      color: darkmode
+                                          ? Colors.white
+                                          : AppConstants.primaryColor,
+                                    ),
                               ),
-                        ),
-                        Switch(
-                          value: isBio,
-                          onChanged: (value) async {
-                            setState(() {
-                              isBio = value;
-                            });
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            prefs.setBool('isBio', value);
-                          },
-                        ),
-                      ],
-                    ),
+                              Switch(
+                                value: isBio,
+                                onChanged: (value) async {
+                                  setState(() {
+                                    isBio = value;
+                                  });
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  prefs.setBool('isBio', value);
+                                },
+                              ),
+                            ],
+                          )
+                        : const SizedBox.shrink(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

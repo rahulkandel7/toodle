@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toddle/constants/api_constants.dart';
 import 'package:toddle/constants/app_constants.dart';
@@ -75,13 +76,18 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
 
   //For Checking bio enable or not
   bool isBiometric = false;
+  bool supportBiometric = false;
   //For getting is login info
   _isBio() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
+    final LocalAuthentication auth = LocalAuthentication();
+    final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
+    bool isBioSupport =
+        canAuthenticateWithBiometrics || await auth.isDeviceSupported();
     setState(() {
       username = jsonDecode(prefs.getString('user')!)['name'];
       userImage = jsonDecode(prefs.getString('user')!)['profile_photo'];
+      supportBiometric = isBioSupport;
     });
 
     if (prefs.getBool('isBio') != null) {
@@ -118,7 +124,9 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
   void initState() {
     super.initState();
     _isBio();
-    startTimer();
+    if (supportBiometric) {
+      startTimer();
+    }
   }
 
   @override
