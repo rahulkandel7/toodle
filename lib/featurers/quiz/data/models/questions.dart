@@ -1,6 +1,7 @@
 class Questions {
   final int id;
   final String question;
+  final String? subQuestion;
   final String option1;
   final String option2;
   final String option3;
@@ -29,6 +30,7 @@ class Questions {
     required this.selectedOption,
     required this.isOptionAudio,
     required this.category,
+    required this.subQuestion,
   });
 
   factory Questions.fromMap(Map<String, dynamic> map) {
@@ -42,6 +44,8 @@ class Questions {
       category: map['category'] as String,
       correctOption: map['correct_option'].toString(),
       filePath: map['filepath'] != null ? map['filepath'] as String : null,
+      subQuestion:
+          map['sub_question'] != null ? map['sub_question'] as String : null,
       questionSetsId: map['question_sets_id'].toString(),
       isImage: map['isImage'] as String,
       isAudio: map['isAudio'] as String,

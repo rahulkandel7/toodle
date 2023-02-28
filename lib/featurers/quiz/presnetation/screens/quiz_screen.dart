@@ -466,18 +466,49 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           ),
 
                                           //? Showing Question
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              bottom: screenSize.height * 0.03,
+                                          Container(
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(),
                                             ),
-                                            child: Text(
-                                              '${i + 1}. ${data[i].question}',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyLarge!
-                                                  .copyWith(
-                                                    color: Colors.black,
+                                            padding: const EdgeInsets.all(8),
+                                            margin: const EdgeInsets.all(10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                    bottom: screenSize.height *
+                                                        0.03,
                                                   ),
+                                                  child: Text(
+                                                    '${i + 1}. ${data[i].question}',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge!
+                                                        .copyWith(
+                                                          color: Colors.black,
+                                                        ),
+                                                  ),
+                                                ),
+                                                // Showing Sub Question
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                    bottom: screenSize.height *
+                                                        0.03,
+                                                  ),
+                                                  child: Text(
+                                                    '${data[i].subQuestion}',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge!
+                                                        .copyWith(
+                                                          color: Colors.black,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
 
@@ -684,7 +715,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(
-                                                20,
+                                                9,
                                               ),
                                             ),
                                             side: BorderSide(
@@ -846,8 +877,13 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         alignment: Alignment.centerRight,
         child: FilledButton(
           style: FilledButton.styleFrom(
-            backgroundColor: AppConstants.quizScreen,
-          ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  9,
+                ),
+              ),
+              backgroundColor: AppConstants.quizScreen,
+              fixedSize: const Size(150, 10)),
           onPressed: () {
             setState(() {
               //Setting audio values to 0
@@ -888,6 +924,12 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         child: FilledButton(
           style: FilledButton.styleFrom(
             backgroundColor: AppConstants.quizScreen,
+            fixedSize: const Size(150, 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                9,
+              ),
+            ),
           ),
           onPressed: () {
             setState(() {
