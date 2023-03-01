@@ -464,12 +464,36 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   ),
                                             ),
                                           ),
-
+                                          // ? Showing Question number
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              bottom: screenSize.height * 0.03,
+                                            ),
+                                            child: Text(
+                                              '${i + 1}.',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge!
+                                                  .copyWith(
+                                                    color: Colors.black,
+                                                  ),
+                                            ),
+                                          ),
                                           //? Showing Question
                                           Container(
                                             width: double.infinity,
                                             decoration: BoxDecoration(
                                               border: Border.all(),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: Colors.white,
+                                              boxShadow: const [
+                                                BoxShadow(
+                                                  offset: Offset(0, 5),
+                                                  blurRadius: 7,
+                                                  color: Colors.black26,
+                                                ),
+                                              ],
                                             ),
                                             padding: const EdgeInsets.all(8),
                                             margin: const EdgeInsets.all(10),
@@ -483,7 +507,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                         0.03,
                                                   ),
                                                   child: Text(
-                                                    '${i + 1}. ${data[i].question}',
+                                                    data[i].question,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyLarge!
@@ -493,21 +517,27 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   ),
                                                 ),
                                                 // Showing Sub Question
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                    bottom: screenSize.height *
-                                                        0.03,
-                                                  ),
-                                                  child: Text(
-                                                    '${data[i].subQuestion}',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyLarge!
-                                                        .copyWith(
-                                                          color: Colors.black,
+                                                data[i].subQuestion != null
+                                                    ? Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                          bottom: screenSize
+                                                                  .height *
+                                                              0.03,
                                                         ),
-                                                  ),
-                                                ),
+                                                        child: Text(
+                                                          '${data[i].subQuestion}',
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyLarge!
+                                                                  .copyWith(
+                                                                    color: Colors
+                                                                        .black,
+                                                                  ),
+                                                        ),
+                                                      )
+                                                    : const SizedBox(),
                                               ],
                                             ),
                                           ),
