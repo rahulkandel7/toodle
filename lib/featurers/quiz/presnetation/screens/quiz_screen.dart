@@ -94,23 +94,27 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
           selectOption(option, selectedOption, data);
         },
         child: Container(
-          width: double.infinity,
+          width: isImage == 'Yes' ? screenSize.width * 0.2 : double.infinity,
           padding: const EdgeInsets.all(
             12,
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: Colors.black,
-              width: 0.5,
-            ),
+            border: isImage == 'Yes'
+                ? const Border()
+                : Border.all(
+                    color: Colors.black,
+                    width: 0.5,
+                  ),
           ),
           child: Row(
             children: [
               Container(
                 margin: const EdgeInsets.only(right: 12),
                 width: screenSize.width * 0.04,
-                height: screenSize.height * 0.09,
+                height: isImage == 'Yes'
+                    ? screenSize.height * 0.2
+                    : screenSize.height * 0.09,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
@@ -689,51 +693,132 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   : const SizedBox(),
                                         ],
                                       ),
-                                      Column(
-                                        children: [
-                                          //Option Box
-                                          optionBox(
-                                            option: data[i].option1,
-                                            isImage: data[i].isImage,
-                                            screenSize: screenSize,
-                                            selectedOption: 'option1',
-                                            isOptionAudio:
-                                                data[i].isOptionAudio,
-                                            data: data,
-                                            boxNumber: '1',
-                                          ),
-                                          optionBox(
-                                            option: data[i].option2,
-                                            isImage: data[i].isImage,
-                                            screenSize: screenSize,
-                                            isOptionAudio:
-                                                data[i].isOptionAudio,
-                                            selectedOption: 'option2',
-                                            data: data,
-                                            boxNumber: '2',
-                                          ),
-                                          optionBox(
-                                            option: data[i].option3,
-                                            isImage: data[i].isImage,
-                                            screenSize: screenSize,
-                                            isOptionAudio:
-                                                data[i].isOptionAudio,
-                                            selectedOption: 'option3',
-                                            data: data,
-                                            boxNumber: '3',
-                                          ),
-                                          optionBox(
-                                            option: data[i].option4,
-                                            isImage: data[i].isImage,
-                                            screenSize: screenSize,
-                                            isOptionAudio:
-                                                data[i].isOptionAudio,
-                                            selectedOption: 'option4',
-                                            data: data,
-                                            boxNumber: '4',
-                                          ),
-                                        ],
-                                      ),
+                                      data[i].isImage == 'Yes'
+                                          ? Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: optionBox(
+                                                        option: data[i].option1,
+                                                        isImage:
+                                                            data[i].isImage,
+                                                        screenSize: screenSize,
+                                                        selectedOption:
+                                                            'option1',
+                                                        isOptionAudio: data[i]
+                                                            .isOptionAudio,
+                                                        data: data,
+                                                        boxNumber: '1',
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: optionBox(
+                                                        option: data[i].option2,
+                                                        isImage:
+                                                            data[i].isImage,
+                                                        screenSize: screenSize,
+                                                        isOptionAudio: data[i]
+                                                            .isOptionAudio,
+                                                        selectedOption:
+                                                            'option2',
+                                                        data: data,
+                                                        boxNumber: '2',
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: optionBox(
+                                                        option: data[i].option3,
+                                                        isImage:
+                                                            data[i].isImage,
+                                                        screenSize: screenSize,
+                                                        isOptionAudio: data[i]
+                                                            .isOptionAudio,
+                                                        selectedOption:
+                                                            'option3',
+                                                        data: data,
+                                                        boxNumber: '3',
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: optionBox(
+                                                        option: data[i].option4,
+                                                        isImage:
+                                                            data[i].isImage,
+                                                        screenSize: screenSize,
+                                                        isOptionAudio: data[i]
+                                                            .isOptionAudio,
+                                                        selectedOption:
+                                                            'option4',
+                                                        data: data,
+                                                        boxNumber: '4',
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                          : Column(
+                                              children: [
+                                                //Option Box
+                                                optionBox(
+                                                  option: data[i].option1,
+                                                  isImage: data[i].isImage,
+                                                  screenSize: screenSize,
+                                                  selectedOption: 'option1',
+                                                  isOptionAudio:
+                                                      data[i].isOptionAudio,
+                                                  data: data,
+                                                  boxNumber: '1',
+                                                ),
+                                                optionBox(
+                                                  option: data[i].option2,
+                                                  isImage: data[i].isImage,
+                                                  screenSize: screenSize,
+                                                  isOptionAudio:
+                                                      data[i].isOptionAudio,
+                                                  selectedOption: 'option2',
+                                                  data: data,
+                                                  boxNumber: '2',
+                                                ),
+                                                optionBox(
+                                                  option: data[i].option3,
+                                                  isImage: data[i].isImage,
+                                                  screenSize: screenSize,
+                                                  isOptionAudio:
+                                                      data[i].isOptionAudio,
+                                                  selectedOption: 'option3',
+                                                  data: data,
+                                                  boxNumber: '3',
+                                                ),
+                                                optionBox(
+                                                  option: data[i].option4,
+                                                  isImage: data[i].isImage,
+                                                  screenSize: screenSize,
+                                                  isOptionAudio:
+                                                      data[i].isOptionAudio,
+                                                  selectedOption: 'option4',
+                                                  data: data,
+                                                  boxNumber: '4',
+                                                ),
+                                              ],
+                                            ),
                                     ],
                                   ),
                                 ),
