@@ -498,7 +498,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                             ),
                                                       ),
                                                     ),
-                                                    data[i].question != null
+                                                    data[i].question != null ||
+                                                            data[i].isAudio ==
+                                                                'Yes'
                                                         ? SizedBox(
                                                             width: screenSize
                                                                     .width *
