@@ -140,7 +140,7 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
           padding: EdgeInsets.only(bottom: screenSize.height * 0.01),
           child: Center(
             child: Text(
-              widget.questions.question,
+              widget.questions.question!,
               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),

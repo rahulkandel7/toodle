@@ -1,6 +1,6 @@
 class Questions {
   final int id;
-  final String question;
+  final String? question;
   final String? subQuestion;
   final String option1;
   final String option2;
@@ -36,7 +36,7 @@ class Questions {
   factory Questions.fromMap(Map<String, dynamic> map) {
     return Questions(
       id: map['id'] as int,
-      question: map['question'] as String,
+      question: map['question'] != null ? map['question'] as String : null,
       option1: map['option1'] as String,
       option2: map['option2'] as String,
       option3: map['option3'] as String,

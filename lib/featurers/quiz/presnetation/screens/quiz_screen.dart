@@ -452,6 +452,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           Padding(
                                             padding: EdgeInsets.only(
                                               top: screenSize.height * 0.01,
+                                              bottom: 8,
                                             ),
                                             child: Text(
                                               data[i].category,
@@ -464,128 +465,124 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   ),
                                             ),
                                           ),
-                                          // ? Showing Question number
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              bottom: screenSize.height * 0.03,
-                                            ),
-                                            child: Text(
-                                              '${i + 1}.',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyLarge!
-                                                  .copyWith(
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                          ),
+
                                           //? Showing Question
-                                          Container(
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              border: Border.all(),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: Colors.white,
-                                              boxShadow: const [
-                                                BoxShadow(
-                                                  offset: Offset(0, 5),
-                                                  blurRadius: 7,
-                                                  color: Colors.black26,
-                                                ),
-                                              ],
-                                            ),
-                                            padding: const EdgeInsets.all(8),
-                                            margin: const EdgeInsets.all(10),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                    bottom: screenSize.height *
-                                                        0.03,
-                                                  ),
-                                                  child: Text(
-                                                    data[i].question,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyLarge!
-                                                        .copyWith(
-                                                          color: Colors.black,
-                                                        ),
-                                                  ),
-                                                ),
-                                                // Showing Sub Question
-                                                data[i].subQuestion != null
-                                                    ? Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                          bottom: screenSize
-                                                                  .height *
-                                                              0.03,
-                                                        ),
-                                                        child: Text(
-                                                          '${data[i].subQuestion}',
-                                                          style:
-                                                              Theme.of(context)
+                                          (i > 1 && i < 8) ||
+                                                  (i >= 12 && i <= 19)
+                                              ? QuestionWithBorder(
+                                                  screenSize: screenSize,
+                                                  i: i,
+                                                  data: data)
+                                              : Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 8.0),
+                                                      child: Text(
+                                                        '${i + 1}.',
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyLarge!
+                                                            .copyWith(
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                    data[i].question != null
+                                                        ? SizedBox(
+                                                            width: screenSize
+                                                                    .width *
+                                                                0.4,
+                                                            child: Text(
+                                                              data[i].question!,
+                                                              style: Theme.of(
+                                                                      context)
                                                                   .textTheme
                                                                   .bodyLarge!
                                                                   .copyWith(
                                                                     color: Colors
                                                                         .black,
                                                                   ),
-                                                        ),
-                                                      )
-                                                    : const SizedBox(),
-                                              ],
-                                            ),
-                                          ),
+                                                            ),
+                                                          )
+                                                        : const SizedBox()
+                                                  ],
+                                                ),
 
                                           data[i].isAudio == 'Yes' ||
                                                   data[i].isOptionAudio == 'Yes'
-                                              ? IconButton(
-                                                  onPressed: () async {
-                                                    //? For Audio Playing
-                                                    var filePath =
-                                                        await imageCache
-                                                            .getFileFromCache(
-                                                                data[i]
-                                                                    .filePath!);
-                                                    await player.setFilePath(
-                                                        filePath!.file.path);
-                                                    if (q < 2) {
-                                                      isQusPlaying
-                                                          ? player.stop()
-                                                          : player.play();
-                                                      setState(() {
-                                                        isQusPlaying =
-                                                            !isQusPlaying;
-                                                        if (isQusPlaying) {
-                                                          q++;
-                                                        }
-                                                      });
-                                                    } else {
-                                                      player.stop();
-                                                      setState(() {
-                                                        isQusPlaying = false;
-                                                      });
-                                                      toast(
-                                                          context: context,
-                                                          label:
-                                                              'You cannot play audio more than twice',
-                                                          color: Colors.red);
-                                                    }
-                                                  },
-                                                  icon: Icon(
-                                                    isQusPlaying
-                                                        ? Icons
-                                                            .pause_circle_filled_rounded
-                                                        : Icons
-                                                            .play_circle_outline,
-                                                    size: 32,
+                                              ? Container(
+                                                  padding:
+                                                      const EdgeInsets.all(10),
+                                                  width: double.infinity,
+                                                  height:
+                                                      screenSize.height * 0.24,
+                                                  margin: const EdgeInsets.all(
+                                                    15,
                                                   ),
-                                                )
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    border: Border.all(
+                                                      color: Colors.black,
+                                                    ),
+                                                    color: Colors.white,
+                                                    boxShadow: const [
+                                                      BoxShadow(
+                                                          offset: Offset(0, 5),
+                                                          blurRadius: 5,
+                                                          color:
+                                                              Colors.black26),
+                                                    ],
+                                                  ),
+                                                  child: IconButton(
+                                                    onPressed: () async {
+                                                      //? For Audio Playing
+                                                      var filePath =
+                                                          await imageCache
+                                                              .getFileFromCache(
+                                                                  data[i]
+                                                                      .filePath!);
+                                                      await player.setFilePath(
+                                                          filePath!.file.path);
+                                                      if (q < 2) {
+                                                        isQusPlaying
+                                                            ? player.stop()
+                                                            : player.play();
+                                                        setState(() {
+                                                          isQusPlaying =
+                                                              !isQusPlaying;
+                                                          if (isQusPlaying) {
+                                                            q++;
+                                                          }
+                                                        });
+                                                      } else {
+                                                        player.stop();
+                                                        setState(() {
+                                                          isQusPlaying = false;
+                                                        });
+                                                        toast(
+                                                            context: context,
+                                                            label:
+                                                                'You cannot play audio more than twice',
+                                                            color: Colors.red);
+                                                      }
+                                                    },
+                                                    icon: Icon(
+                                                      isQusPlaying
+                                                          ? Icons
+                                                              .pause_circle_filled_rounded
+                                                          : Icons.volume_down,
+                                                      size: 32,
+                                                    ),
+                                                  ))
                                               : data[i].filePath != null
                                                   ? InkWell(
                                                       onTap: () {
@@ -643,6 +640,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                         );
                                                       },
                                                       child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10),
                                                         width: double.infinity,
                                                         height:
                                                             screenSize.height *
@@ -659,6 +659,15 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                           border: Border.all(
                                                             color: Colors.black,
                                                           ),
+                                                          color: Colors.white,
+                                                          boxShadow: const [
+                                                            BoxShadow(
+                                                                offset: Offset(
+                                                                    0, 5),
+                                                                blurRadius: 5,
+                                                                color: Colors
+                                                                    .black26),
+                                                          ],
                                                         ),
                                                         child:
                                                             CachedNetworkImage(
@@ -728,50 +737,93 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                     ],
                                   ),
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    i == 0
-                                        ? const SizedBox.shrink()
-                                        : previousButton(
-                                            data,
-                                            examType,
-                                          ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 15.0),
-                                      child: OutlinedButton(
-                                        style: OutlinedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                9,
+                                i == 0
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 15.0),
+                                            child: OutlinedButton(
+                                              style: OutlinedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      9,
+                                                    ),
+                                                  ),
+                                                  side: BorderSide(
+                                                      color: AppConstants
+                                                          .quizScreen),
+                                                  backgroundColor:
+                                                      Colors.transparent),
+                                              onPressed: () {
+                                                setState(() {
+                                                  isTotalQuestion = true;
+                                                });
+                                              },
+                                              child: Text(
+                                                'Total Questions',
+                                                style: TextStyle(
+                                                    color: AppConstants
+                                                        .quizScreen),
                                               ),
                                             ),
-                                            side: BorderSide(
-                                                color: AppConstants.quizScreen),
-                                            backgroundColor:
-                                                Colors.transparent),
-                                        onPressed: () {
-                                          setState(() {
-                                            isTotalQuestion = true;
-                                          });
-                                        },
-                                        child: Text(
-                                          'Total Questions',
-                                          style: TextStyle(
-                                              color: AppConstants.quizScreen),
-                                        ),
-                                      ),
-                                    ),
-                                    i == data.length - 1
-                                        ? const SizedBox()
-                                        : nextButton(
+                                          ),
+                                          i == data.length - 1
+                                              ? const SizedBox()
+                                              : nextButton(
+                                                  data,
+                                                  examType,
+                                                ),
+                                        ],
+                                      )
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          previousButton(
                                             data,
                                             examType,
                                           ),
-                                  ],
-                                ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 15.0),
+                                            child: OutlinedButton(
+                                              style: OutlinedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      9,
+                                                    ),
+                                                  ),
+                                                  side: BorderSide(
+                                                      color: AppConstants
+                                                          .quizScreen),
+                                                  backgroundColor:
+                                                      Colors.transparent),
+                                              onPressed: () {
+                                                setState(() {
+                                                  isTotalQuestion = true;
+                                                });
+                                              },
+                                              child: Text(
+                                                'Total Questions',
+                                                style: TextStyle(
+                                                    color: AppConstants
+                                                        .quizScreen),
+                                              ),
+                                            ),
+                                          ),
+                                          i == data.length - 1
+                                              ? const SizedBox()
+                                              : nextButton(
+                                                  data,
+                                                  examType,
+                                                ),
+                                        ],
+                                      ),
                               ],
                             ),
                           ),
@@ -1273,5 +1325,90 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
             .pushReplacementNamed(QuizResultScreen.routeName, arguments: msg);
       }
     });
+  }
+}
+
+class QuestionWithBorder extends StatelessWidget {
+  const QuestionWithBorder({
+    super.key,
+    required this.screenSize,
+    required this.i,
+    required this.data,
+  });
+
+  final Size screenSize;
+  final int i;
+  final List<Questions> data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ? Showing Question number
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: screenSize.height * 0.03,
+          ),
+          child: Text(
+            '${i + 1}.',
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: Colors.black,
+                ),
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            border: Border.all(),
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+            boxShadow: const [
+              BoxShadow(
+                offset: Offset(0, 5),
+                blurRadius: 7,
+                color: Colors.black26,
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(8),
+          margin: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: i >= 2 && i <= 7
+                ? CrossAxisAlignment.center
+                : CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: screenSize.height * 0.03,
+                ),
+                child: data[i].question != null
+                    ? Text(
+                        data[i].question!,
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Colors.black,
+                            ),
+                      )
+                    : const SizedBox(),
+              ),
+              // Showing Sub Question
+              data[i].subQuestion != null
+                  ? Padding(
+                      padding: EdgeInsets.only(
+                        bottom: screenSize.height * 0.03,
+                      ),
+                      child: Text(
+                        '${data[i].subQuestion}',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Colors.black,
+                            ),
+                      ),
+                    )
+                  : const SizedBox(),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
