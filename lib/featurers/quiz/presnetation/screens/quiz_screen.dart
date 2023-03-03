@@ -107,6 +107,16 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                     color: Colors.black,
                     width: 0.5,
                   ),
+            color: Colors.white,
+            boxShadow: [
+              isImage == 'Yes'
+                  ? const BoxShadow(
+                      offset: Offset(2, 2),
+                      color: Colors.black26,
+                      blurRadius: 5,
+                    )
+                  : const BoxShadow(),
+            ],
           ),
           child: Row(
             children: [
