@@ -1316,7 +1316,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             onTap: () {
                               setState(() {
                                 isTotalQuestion = false;
-                                i = index;
+                                i = 20 + index;
                                 if (i < data.length - 1) {
                                   int selectedQuestion = data[i].id;
                                   if (userSelected.length > 1) {
