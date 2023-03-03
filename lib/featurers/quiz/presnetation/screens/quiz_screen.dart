@@ -588,173 +588,15 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                           : Icons.volume_down,
                                                       size: 32,
                                                     ),
-                                                  ))
+                                                  ),
+                                                )
                                               : data[i].filePath != null
-                                                  ? InkWell(
-                                                      onTap: () {
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return Dialog(
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              surfaceTintColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              child: Row(
-                                                                children: [
-                                                                  Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerLeft,
-                                                                    child:
-                                                                        InteractiveViewer(
-                                                                      child:
-                                                                          CachedNetworkImage(
-                                                                        imageUrl:
-                                                                            '${ApiConstants.questionFileUrl}${data[i].filePath}',
-                                                                        width: screenSize.width *
-                                                                            0.4,
-                                                                        height:
-                                                                            double.infinity,
-                                                                        fit: BoxFit
-                                                                            .contain,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  Expanded(
-                                                                    child:
-                                                                        InkWell(
-                                                                      splashColor:
-                                                                          Colors
-                                                                              .transparent,
-                                                                      focusColor:
-                                                                          Colors
-                                                                              .transparent,
-                                                                      onTap: () =>
-                                                                          Navigator.of(context)
-                                                                              .pop(),
-                                                                      child: const SizedBox
-                                                                          .expand(),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            );
-                                                          },
-                                                        );
-                                                      },
-                                                      child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(10),
-                                                        width: double.infinity,
-                                                        height:
-                                                            screenSize.height *
-                                                                0.4,
-                                                        margin: const EdgeInsets
-                                                            .all(
-                                                          15,
-                                                        ),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          border: Border.all(
-                                                            color: Colors.black,
-                                                          ),
-                                                          color: Colors.white,
-                                                          boxShadow: const [
-                                                            BoxShadow(
-                                                                offset: Offset(
-                                                                    0, 5),
-                                                                blurRadius: 5,
-                                                                color: Colors
-                                                                    .black26),
-                                                          ],
-                                                        ),
-                                                        child: Column(
-                                                          children: [
-                                                            CachedNetworkImage(
-                                                              // cacheManager: imageCache,
-                                                              imageUrl:
-                                                                  '${ApiConstants.questionFileUrl}${data[i].filePath}',
-                                                              width: double
-                                                                  .infinity,
-                                                              height: screenSize
-                                                                      .height *
-                                                                  0.3,
-                                                              fit: BoxFit
-                                                                  .contain,
-                                                              placeholder: (context,
-                                                                      url) =>
-                                                                  const Center(
-                                                                child:
-                                                                    CircularProgressIndicator(),
-                                                              ),
-                                                            ),
-                                                            const Divider(),
-                                                            data[i].audioPath !=
-                                                                    null
-                                                                ? IconButton(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      //? For Audio Playing
-                                                                      var filePath =
-                                                                          await imageCache
-                                                                              .getFileFromCache(data[i].audioPath!);
-                                                                      await player.setFilePath(filePath!
-                                                                          .file
-                                                                          .path);
-                                                                      if (q <
-                                                                          2) {
-                                                                        isQusPlaying
-                                                                            ? player.stop()
-                                                                            : player.play();
-                                                                        setState(
-                                                                            () {
-                                                                          isQusPlaying =
-                                                                              !isQusPlaying;
-                                                                          if (isQusPlaying) {
-                                                                            q++;
-                                                                          }
-                                                                        });
-                                                                      } else {
-                                                                        player
-                                                                            .stop();
-                                                                        setState(
-                                                                            () {
-                                                                          isQusPlaying =
-                                                                              false;
-                                                                        });
-                                                                        toast(
-                                                                            context:
-                                                                                context,
-                                                                            label:
-                                                                                'You cannot play audio more than twice',
-                                                                            color:
-                                                                                Colors.red);
-                                                                      }
-                                                                    },
-                                                                    icon: Icon(
-                                                                      isQusPlaying
-                                                                          ? Icons
-                                                                              .pause_circle_filled_rounded
-                                                                          : Icons
-                                                                              .volume_down,
-                                                                      size: 32,
-                                                                    ),
-                                                                  )
-                                                                : const SizedBox(),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    )
+                                                  ? imageWithAudio(
+                                                      context, data, screenSize)
                                                   : const SizedBox(),
                                         ],
                                       ),
+                                      //??? For answer
                                       data[i].isImage == 'Yes'
                                           ? Column(
                                               children: [
@@ -884,6 +726,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                     ],
                                   ),
                                 ),
+                                // * For buttons
                                 i == 0
                                     ? Row(
                                         mainAxisAlignment:
@@ -996,6 +839,118 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         );
   }
 
+  InkWell imageWithAudio(
+      BuildContext context, List<Questions> data, Size screenSize) {
+    return InkWell(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              child: Row(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: InteractiveViewer(
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            '${ApiConstants.questionFileUrl}${data[i].filePath}',
+                        width: screenSize.width * 0.4,
+                        height: double.infinity,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      onTap: () => Navigator.of(context).pop(),
+                      child: const SizedBox.expand(),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        width: double.infinity,
+        height: data[i].audioPath != null
+            ? screenSize.height * 0.53
+            : screenSize.height * 0.4,
+        margin: const EdgeInsets.all(
+          15,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Colors.black,
+          ),
+          color: Colors.white,
+          boxShadow: const [
+            BoxShadow(
+                offset: Offset(0, 5), blurRadius: 5, color: Colors.black26),
+          ],
+        ),
+        child: Column(
+          children: [
+            CachedNetworkImage(
+              // cacheManager: imageCache,
+              imageUrl: '${ApiConstants.questionFileUrl}${data[i].filePath}',
+              width: double.infinity,
+              height: screenSize.height * 0.3,
+              fit: BoxFit.contain,
+              placeholder: (context, url) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+            const Divider(),
+            data[i].audioPath != null
+                ? IconButton(
+                    onPressed: () async {
+                      //? For Audio Playing
+                      var filePath =
+                          await imageCache.getFileFromCache(data[i].audioPath!);
+                      await player.setFilePath(filePath!.file.path);
+
+                      if (q < 2) {
+                        isQusPlaying ? player.stop() : player.play();
+                        setState(() {
+                          isQusPlaying = !isQusPlaying;
+                          if (isQusPlaying) {
+                            q++;
+                          }
+                        });
+                      } else {
+                        player.stop();
+                        setState(() {
+                          isQusPlaying = false;
+                        });
+                        toast(
+                            context: context,
+                            label: 'You cannot play audio more than twice',
+                            color: Colors.red);
+                      }
+                    },
+                    icon: Icon(
+                      isQusPlaying
+                          ? Icons.pause_circle_filled_rounded
+                          : Icons.volume_down,
+                      size: 32,
+                    ),
+                  )
+                : const SizedBox(),
+          ],
+        ),
+      ),
+    );
+  }
+
   void backPrompt(BuildContext context, ExamType examType) {
     showDialog(
       context: context,
@@ -1091,6 +1046,12 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         imageCache.downloadFile(
           '${ApiConstants.answerImageUrl}${qus.option4}',
           key: qus.option4,
+        );
+      }
+      if (qus.audioPath != null) {
+        imageCache.downloadFile(
+          '${ApiConstants.questionFileUrl}${qus.audioPath}',
+          key: qus.audioPath,
         );
       }
     }
