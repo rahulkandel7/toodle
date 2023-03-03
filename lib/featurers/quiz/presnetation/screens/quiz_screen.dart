@@ -704,7 +704,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                                       //? For Audio Playing
                                                                       var filePath =
                                                                           await imageCache
-                                                                              .getFileFromCache(data[i].filePath!);
+                                                                              .getFileFromCache(data[i].audioPath!);
                                                                       await player.setFilePath(filePath!
                                                                           .file
                                                                           .path);
