@@ -20,6 +20,8 @@ class QuestionDataSourceImpl implements QuestionDataSource {
   Future<List<Questions>> fetchQuestion(int id) async {
     final result =
         await _apiServices.getDataWithAuthorize(endpoint: '/start-exam/$id');
+    print(id);
+    print(result);
 
     final questions = result['data'] as List<dynamic>;
     final allQuestions = questions.where((element) => element != null);

@@ -675,20 +675,80 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                                     .black26),
                                                           ],
                                                         ),
-                                                        child:
+                                                        child: Column(
+                                                          children: [
                                                             CachedNetworkImage(
-                                                          // cacheManager: imageCache,
-                                                          imageUrl:
-                                                              '${ApiConstants.questionFileUrl}${data[i].filePath}',
-                                                          width:
-                                                              double.infinity,
-                                                          fit: BoxFit.contain,
-                                                          placeholder:
-                                                              (context, url) =>
+                                                              // cacheManager: imageCache,
+                                                              imageUrl:
+                                                                  '${ApiConstants.questionFileUrl}${data[i].filePath}',
+                                                              width: double
+                                                                  .infinity,
+                                                              height: screenSize
+                                                                      .height *
+                                                                  0.3,
+                                                              fit: BoxFit
+                                                                  .contain,
+                                                              placeholder: (context,
+                                                                      url) =>
                                                                   const Center(
-                                                            child:
-                                                                CircularProgressIndicator(),
-                                                          ),
+                                                                child:
+                                                                    CircularProgressIndicator(),
+                                                              ),
+                                                            ),
+                                                            const Divider(),
+                                                            data[i].audioPath !=
+                                                                    null
+                                                                ? IconButton(
+                                                                    onPressed:
+                                                                        () async {
+                                                                      //? For Audio Playing
+                                                                      var filePath =
+                                                                          await imageCache
+                                                                              .getFileFromCache(data[i].filePath!);
+                                                                      await player.setFilePath(filePath!
+                                                                          .file
+                                                                          .path);
+                                                                      if (q <
+                                                                          2) {
+                                                                        isQusPlaying
+                                                                            ? player.stop()
+                                                                            : player.play();
+                                                                        setState(
+                                                                            () {
+                                                                          isQusPlaying =
+                                                                              !isQusPlaying;
+                                                                          if (isQusPlaying) {
+                                                                            q++;
+                                                                          }
+                                                                        });
+                                                                      } else {
+                                                                        player
+                                                                            .stop();
+                                                                        setState(
+                                                                            () {
+                                                                          isQusPlaying =
+                                                                              false;
+                                                                        });
+                                                                        toast(
+                                                                            context:
+                                                                                context,
+                                                                            label:
+                                                                                'You cannot play audio more than twice',
+                                                                            color:
+                                                                                Colors.red);
+                                                                      }
+                                                                    },
+                                                                    icon: Icon(
+                                                                      isQusPlaying
+                                                                          ? Icons
+                                                                              .pause_circle_filled_rounded
+                                                                          : Icons
+                                                                              .volume_down,
+                                                                      size: 32,
+                                                                    ),
+                                                                  )
+                                                                : const SizedBox(),
+                                                          ],
                                                         ),
                                                       ),
                                                     )

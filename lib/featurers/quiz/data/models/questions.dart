@@ -13,6 +13,7 @@ class Questions {
   final String isAudio;
   final String isOptionAudio;
   final String? selectedOption;
+  final String? audioPath;
   final String category;
 
   Questions({
@@ -31,6 +32,7 @@ class Questions {
     required this.isOptionAudio,
     required this.category,
     required this.subQuestion,
+    required this.audioPath,
   });
 
   factory Questions.fromMap(Map<String, dynamic> map) {
@@ -53,6 +55,7 @@ class Questions {
       selectedOption: map['selected_option'] != null
           ? map['selected_option'] as String
           : null,
+      audioPath: map['audiopath'] != null ? map['audiopath'] as String : null,
     );
   }
 }
