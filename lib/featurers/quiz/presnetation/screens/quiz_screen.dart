@@ -146,80 +146,127 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               data[i].isOptionAudio == 'Yes'
                   ? IconButton(
                       onPressed: () async {
-                        //? For Audio Playing
-                        var filePath =
-                            await imageCache.getFileFromCache(option);
-                        await player.setFilePath(filePath!.file.path);
-
                         //* For Option 1
                         if (selectedOption == 'option1') {
-                          if (o1 < 2) {
-                            player.playing ? player.stop() : player.play();
-                            setState(() {
-                              if (player.playing) {
-                                o1++;
-                              }
-                            });
-                          } else {
+                          if (data[i].option1Count > 2) {
                             toast(
                                 context: context,
                                 label: 'You cannot play audio more than twice',
                                 color: Colors.red);
-                            player.stop();
+                          } else {
+                            //? For Audio Playing
+                            var filePath =
+                                await imageCache.getFileFromCache(option);
+                            await player.setFilePath(filePath!.file.path);
+                            if (o1 < 2) {
+                              player.playing ? player.stop() : player.play();
+                              data[i].option1Count++;
+                              setState(() {
+                                if (player.playing) {
+                                  o1++;
+                                }
+                              });
+                            } else {
+                              toast(
+                                  context: context,
+                                  label:
+                                      'You cannot play audio more than twice',
+                                  color: Colors.red);
+                              player.stop();
+                            }
                           }
                         }
 
                         //* For Option 2
                         if (selectedOption == 'option2') {
-                          if (o2 < 2) {
-                            player.playing ? player.stop() : player.play();
-                            setState(() {
-                              if (player.playing) {
-                                o2++;
-                              }
-                            });
-                          } else {
+                          if (data[i].option2Count > 2) {
                             toast(
                                 context: context,
                                 label: 'You cannot play audio more than twice',
                                 color: Colors.red);
-                            player.stop();
+                          } else {
+                            //? For Audio Playing
+                            var filePath =
+                                await imageCache.getFileFromCache(option);
+                            await player.setFilePath(filePath!.file.path);
+                            if (o2 < 2) {
+                              data[i].option2Count++;
+                              player.playing ? player.stop() : player.play();
+                              setState(() {
+                                if (player.playing) {
+                                  o2++;
+                                }
+                              });
+                            } else {
+                              toast(
+                                  context: context,
+                                  label:
+                                      'You cannot play audio more than twice',
+                                  color: Colors.red);
+                              player.stop();
+                            }
                           }
                         }
 
                         //* For Option 3
                         if (selectedOption == 'option3') {
-                          if (o3 < 2) {
-                            player.playing ? player.stop() : player.play();
-                            setState(() {
-                              if (player.playing) {
-                                o3++;
-                              }
-                            });
-                          } else {
+                          if (data[i].option3Count > 2) {
                             toast(
                                 context: context,
                                 label: 'You cannot play audio more than twice',
                                 color: Colors.red);
-                            player.stop();
+                          } else {
+                            //? For Audio Playing
+                            var filePath =
+                                await imageCache.getFileFromCache(option);
+                            await player.setFilePath(filePath!.file.path);
+                            if (o3 < 2) {
+                              player.playing ? player.stop() : player.play();
+                              data[i].option3Count++;
+                              setState(() {
+                                if (player.playing) {
+                                  o3++;
+                                }
+                              });
+                            } else {
+                              toast(
+                                  context: context,
+                                  label:
+                                      'You cannot play audio more than twice',
+                                  color: Colors.red);
+                              player.stop();
+                            }
                           }
                         }
 
                         //* For Option 4
                         if (selectedOption == 'option4') {
-                          if (o4 < 2) {
-                            player.playing ? player.stop() : player.play();
-                            setState(() {
-                              if (player.playing) {
-                                o4++;
-                              }
-                            });
-                          } else {
+                          if (data[i].option4Count > 2) {
                             toast(
                                 context: context,
                                 label: 'You cannot play audio more than twice',
                                 color: Colors.red);
-                            player.stop();
+                          } else {
+                            //? For Audio Playing
+                            var filePath =
+                                await imageCache.getFileFromCache(option);
+                            await player.setFilePath(filePath!.file.path);
+                            if (o4 < 2) {
+                              player.playing ? player.stop() : player.play();
+                              data[i].option4Count++;
+                              setState(() {
+                                if (player.playing) {
+                                  o4++;
+                                }
+                              });
+                            } else {
+                              toast(
+                                  context: context,
+                                  label:
+                                      'You cannot play audio more than twice',
+                                  color: Colors.red);
+                              player.stop();
+                            }
                           }
                         }
 
@@ -382,7 +429,6 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                 });
               },
             );
-
             cachingDatas(data);
             return Theme(
               data: ThemeData.light(
@@ -531,7 +577,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                         : const SizedBox()
                                                   ],
                                                 ),
-
+                                          // ! For Displaying audio
                                           data[i].isAudio == 'Yes' ||
                                                   data[i].isOptionAudio == 'Yes'
                                               ? audioQuestion(
@@ -806,33 +852,43 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
       ),
       child: IconButton(
         onPressed: () async {
-          //? For Audio Playing
-          var filePath = await imageCache.getFileFromCache(data[i].filePath!);
-          await player.setFilePath(filePath!.file.path);
-          // Getting Timer
-          final duration = player.duration;
-          Timer(duration!, () {
-            setState(() {
-              isQusPlaying = false;
-            });
-          });
-          if (q < 2) {
-            isQusPlaying ? player.stop() : player.play();
-            setState(() {
-              isQusPlaying = !isQusPlaying;
-              if (isQusPlaying) {
-                q++;
-              }
-            });
-          } else {
-            player.stop();
-            setState(() {
-              isQusPlaying = false;
-            });
+          if (data[i].questionCount > 2) {
             toast(
                 context: context,
                 label: 'You cannot play audio more than twice',
                 color: Colors.red);
+          } else {
+            data[i].questionCount++;
+            //? For Audio Playing
+            var filePath = await imageCache.getFileFromCache(data[i].filePath!);
+            await player.setFilePath(filePath!.file.path);
+
+            // Getting Timer
+            final duration = player.duration;
+            Timer(duration!, () {
+              setState(() {
+                isQusPlaying = false;
+              });
+            });
+            if (q < 2) {
+              isQusPlaying ? player.stop() : player.play();
+
+              setState(() {
+                isQusPlaying = !isQusPlaying;
+                if (isQusPlaying) {
+                  q++;
+                }
+              });
+            } else {
+              player.stop();
+              setState(() {
+                isQusPlaying = false;
+              });
+              toast(
+                  context: context,
+                  label: 'You cannot play audio more than twice',
+                  color: Colors.red);
+            }
           }
         },
         icon: Icon(
@@ -917,34 +973,41 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
             data[i].audioPath != null
                 ? IconButton(
                     onPressed: () async {
-                      //? For Audio Playing
-                      var filePath =
-                          await imageCache.getFileFromCache(data[i].audioPath!);
-                      await player.setFilePath(filePath!.file.path);
-                      final duration = player.duration;
-                      Timer(duration!, () {
-                        setState(() {
-                          isQusPlaying = false;
-                        });
-                      });
-
-                      if (q < 2) {
-                        isQusPlaying ? player.stop() : player.play();
-                        setState(() {
-                          isQusPlaying = !isQusPlaying;
-                          if (isQusPlaying) {
-                            q++;
-                          }
-                        });
-                      } else {
-                        player.stop();
-                        setState(() {
-                          isQusPlaying = false;
-                        });
+                      if (data[i].audioPathcount > 2) {
                         toast(
                             context: context,
                             label: 'You cannot play audio more than twice',
                             color: Colors.red);
+                      } else {
+                        //? For Audio Playing
+                        var filePath = await imageCache
+                            .getFileFromCache(data[i].audioPath!);
+                        await player.setFilePath(filePath!.file.path);
+                        final duration = player.duration;
+                        Timer(duration!, () {
+                          setState(() {
+                            isQusPlaying = false;
+                          });
+                        });
+                        if (q < 2) {
+                          isQusPlaying ? player.stop() : player.play();
+                          data[i].audioPathcount++;
+                          setState(() {
+                            isQusPlaying = !isQusPlaying;
+                            if (isQusPlaying) {
+                              q++;
+                            }
+                          });
+                        } else {
+                          player.stop();
+                          setState(() {
+                            isQusPlaying = false;
+                          });
+                          toast(
+                              context: context,
+                              label: 'You cannot play audio more than twice',
+                              color: Colors.red);
+                        }
                       }
                     },
                     icon: Icon(
@@ -1092,6 +1155,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               o2 = 0;
               o3 = 0;
               o4 = 0;
+              isQusPlaying = false;
 
               player.stop();
               if (i < data.length - 1) {
@@ -1139,6 +1203,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               o2 = 0;
               o3 = 0;
               o4 = 0;
+              isQusPlaying = false;
               player.stop();
               if (i > 0) {
                 i--;

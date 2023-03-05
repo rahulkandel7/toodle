@@ -15,6 +15,12 @@ class Questions {
   final String? selectedOption;
   final String? audioPath;
   final String category;
+  int questionCount;
+  int audioPathcount;
+  int option1Count;
+  int option2Count;
+  int option3Count;
+  int option4Count;
 
   Questions({
     required this.id,
@@ -33,6 +39,12 @@ class Questions {
     required this.category,
     required this.subQuestion,
     required this.audioPath,
+    this.audioPathcount = 0,
+    this.option1Count = 0,
+    this.option2Count = 0,
+    this.option3Count = 0,
+    this.option4Count = 0,
+    this.questionCount = 0,
   });
 
   factory Questions.fromMap(Map<String, dynamic> map) {
