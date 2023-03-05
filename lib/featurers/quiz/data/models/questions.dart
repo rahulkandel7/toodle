@@ -50,7 +50,7 @@ class Questions {
   factory Questions.fromMap(Map<String, dynamic> map) {
     return Questions(
       id: map['id'] as int,
-      question: map['question'] != null ? map['question'] as String : null,
+      question: map['question'] != null ? map['question'] as String : '',
       option1: map['option1'] as String,
       option2: map['option2'] as String,
       option3: map['option3'] as String,

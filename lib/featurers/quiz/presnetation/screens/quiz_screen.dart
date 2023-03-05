@@ -578,14 +578,18 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   ],
                                                 ),
                                           // ! For Displaying audio
-                                          data[i].isAudio == 'Yes' ||
-                                                  data[i].isOptionAudio == 'Yes'
+                                          data[i].isAudio == 'Yes'
                                               ? audioQuestion(
                                                   screenSize, data, context)
                                               : data[i].filePath != null
                                                   ? imageWithAudio(
                                                       context, data, screenSize)
-                                                  : const SizedBox(),
+                                                  : data[i].audioPath != null
+                                                      ? audioQuestionWithOptionImage(
+                                                          screenSize,
+                                                          data,
+                                                          context)
+                                                      : const SizedBox(),
                                         ],
                                       ),
                                       //??? For answer
@@ -829,6 +833,72 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
             child: CircularProgressIndicator(),
           ),
         );
+  }
+
+  Container audioQuestionWithOptionImage(
+      Size screenSize, List<Questions> data, BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      width: double.infinity,
+      height: screenSize.height * 0.25,
+      margin: const EdgeInsets.all(
+        15,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Colors.black,
+        ),
+        color: Colors.white,
+        boxShadow: const [
+          BoxShadow(offset: Offset(0, 5), blurRadius: 5, color: Colors.black26),
+        ],
+      ),
+      child: IconButton(
+        onPressed: () async {
+          if (data[i].audioPathcount > 2) {
+            toast(
+                context: context,
+                label: 'You cannot play audio more than twice',
+                color: Colors.red);
+          } else {
+            //? For Audio Playing
+            var filePath =
+                await imageCache.getFileFromCache(data[i].audioPath!);
+            await player.setFilePath(filePath!.file.path);
+            final duration = player.duration;
+            Timer(duration!, () {
+              setState(() {
+                isQusPlaying = false;
+              });
+            });
+            if (q < 2) {
+              isQusPlaying ? player.stop() : player.play();
+              data[i].audioPathcount++;
+              setState(() {
+                isQusPlaying = !isQusPlaying;
+                if (isQusPlaying) {
+                  q++;
+                }
+              });
+            } else {
+              player.stop();
+              setState(() {
+                isQusPlaying = false;
+              });
+              toast(
+                  context: context,
+                  label: 'You cannot play audio more than twice',
+                  color: Colors.red);
+            }
+          }
+        },
+        icon: Icon(
+          isQusPlaying ? Icons.pause_circle_filled_rounded : Icons.volume_down,
+          size: 32,
+        ),
+      ),
+    );
   }
 
   Container audioQuestion(
