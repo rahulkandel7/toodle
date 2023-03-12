@@ -581,7 +581,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           data[i].isAudio == 'Yes'
                                               ? audioQuestion(
                                                   screenSize, data, context)
-                                              : data[i].filePath != null
+                                              : data[i].filePath!.isNotEmpty
                                                   ? imageWithAudio(
                                                       context, data, screenSize)
                                                   : data[i].audioPath != null

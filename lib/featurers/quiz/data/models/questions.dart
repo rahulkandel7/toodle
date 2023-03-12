@@ -57,7 +57,7 @@ class Questions {
       option4: map['option4'] as String,
       category: map['category'] as String,
       correctOption: map['correct_option'].toString(),
-      filePath: map['filepath'] != null ? map['filepath'] as String : null,
+      filePath: map['filepath'] != null ? map['filepath'] as String : '',
       subQuestion:
           map['sub_question'] != null ? map['sub_question'] as String : null,
       questionSetsId: map['question_sets_id'].toString(),
