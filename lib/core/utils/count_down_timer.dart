@@ -31,8 +31,7 @@ class _CountDownTimerState extends State<CountDownTimer> {
     const reduceSecondsBy = 1;
     setState(() {
       final seconds = duration.inSeconds - reduceSecondsBy;
-      if (duration <= const Duration(minutes: 20, seconds: 01) &&
-          duration > const Duration(minutes: 20, seconds: 0)) {
+      if (seconds % 180 == 0) {
         toast(
             context: context,
             label: 'Do not move your head.',
