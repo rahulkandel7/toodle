@@ -47,15 +47,27 @@ class SetScreenState extends ConsumerState<SetScreen> {
                     .headlineMedium!
                     .copyWith(fontWeight: FontWeight.w500),
               ),
-              const Divider(),
-              for (var i = 0; i < int.parse(exam.maxModelSet); i++)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0, left: 10.0),
-                  child: SetCard(
-                    setNumber: i + 1,
-                    exam: exam,
-                  ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  'This ${exam.examType} exam system generate 40 questions randomly from the set of more than 11000 questions',
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
+              ),
+              const Divider(),
+              SizedBox(
+                height: screenSize.height * 0.8,
+                child: ListView.builder(
+                  itemBuilder: (ctx, i) => Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0, left: 10.0),
+                    child: SetCard(
+                      setNumber: i + 1,
+                      exam: exam,
+                    ),
+                  ),
+                  itemCount: int.parse(exam.maxModelSet),
+                ),
+              ),
             ],
           ),
         ),
