@@ -7,7 +7,12 @@ import 'package:toddle/core/utils/toaster.dart';
 class CountDownTimer extends StatefulWidget {
   final Duration time;
   final Function onSubmit;
-  const CountDownTimer({required this.time, required this.onSubmit, super.key});
+  final bool isStart;
+  const CountDownTimer(
+      {required this.time,
+      required this.onSubmit,
+      required this.isStart,
+      super.key});
 
   @override
   State<CountDownTimer> createState() => _CountDownTimerState();
@@ -31,7 +36,7 @@ class _CountDownTimerState extends State<CountDownTimer> {
     const reduceSecondsBy = 1;
     setState(() {
       final seconds = duration.inSeconds - reduceSecondsBy;
-      if (seconds % 180 == 0) {
+      if (seconds % 180 == 0 && widget.isStart) {
         toast(
             context: context,
             label: 'Do not move your head.',
@@ -56,6 +61,7 @@ class _CountDownTimerState extends State<CountDownTimer> {
   @override
   void dispose() {
     super.dispose();
+    stopTimer();
     countDownTimer!.cancel();
   }
 

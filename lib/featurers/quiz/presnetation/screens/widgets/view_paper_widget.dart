@@ -166,7 +166,7 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
                   size: 32,
                 ),
               )
-            : widget.questions.filePath != null
+            : widget.questions.filePath!.isNotEmpty
                 ? InkWell(
                     onTap: () {
                       showDialog(

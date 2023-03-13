@@ -82,6 +82,8 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
   int o3 = 0; //* For option 3
   int o4 = 0; //* For option 4
 
+  bool isTimerStart = true;
+
   //? For Initilizating cache Manager
   late var imageCache = CacheManager(
     Config(
@@ -89,270 +91,6 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
       stalePeriod: const Duration(days: 1),
     ),
   );
-
-  //? Widget For Option Box
-  // Widget optionBox({
-  //   required String option,
-  //   required String isImage,
-  //   required Size screenSize,
-  //   required String selectedOption,
-  //   required String isOptionAudio,
-  //   required List<Questions> data,
-  //   required String boxNumber,
-  // }) {
-  //   return Padding(
-  //     padding: EdgeInsets.only(top: screenSize.height * 0.02),
-  //     child: InkWell(
-  //       onTap: () {
-  //         //? For Selecting the options
-  //         selectOption(option, selectedOption, data);
-  //       },
-  //       child: Container(
-  //         width: isImage == 'Yes' ? screenSize.width * 0.2 : double.infinity,
-  //         padding: const EdgeInsets.all(
-  //           12,
-  //         ),
-  //         decoration: BoxDecoration(
-  //           borderRadius: BorderRadius.circular(10),
-  //           border: isImage == 'Yes'
-  //               ? const Border()
-  //               : Border.all(
-  //                   color: Colors.black,
-  //                   width: 0.5,
-  //                 ),
-  //           color: Colors.white,
-  //           boxShadow: [
-  //             isImage == 'Yes'
-  //                 ? const BoxShadow(
-  //                     offset: Offset(2, 2),
-  //                     color: Colors.black26,
-  //                     blurRadius: 5,
-  //                   )
-  //                 : const BoxShadow(),
-  //           ],
-  //         ),
-  //         child: Row(
-  //           children: [
-  //             Container(
-  //               margin: const EdgeInsets.only(right: 12),
-  //               width: screenSize.width * 0.04,
-  //               height: isImage == 'Yes'
-  //                   ? screenSize.height * 0.2
-  //                   : screenSize.height * 0.09,
-  //               decoration: BoxDecoration(
-  //                 shape: BoxShape.circle,
-  //                 border: Border.all(
-  //                   width: 1.3,
-  //                   color: answer == option ? Colors.transparent : Colors.black,
-  //                 ),
-  //                 color: answer == option ? Colors.black : Colors.transparent,
-  //               ),
-  //               child: Center(
-  //                 child: Text(
-  //                   boxNumber,
-  //                   style: TextStyle(
-  //                     color: answer == option ? Colors.white : Colors.black,
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //             data[i].isOptionAudio == 'Yes'
-  //                 ? IconButton(
-  //                     onPressed: () async {
-  //                       //* For Option 1
-  //                       if (selectedOption == 'option1') {
-  //                         if (data[i].option1Count > 2) {
-  //                           toast(
-  //                               context: context,
-  //                               label: 'You cannot play audio more than twice',
-  //                               color: Colors.red);
-  //                         } else {
-  //                           //? For Audio Playing
-  //                           var filePath =
-  //                               await imageCache.getFileFromCache(option);
-  //                           await player.setFilePath(filePath!.file.path);
-  //                           if (o1 < 2) {
-  //                             player.playing ? player.stop() : player.play();
-  //                             data[i].option1Count++;
-  //                             setState(() {
-  //                               if (player.playing) {
-  //                                 o1++;
-  //                               }
-  //                             });
-  //                           } else {
-  //                             toast(
-  //                                 context: context,
-  //                                 label:
-  //                                     'You cannot play audio more than twice',
-  //                                 color: Colors.red);
-  //                             player.stop();
-  //                           }
-  //                         }
-  //                       }
-
-  //                       //* For Option 2
-  //                       if (selectedOption == 'option2') {
-  //                         if (data[i].option2Count > 2) {
-  //                           toast(
-  //                               context: context,
-  //                               label: 'You cannot play audio more than twice',
-  //                               color: Colors.red);
-  //                         } else {
-  //                           //? For Audio Playing
-  //                           var filePath =
-  //                               await imageCache.getFileFromCache(option);
-  //                           await player.setFilePath(filePath!.file.path);
-  //                           if (o2 < 2) {
-  //                             data[i].option2Count++;
-  //                             player.playing ? player.stop() : player.play();
-  //                             setState(() {
-  //                               if (player.playing) {
-  //                                 o2++;
-  //                               }
-  //                             });
-  //                           } else {
-  //                             toast(
-  //                                 context: context,
-  //                                 label:
-  //                                     'You cannot play audio more than twice',
-  //                                 color: Colors.red);
-  //                             player.stop();
-  //                           }
-  //                         }
-  //                       }
-
-  //                       //* For Option 3
-  //                       if (selectedOption == 'option3') {
-  //                         if (data[i].option3Count > 2) {
-  //                           toast(
-  //                               context: context,
-  //                               label: 'You cannot play audio more than twice',
-  //                               color: Colors.red);
-  //                         } else {
-  //                           //? For Audio Playing
-  //                           var filePath =
-  //                               await imageCache.getFileFromCache(option);
-  //                           await player.setFilePath(filePath!.file.path);
-  //                           if (o3 < 2) {
-  //                             player.playing ? player.stop() : player.play();
-  //                             data[i].option3Count++;
-  //                             setState(() {
-  //                               if (player.playing) {
-  //                                 o3++;
-  //                               }
-  //                             });
-  //                           } else {
-  //                             toast(
-  //                                 context: context,
-  //                                 label:
-  //                                     'You cannot play audio more than twice',
-  //                                 color: Colors.red);
-  //                             player.stop();
-  //                           }
-  //                         }
-  //                       }
-
-  //                       //* For Option 4
-  //                       if (selectedOption == 'option4') {
-  //                         if (data[i].option4Count > 2) {
-  //                           toast(
-  //                               context: context,
-  //                               label: 'You cannot play audio more than twice',
-  //                               color: Colors.red);
-  //                         } else {
-  //                           //? For Audio Playing
-  //                           var filePath =
-  //                               await imageCache.getFileFromCache(option);
-  //                           await player.setFilePath(filePath!.file.path);
-  //                           if (o4 < 2) {
-  //                             player.playing ? player.stop() : player.play();
-  //                             data[i].option4Count++;
-  //                             setState(() {
-  //                               if (player.playing) {
-  //                                 o4++;
-  //                               }
-  //                             });
-  //                           } else {
-  //                             toast(
-  //                                 context: context,
-  //                                 label:
-  //                                     'You cannot play audio more than twice',
-  //                                 color: Colors.red);
-  //                             player.stop();
-  //                           }
-  //                         }
-  //                       }
-
-  //                       //? For Selecting the options
-  //                       selectOption(option, selectedOption, data);
-  //                     },
-  //                     padding: const EdgeInsets.all(0),
-  //                     icon: const Icon(
-  //                       Icons.play_circle_outline,
-  //                       size: 32,
-  //                     ),
-  //                   )
-  //                 : isImage == 'No'
-  //                     ? Text(option)
-  //                     : InkWell(
-  //                         onTap: () {
-  //                           showDialog(
-  //                             context: context,
-  //                             builder: (context) {
-  //                               return Dialog(
-  //                                 backgroundColor: Colors.transparent,
-  //                                 surfaceTintColor: Colors.transparent,
-  //                                 child: Row(
-  //                                   children: [
-  //                                     Align(
-  //                                       alignment: Alignment.centerLeft,
-  //                                       child: InteractiveViewer(
-  //                                         child: CachedNetworkImage(
-  //                                           imageUrl:
-  //                                               '${ApiConstants.answerImageUrl}$option',
-  //                                           // cacheManager: imageCache,
-  //                                           width: screenSize.width * 0.4,
-  //                                           height: double.infinity,
-  //                                           fit: BoxFit.contain,
-  //                                           placeholder: (context, url) =>
-  //                                               const Center(
-  //                                             child:
-  //                                                 CircularProgressIndicator(),
-  //                                           ),
-  //                                         ),
-  //                                       ),
-  //                                     ),
-  //                                     Expanded(
-  //                                       child: InkWell(
-  //                                         splashColor: Colors.transparent,
-  //                                         focusColor: Colors.transparent,
-  //                                         onTap: () =>
-  //                                             Navigator.of(context).pop(),
-  //                                         child: const SizedBox.expand(),
-  //                                       ),
-  //                                     ),
-  //                                   ],
-  //                                 ),
-  //                               );
-  //                             },
-  //                           );
-  //                           selectOption(option, selectedOption, data);
-  //                         },
-  //                         child: CachedNetworkImage(
-  //                           imageUrl: '${ApiConstants.answerImageUrl}$option',
-  //                           // cacheManager: imageCache,
-  //                           height: screenSize.height * 0.13,
-  //                           placeholder: (context, url) => const Center(
-  //                             child: CircularProgressIndicator(),
-  //                           ),
-  //                         ),
-  //                       ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   // ? Option Box 1
   Widget optionBox1({
@@ -1143,10 +881,15 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
           data: (data) {
             //? Getting Timer Data
             CountDownTimer counter = CountDownTimer(
+              isStart: isTimerStart,
               time: Duration(minutes: examType.time),
               onSubmit: () {
                 List<String> questionIds = [];
                 List<String> selectedAnswers = [];
+
+                setState(() {
+                  isTimerStart = false;
+                });
 
                 for (var userAnswer in userSelected) {
                   questionIds.add(userAnswer['question'].toString());
@@ -1767,7 +1510,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         width: double.infinity,
         height: data[i].audioPath != null
             ? screenSize.height * 0.53
-            : screenSize.height * 0.4,
+            : screenSize.height * 0.42,
         margin: const EdgeInsets.all(
           15,
         ),
@@ -1984,8 +1727,16 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               o3 = 0;
               o4 = 0;
               isQusPlaying = false;
+              isOption1Playing = false;
+              isOption4Playing = false;
+              isOption2Playing = false;
+              isOption3Playing = false;
 
               player.stop();
+              option1Player.stop();
+              option2Player.stop();
+              option3Player.stop();
+              option4Player.stop();
               if (i < data.length - 1) {
                 i++;
                 int selectedQuestion = data[i].id;
@@ -2033,6 +1784,10 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               o4 = 0;
               isQusPlaying = false;
               player.stop();
+              option1Player.stop();
+              option2Player.stop();
+              option3Player.stop();
+              option4Player.stop();
               if (i > 0) {
                 i--;
               }
@@ -2310,6 +2065,15 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     List<String> selectedAnswers = [];
 
     player.stop();
+    option1Player.stop();
+    option2Player.stop();
+    option3Player.stop();
+    option4Player.stop();
+
+    setState(() {
+      isTimerStart = false;
+    });
+
     for (var userAnswer in userSelected) {
       questionIds.add(userAnswer['question'].toString());
       selectedAnswers.add(userAnswer['option'].toString());
