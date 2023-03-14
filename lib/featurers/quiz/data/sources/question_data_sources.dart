@@ -30,7 +30,11 @@ class QuestionDataSourceImpl implements QuestionDataSource {
   Future<List<String>> submitAnswer(var data) async {
     final result = await _apiServices.postDataWithAuthorize(
         endpoint: 'submitexam', data: data);
-    List<String> message = [result['message'], result['id'].toString()];
+    List<String> message = [
+      result['totalmarks'].toString(),
+      result['obtainedmarks'].toString(),
+      result['id'].toString()
+    ];
     return message;
   }
 

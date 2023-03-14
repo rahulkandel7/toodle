@@ -2157,7 +2157,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
       if (value[0] == 'false') {
         toast(context: context, label: value[1], color: Colors.red);
       } else {
-        List<String> msg = [value[1], value[2]];
+        List<String> msg = [value[1], value[2], value[3]];
         SystemChrome.setPreferredOrientations([
           DeviceOrientation.portraitUp,
         ]);

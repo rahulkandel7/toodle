@@ -110,16 +110,17 @@ class QuizResultScreenState extends ConsumerState<QuizResultScreen> {
                 child: Column(
                   children: [
                     textWithValue(
-                      title: 'Total Questions :',
-                      value: '40',
+                      title: 'Total Questions : ',
+                      value: message[0],
                     ),
                     textWithValue(
-                      title: 'Total Score :',
-                      value: '40',
+                      title: 'Total Score : ',
+                      value: message[1],
                     ),
                     textWithValue(
-                      title: 'Percentage :',
-                      value: '40 %',
+                      title: 'Percentage : ',
+                      value:
+                          '${((int.parse(message[1]) / int.parse(message[0])) * 100).toStringAsFixed(2)} %',
                     ),
                   ],
                 ),
@@ -133,7 +134,7 @@ class QuizResultScreenState extends ConsumerState<QuizResultScreen> {
                   onPressed: () {
                     Map<String, dynamic> data = {
                       'isHistory': false,
-                      'id': message[1],
+                      'id': message[2],
                     };
                     Navigator.of(context)
                         .pushNamed(QuizViewPaper.routeName, arguments: data);
