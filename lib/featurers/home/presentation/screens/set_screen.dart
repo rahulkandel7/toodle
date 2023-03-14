@@ -20,17 +20,16 @@ class SetScreenState extends ConsumerState<SetScreen> {
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    ref.read(myPaperControllerProvider.notifier).fetchMyPaper();
   }
 
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     ExamType exam = ModalRoute.of(context)!.settings.arguments as ExamType;
-    List<Exam>? exams =
-        ref.watch(myPaperControllerProvider.notifier).state.value;
-    int length =
-        exams!.where((ele) => ele.examType == exam.examType).toList().length;
+    List<Exam>? exams = ref.watch(myPaperControllerProvider).asData!.value;
+    int length = exams.isEmpty
+        ? 0
+        : exams.where((ele) => ele.examType == exam.examType).toList().length;
 
     return Scaffold(
       appBar: AppBar(

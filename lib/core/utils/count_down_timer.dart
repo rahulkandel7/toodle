@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:toddle/constants/app_constants.dart';
-import 'package:toddle/core/utils/toaster.dart';
 
 class CountDownTimer extends StatefulWidget {
   final Duration time;
@@ -36,11 +35,30 @@ class _CountDownTimerState extends State<CountDownTimer> {
     const reduceSecondsBy = 1;
     setState(() {
       final seconds = duration.inSeconds - reduceSecondsBy;
+
       if (seconds % 180 == 0 && widget.isStart) {
-        toast(
-            context: context,
-            label: 'Do not move your head.',
-            color: Colors.amber);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Text(
+                  'Do not move your head. टाउको नघुमाउनुहोस ।',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            ),
+            behavior: SnackBarBehavior.floating,
+            width: MediaQuery.of(context).size.width * 0.4,
+            backgroundColor: Colors.amber,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                10,
+              ),
+            ),
+          ),
+        );
       }
       if (seconds < 0) {
         widget.onSubmit();

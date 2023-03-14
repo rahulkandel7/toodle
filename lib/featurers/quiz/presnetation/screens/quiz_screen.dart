@@ -161,7 +161,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               data[i].isOptionAudio == 'Yes'
                   ? IconButton(
                       onPressed: () async {
-                        if (data[i].option1Count > 2) {
+                        if (data[i].option1Count >= 2) {
                           toast(
                               context: context,
                               label: 'You cannot play audio more than twice',
@@ -211,7 +211,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             ? Icons.pause_circle
                             : Icons.play_circle_outline,
                         size: 32,
-                        color: o1 < 2 ? Colors.black : Colors.grey.shade500,
+                        color: data[i].option1Count < 2
+                            ? Colors.black
+                            : Colors.grey.shade500,
                       ),
                     )
                   : isImage == 'No'
@@ -345,7 +347,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               data[i].isOptionAudio == 'Yes'
                   ? IconButton(
                       onPressed: () async {
-                        if (data[i].option2Count > 2) {
+                        if (data[i].option2Count >= 2) {
                           toast(
                               context: context,
                               label: 'You cannot play audio more than twice',
@@ -395,7 +397,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             ? Icons.pause_circle
                             : Icons.play_circle_outline,
                         size: 32,
-                        color: o2 < 2 ? Colors.black : Colors.grey.shade500,
+                        color: data[i].option2Count < 2
+                            ? Colors.black
+                            : Colors.grey.shade500,
                       ),
                     )
                   : isImage == 'No'
@@ -529,7 +533,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               data[i].isOptionAudio == 'Yes'
                   ? IconButton(
                       onPressed: () async {
-                        if (data[i].option3Count > 2) {
+                        if (data[i].option3Count >= 2) {
                           toast(
                               context: context,
                               label: 'You cannot play audio more than twice',
@@ -579,7 +583,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             ? Icons.pause_circle
                             : Icons.play_circle_outline,
                         size: 32,
-                        color: o3 < 2 ? Colors.black : Colors.grey.shade500,
+                        color: data[i].option3Count < 2
+                            ? Colors.black
+                            : Colors.grey.shade500,
                       ),
                     )
                   : isImage == 'No'
@@ -713,7 +719,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               data[i].isOptionAudio == 'Yes'
                   ? IconButton(
                       onPressed: () async {
-                        if (data[i].option4Count > 2) {
+                        if (data[i].option4Count >= 2) {
                           toast(
                               context: context,
                               label: 'You cannot play audio more than twice',
@@ -734,7 +740,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             option4Player.playing
                                 ? option4Player.stop()
                                 : option4Player.play();
-                            data[i].option3Count++;
+                            data[i].option4Count++;
                             setState(() {
                               isOption4Playing = !isOption4Playing;
                               if (option4Player.playing) {
@@ -763,7 +769,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             ? Icons.pause_circle
                             : Icons.play_circle_outline,
                         size: 32,
-                        color: o4 < 2 ? Colors.black : Colors.grey.shade500,
+                        color: data[i].option4Count < 2
+                            ? Colors.black
+                            : Colors.grey.shade500,
                       ),
                     )
                   : isImage == 'No'
@@ -1348,7 +1356,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
       ),
       child: IconButton(
         onPressed: () async {
-          if (data[i].audioPathcount > 2) {
+          if (data[i].audioPathcount >= 2) {
             toast(
                 context: context,
                 label: 'You cannot play audio more than twice',
@@ -1390,7 +1398,8 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         icon: Icon(
           isQusPlaying ? Icons.pause_circle_filled_rounded : Icons.volume_down,
           size: 32,
-          color: q < 2 ? Colors.black : Colors.grey.shade600,
+          color:
+              data[i].audioPathcount < 2 ? Colors.black : Colors.grey.shade600,
         ),
       ),
     );
@@ -1417,7 +1426,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
       ),
       child: IconButton(
         onPressed: () async {
-          if (data[i].questionCount > 2) {
+          if (data[i].questionCount >= 2) {
             toast(
                 context: context,
                 label: 'You cannot play audio more than twice',
@@ -1461,7 +1470,8 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         icon: Icon(
           isQusPlaying ? Icons.pause_circle_filled_rounded : Icons.volume_down,
           size: 32,
-          color: q < 2 ? Colors.black : Colors.grey.shade600,
+          color:
+              data[i].questionCount < 2 ? Colors.black : Colors.grey.shade600,
         ),
       ),
     );
@@ -1541,7 +1551,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
             data[i].audioPath != null
                 ? IconButton(
                     onPressed: () async {
-                      if (data[i].audioPathcount > 2) {
+                      if (data[i].audioPathcount >= 2) {
                         toast(
                             context: context,
                             label: 'You cannot play audio more than twice',
@@ -1585,7 +1595,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           ? Icons.pause_circle_filled_rounded
                           : Icons.volume_down,
                       size: 32,
-                      color: q < 2 ? Colors.black : Colors.grey.shade600,
+                      color: data[i].audioPathcount < 2
+                          ? Colors.black
+                          : Colors.grey.shade600,
                     ),
                   )
                 : const SizedBox(),
@@ -1604,10 +1616,11 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
             'Are you sure want to exit ?',
             style: Theme.of(context).textTheme.headlineSmall,
           ),
+          actionsAlignment: MainAxisAlignment.center,
           actions: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: AppConstants.quizScreen,
                 foregroundColor: Colors.white,
               ),
               onPressed: () {
@@ -1629,6 +1642,10 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               width: 5,
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
