@@ -2021,8 +2021,12 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                 style:
                                     Theme.of(context).textTheme.headlineSmall,
                               ),
+                              actionsAlignment: MainAxisAlignment.center,
                               actions: [
-                                TextButton(
+                                FilledButton(
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: AppConstants.quizScreen,
+                                  ),
                                   onPressed: () {
                                     submitAnswers(
                                         examType: examType, data: data);
@@ -2034,7 +2038,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                TextButton(
+                                FilledButton(
+                                  style: FilledButton.styleFrom(
+                                      backgroundColor: Colors.red),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
