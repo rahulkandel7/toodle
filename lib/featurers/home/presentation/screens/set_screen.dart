@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toddle/featurers/home/data/models/exam_type.dart';
 import 'package:toddle/featurers/home/presentation/screens/widgets/set_card.dart';
+import 'package:toddle/featurers/my_paper/data/models/exam.dart';
+
+import '../../../my_paper/presentation/controllers/my_paper_controller.dart';
 
 class SetScreen extends ConsumerStatefulWidget {
   static const routeName = '/set';
@@ -17,12 +20,18 @@ class SetScreenState extends ConsumerState<SetScreen> {
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    ref.read(myPaperControllerProvider.notifier).fetchMyPaper();
   }
 
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     ExamType exam = ModalRoute.of(context)!.settings.arguments as ExamType;
+    List<Exam>? exams =
+        ref.watch(myPaperControllerProvider.notifier).state.value;
+    int length =
+        exams!.where((ele) => ele.examType == exam.examType).toList().length;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -63,6 +72,7 @@ class SetScreenState extends ConsumerState<SetScreen> {
                     child: SetCard(
                       setNumber: i + 1,
                       exam: exam,
+                      length: length,
                     ),
                   ),
                   itemCount: int.parse(exam.maxModelSet),
