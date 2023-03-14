@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -309,13 +307,12 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
       child: IconButton(
         onPressed: () async {
           //? For Audio Playing
-
-          await player.setUrl(widget.questions.filePath!);
-          final duration = player.duration;
-          Timer(duration!, () {
-            setState(() {
-              isQusPlaying = false;
-            });
+          await player.setUrl(
+            '${ApiConstants.questionFileUrl}${widget.questions.filePath}',
+          );
+          isQusPlaying ? player.stop() : player.play();
+          setState(() {
+            isQusPlaying = !isQusPlaying;
           });
         },
         icon: Icon(
@@ -349,13 +346,12 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
       child: IconButton(
         onPressed: () async {
           //? For Audio Playing
-
-          await player.setUrl(widget.questions.filePath!);
-          final duration = player.duration;
-          Timer(duration!, () {
-            setState(() {
-              isQusPlaying = false;
-            });
+          await player.setUrl(
+            '${ApiConstants.questionFileUrl}${widget.questions.filePath}',
+          );
+          isQusPlaying ? player.stop() : player.play();
+          setState(() {
+            isQusPlaying = !isQusPlaying;
           });
         },
         icon: Icon(
@@ -444,12 +440,13 @@ class _ViewPaperWidgetState extends State<ViewPaperWidget> {
                     onPressed: () async {
                       //? For Audio Playing
 
-                      await player.setUrl(widget.questions.audioPath!);
-                      final duration = player.duration;
-                      Timer(duration!, () {
-                        setState(() {
-                          isQusPlaying = false;
-                        });
+                      //? For Audio Playing
+                      await player.setUrl(
+                        '${ApiConstants.questionFileUrl}${widget.questions.audioPath}',
+                      );
+                      isQusPlaying ? player.stop() : player.play();
+                      setState(() {
+                        isQusPlaying = !isQusPlaying;
                       });
                     },
                     icon: Icon(
