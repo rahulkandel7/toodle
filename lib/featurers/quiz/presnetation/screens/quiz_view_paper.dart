@@ -50,7 +50,10 @@ class QuizViewPaper extends ConsumerWidget {
                       Expanded(
                         child: ListView.builder(
                           itemBuilder: (ctx, i) {
-                            return ViewPaperWidget(questions: data[i]);
+                            return ViewPaperWidget(
+                              questions: data[i],
+                              i: i,
+                            );
                           },
                           itemCount: data.length,
                         ),
