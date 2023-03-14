@@ -2033,6 +2033,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                   },
                                   child: const Text(
                                     'Yes',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(
@@ -2046,6 +2049,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                   },
                                   child: const Text(
                                     'No',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -2082,6 +2088,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                   },
                                   child: const Text(
                                     'Yes',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(
@@ -2095,6 +2104,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                   },
                                   child: const Text(
                                     'No',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ],
