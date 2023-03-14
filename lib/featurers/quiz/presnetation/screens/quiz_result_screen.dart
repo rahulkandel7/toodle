@@ -128,7 +128,6 @@ class QuizResultScreenState extends ConsumerState<QuizResultScreen> {
               const SizedBox(
                 height: 10,
               ),
-              const Divider(),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
