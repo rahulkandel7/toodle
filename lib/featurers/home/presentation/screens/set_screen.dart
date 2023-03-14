@@ -63,6 +63,13 @@ class SetScreenState extends ConsumerState<SetScreen> {
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  'यो ${exam.examType} Exam System ले ११००० भन्दा धेरै प्रश्नहरुको Database बाट ४० ओटा प्रश्न छानेर तयार पारेको छ।',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ),
               const Divider(),
               SizedBox(
                 height: screenSize.height * 0.8,
