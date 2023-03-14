@@ -2053,7 +2053,54 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           },
                         );
                       } else {
-                        submitAnswers(examType: examType, data: data);
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content: SizedBox(
+                                height: screenSize.height * 0.12,
+                                child: Column(
+                                  children: const [
+                                    Text('Are you sure to submit ?'),
+                                  ],
+                                ),
+                              ),
+                              title: Text(
+                                'Warning !',
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                              actionsAlignment: MainAxisAlignment.center,
+                              actions: [
+                                FilledButton(
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: AppConstants.quizScreen,
+                                  ),
+                                  onPressed: () {
+                                    submitAnswers(
+                                        examType: examType, data: data);
+                                  },
+                                  child: const Text(
+                                    'Yes',
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                FilledButton(
+                                  style: FilledButton.styleFrom(
+                                      backgroundColor: Colors.red),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text(
+                                    'No',
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       }
                     }
                   },
