@@ -10,10 +10,10 @@ class ApiConstants {
       "https://toddle.bitmapitsolution.com/profiles/";
 
   //* For Testing
-  // static const String url = "http://192.168.1.4:8000/api/v1/";
+  // static const String url = "http://192.168.1.2:8000/api/v1/";
   // static const String answerImageUrl =
-  //     "http://192.168.1.4:8000/images/quiz_images/";
+  //     "http://192.168.1.2:8000/images/quiz_images/";
 
-  // static const String questionFileUrl = "http://192.168.1.4:8000/files/";
-  // static const String userImage = "http://192.168.1.4:8000/profiles/";
+  // static const String questionFileUrl = "http://192.168.1.2:8000/files/";
+  // static const String userImage = "http://192.168.1.2:8000/profiles/";
 }

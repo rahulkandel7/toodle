@@ -7,6 +7,7 @@ import 'package:toddle/core/utils/app_drawer.dart';
 import 'package:toddle/featurers/home/data/models/exam_type.dart';
 import 'package:toddle/featurers/home/presentation/controllers/exam_type_controller.dart';
 import 'package:toddle/featurers/home/presentation/screens/first_screen.dart';
+import 'package:toddle/featurers/my_paper/presentation/controllers/my_paper_controller.dart';
 
 import 'widgets/exam_card.dart';
 
@@ -35,6 +36,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     _getName();
+    ref.read(myPaperControllerProvider);
   }
 
   @override

@@ -177,10 +177,20 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
-                  'Welcome to ',
+                  'Namaste,',
                   style: Theme.of(context)
                       .textTheme
                       .headlineLarge!
+                      .copyWith(fontWeight: FontWeight.w500),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  'Welcome to ',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineSmall!
                       .copyWith(fontWeight: FontWeight.w500),
                 ),
               ),
@@ -190,7 +200,7 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
                   'EPS Topik Practice',
                   style: Theme.of(context)
                       .textTheme
-                      .headlineLarge!
+                      .headlineSmall!
                       .copyWith(fontWeight: FontWeight.w500),
                 ),
               ),

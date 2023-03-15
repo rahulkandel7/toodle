@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -61,12 +62,27 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
   //? Audio bool for question
   bool isQusPlaying = false;
 
+  // ? Audio playing option
+  final option1Player = AudioPlayer();
+  bool isOption1Playing = false;
+
+  final option2Player = AudioPlayer();
+  bool isOption2Playing = false;
+
+  final option3Player = AudioPlayer();
+  bool isOption3Playing = false;
+
+  final option4Player = AudioPlayer();
+  bool isOption4Playing = false;
+
   //? For Checking audio is played twice or not
   int q = 0; //* For Question
   int o1 = 0; //* For option 1
   int o2 = 0; //* For option 2
   int o3 = 0; //* For option 3
   int o4 = 0; //* For option 4
+
+  bool isTimerStart = true;
 
   //? For Initilizating cache Manager
   late var imageCache = CacheManager(
@@ -76,8 +92,8 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     ),
   );
 
-  //? Widget For Option Box
-  Widget optionBox({
+  // ? Option Box 1
+  Widget optionBox1({
     required String option,
     required String isImage,
     required Size screenSize,
@@ -94,23 +110,37 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
           selectOption(option, selectedOption, data);
         },
         child: Container(
-          width: double.infinity,
+          width: isImage == 'Yes' ? screenSize.width * 0.2 : double.infinity,
           padding: const EdgeInsets.all(
             12,
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: Colors.black,
-              width: 0.5,
-            ),
+            border: isImage == 'Yes'
+                ? const Border()
+                : Border.all(
+                    color: Colors.black,
+                    width: 0.5,
+                  ),
+            color: Colors.white,
+            boxShadow: [
+              isImage == 'Yes'
+                  ? const BoxShadow(
+                      offset: Offset(2, 2),
+                      color: Colors.black26,
+                      blurRadius: 5,
+                    )
+                  : const BoxShadow(),
+            ],
           ),
           child: Row(
             children: [
               Container(
                 margin: const EdgeInsets.only(right: 12),
                 width: screenSize.width * 0.04,
-                height: screenSize.height * 0.09,
+                height: isImage == 'Yes'
+                    ? screenSize.height * 0.2
+                    : screenSize.height * 0.09,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
@@ -131,80 +161,44 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               data[i].isOptionAudio == 'Yes'
                   ? IconButton(
                       onPressed: () async {
-                        //? For Audio Playing
-                        var filePath =
-                            await imageCache.getFileFromCache(option);
-                        await player.setFilePath(filePath!.file.path);
-
-                        //* For Option 1
-                        if (selectedOption == 'option1') {
-                          if (o1 < 2) {
-                            player.playing ? player.stop() : player.play();
+                        if (data[i].option1Count >= 2) {
+                          toast(
+                              context: context,
+                              label: 'You cannot play audio more than twice',
+                              subTitle: '두 번 이상 플레이할 수 없습니다.',
+                              color: Colors.red);
+                        } else {
+                          //? For Audio Playing
+                          var filePath =
+                              await imageCache.getFileFromCache(option);
+                          await option1Player.setFilePath(filePath!.file.path);
+                          final duration = option1Player.duration;
+                          Timer(duration!, () {
                             setState(() {
-                              if (player.playing) {
+                              isOption1Playing = false;
+                            });
+                          });
+                          if (o1 < 2) {
+                            option1Player.playing
+                                ? option1Player.stop()
+                                : option1Player.play();
+                            data[i].option1Count++;
+                            setState(() {
+                              isOption1Playing = !isOption1Playing;
+                              if (option1Player.playing) {
                                 o1++;
                               }
                             });
                           } else {
-                            toast(
-                                context: context,
-                                label: 'You cannot play audio more than twice',
-                                color: Colors.red);
-                            player.stop();
-                          }
-                        }
-
-                        //* For Option 2
-                        if (selectedOption == 'option2') {
-                          if (o2 < 2) {
-                            player.playing ? player.stop() : player.play();
                             setState(() {
-                              if (player.playing) {
-                                o2++;
-                              }
+                              isOption1Playing = false;
                             });
-                          } else {
                             toast(
                                 context: context,
                                 label: 'You cannot play audio more than twice',
+                                subTitle: '두 번 이상 플레이할 수 없습니다.',
                                 color: Colors.red);
-                            player.stop();
-                          }
-                        }
-
-                        //* For Option 3
-                        if (selectedOption == 'option3') {
-                          if (o3 < 2) {
-                            player.playing ? player.stop() : player.play();
-                            setState(() {
-                              if (player.playing) {
-                                o3++;
-                              }
-                            });
-                          } else {
-                            toast(
-                                context: context,
-                                label: 'You cannot play audio more than twice',
-                                color: Colors.red);
-                            player.stop();
-                          }
-                        }
-
-                        //* For Option 4
-                        if (selectedOption == 'option4') {
-                          if (o4 < 2) {
-                            player.playing ? player.stop() : player.play();
-                            setState(() {
-                              if (player.playing) {
-                                o4++;
-                              }
-                            });
-                          } else {
-                            toast(
-                                context: context,
-                                label: 'You cannot play audio more than twice',
-                                color: Colors.red);
-                            player.stop();
+                            option1Player.stop();
                           }
                         }
 
@@ -212,9 +206,572 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                         selectOption(option, selectedOption, data);
                       },
                       padding: const EdgeInsets.all(0),
-                      icon: const Icon(
-                        Icons.play_circle_outline,
+                      icon: Icon(
+                        isOption1Playing
+                            ? Icons.pause_circle
+                            : Icons.play_circle_outline,
                         size: 32,
+                        color: data[i].option1Count < 2
+                            ? Colors.black
+                            : Colors.grey.shade500,
+                      ),
+                    )
+                  : isImage == 'No'
+                      ? Text(option)
+                      : InkWell(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  surfaceTintColor: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: InteractiveViewer(
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                '${ApiConstants.answerImageUrl}$option',
+                                            // cacheManager: imageCache,
+                                            width: screenSize.width * 0.4,
+                                            height: double.infinity,
+                                            fit: BoxFit.contain,
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: InkWell(
+                                          splashColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          onTap: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const SizedBox.expand(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                            selectOption(option, selectedOption, data);
+                          },
+                          child: CachedNetworkImage(
+                            imageUrl: '${ApiConstants.answerImageUrl}$option',
+                            // cacheManager: imageCache,
+                            height: screenSize.height * 0.13,
+                            placeholder: (context, url) => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ? Option Box 2
+  Widget optionBox2({
+    required String option,
+    required String isImage,
+    required Size screenSize,
+    required String selectedOption,
+    required String isOptionAudio,
+    required List<Questions> data,
+    required String boxNumber,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(top: screenSize.height * 0.02),
+      child: InkWell(
+        onTap: () {
+          //? For Selecting the options
+          selectOption(option, selectedOption, data);
+        },
+        child: Container(
+          width: isImage == 'Yes' ? screenSize.width * 0.2 : double.infinity,
+          padding: const EdgeInsets.all(
+            12,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: isImage == 'Yes'
+                ? const Border()
+                : Border.all(
+                    color: Colors.black,
+                    width: 0.5,
+                  ),
+            color: Colors.white,
+            boxShadow: [
+              isImage == 'Yes'
+                  ? const BoxShadow(
+                      offset: Offset(2, 2),
+                      color: Colors.black26,
+                      blurRadius: 5,
+                    )
+                  : const BoxShadow(),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(right: 12),
+                width: screenSize.width * 0.04,
+                height: isImage == 'Yes'
+                    ? screenSize.height * 0.2
+                    : screenSize.height * 0.09,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    width: 1.3,
+                    color: answer == option ? Colors.transparent : Colors.black,
+                  ),
+                  color: answer == option ? Colors.black : Colors.transparent,
+                ),
+                child: Center(
+                  child: Text(
+                    boxNumber,
+                    style: TextStyle(
+                      color: answer == option ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              data[i].isOptionAudio == 'Yes'
+                  ? IconButton(
+                      onPressed: () async {
+                        if (data[i].option2Count >= 2) {
+                          toast(
+                              context: context,
+                              label: 'You cannot play audio more than twice',
+                              subTitle: '두 번 이상 플레이할 수 없습니다.',
+                              color: Colors.red);
+                        } else {
+                          //? For Audio Playing
+                          var filePath =
+                              await imageCache.getFileFromCache(option);
+                          await option2Player.setFilePath(filePath!.file.path);
+                          final duration = option2Player.duration;
+                          Timer(duration!, () {
+                            setState(() {
+                              isOption2Playing = false;
+                            });
+                          });
+                          if (o2 < 2) {
+                            option2Player.playing
+                                ? option2Player.stop()
+                                : option2Player.play();
+                            data[i].option2Count++;
+                            setState(() {
+                              isOption2Playing = !isOption2Playing;
+                              if (option2Player.playing) {
+                                o2++;
+                              }
+                            });
+                          } else {
+                            setState(() {
+                              isOption2Playing = false;
+                            });
+                            toast(
+                                context: context,
+                                label: 'You cannot play audio more than twice',
+                                subTitle: '두 번 이상 플레이할 수 없습니다.',
+                                color: Colors.red);
+                            option2Player.stop();
+                          }
+                        }
+
+                        //? For Selecting the options
+                        selectOption(option, selectedOption, data);
+                      },
+                      padding: const EdgeInsets.all(0),
+                      icon: Icon(
+                        isOption2Playing
+                            ? Icons.pause_circle
+                            : Icons.play_circle_outline,
+                        size: 32,
+                        color: data[i].option2Count < 2
+                            ? Colors.black
+                            : Colors.grey.shade500,
+                      ),
+                    )
+                  : isImage == 'No'
+                      ? Text(option)
+                      : InkWell(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  surfaceTintColor: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: InteractiveViewer(
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                '${ApiConstants.answerImageUrl}$option',
+                                            // cacheManager: imageCache,
+                                            width: screenSize.width * 0.4,
+                                            height: double.infinity,
+                                            fit: BoxFit.contain,
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: InkWell(
+                                          splashColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          onTap: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const SizedBox.expand(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                            selectOption(option, selectedOption, data);
+                          },
+                          child: CachedNetworkImage(
+                            imageUrl: '${ApiConstants.answerImageUrl}$option',
+                            // cacheManager: imageCache,
+                            height: screenSize.height * 0.13,
+                            placeholder: (context, url) => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ? Option Box 3
+  Widget optionBox3({
+    required String option,
+    required String isImage,
+    required Size screenSize,
+    required String selectedOption,
+    required String isOptionAudio,
+    required List<Questions> data,
+    required String boxNumber,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(top: screenSize.height * 0.02),
+      child: InkWell(
+        onTap: () {
+          //? For Selecting the options
+          selectOption(option, selectedOption, data);
+        },
+        child: Container(
+          width: isImage == 'Yes' ? screenSize.width * 0.2 : double.infinity,
+          padding: const EdgeInsets.all(
+            12,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: isImage == 'Yes'
+                ? const Border()
+                : Border.all(
+                    color: Colors.black,
+                    width: 0.5,
+                  ),
+            color: Colors.white,
+            boxShadow: [
+              isImage == 'Yes'
+                  ? const BoxShadow(
+                      offset: Offset(2, 2),
+                      color: Colors.black26,
+                      blurRadius: 5,
+                    )
+                  : const BoxShadow(),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(right: 12),
+                width: screenSize.width * 0.04,
+                height: isImage == 'Yes'
+                    ? screenSize.height * 0.2
+                    : screenSize.height * 0.09,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    width: 1.3,
+                    color: answer == option ? Colors.transparent : Colors.black,
+                  ),
+                  color: answer == option ? Colors.black : Colors.transparent,
+                ),
+                child: Center(
+                  child: Text(
+                    boxNumber,
+                    style: TextStyle(
+                      color: answer == option ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              data[i].isOptionAudio == 'Yes'
+                  ? IconButton(
+                      onPressed: () async {
+                        if (data[i].option3Count >= 2) {
+                          toast(
+                              context: context,
+                              label: 'You cannot play audio more than twice',
+                              subTitle: '두 번 이상 플레이할 수 없습니다.',
+                              color: Colors.red);
+                        } else {
+                          //? For Audio Playing
+                          var filePath =
+                              await imageCache.getFileFromCache(option);
+                          await option3Player.setFilePath(filePath!.file.path);
+                          final duration = option3Player.duration;
+                          Timer(duration!, () {
+                            setState(() {
+                              isOption3Playing = false;
+                            });
+                          });
+                          if (o3 < 2) {
+                            option3Player.playing
+                                ? option3Player.stop()
+                                : option3Player.play();
+                            data[i].option3Count++;
+                            setState(() {
+                              isOption3Playing = !isOption3Playing;
+                              if (option3Player.playing) {
+                                o3++;
+                              }
+                            });
+                          } else {
+                            setState(() {
+                              isOption3Playing = false;
+                            });
+                            toast(
+                                context: context,
+                                label: 'You cannot play audio more than twice',
+                                subTitle: '두 번 이상 플레이할 수 없습니다.',
+                                color: Colors.red);
+                            option3Player.stop();
+                          }
+                        }
+
+                        //? For Selecting the options
+                        selectOption(option, selectedOption, data);
+                      },
+                      padding: const EdgeInsets.all(0),
+                      icon: Icon(
+                        isOption3Playing
+                            ? Icons.pause_circle
+                            : Icons.play_circle_outline,
+                        size: 32,
+                        color: data[i].option3Count < 2
+                            ? Colors.black
+                            : Colors.grey.shade500,
+                      ),
+                    )
+                  : isImage == 'No'
+                      ? Text(option)
+                      : InkWell(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  surfaceTintColor: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: InteractiveViewer(
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                '${ApiConstants.answerImageUrl}$option',
+                                            // cacheManager: imageCache,
+                                            width: screenSize.width * 0.4,
+                                            height: double.infinity,
+                                            fit: BoxFit.contain,
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: InkWell(
+                                          splashColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          onTap: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const SizedBox.expand(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                            selectOption(option, selectedOption, data);
+                          },
+                          child: CachedNetworkImage(
+                            imageUrl: '${ApiConstants.answerImageUrl}$option',
+                            // cacheManager: imageCache,
+                            height: screenSize.height * 0.13,
+                            placeholder: (context, url) => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ? Option Box 4
+  Widget optionBox4({
+    required String option,
+    required String isImage,
+    required Size screenSize,
+    required String selectedOption,
+    required String isOptionAudio,
+    required List<Questions> data,
+    required String boxNumber,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(top: screenSize.height * 0.02),
+      child: InkWell(
+        onTap: () {
+          //? For Selecting the options
+          selectOption(option, selectedOption, data);
+        },
+        child: Container(
+          width: isImage == 'Yes' ? screenSize.width * 0.2 : double.infinity,
+          padding: const EdgeInsets.all(
+            12,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: isImage == 'Yes'
+                ? const Border()
+                : Border.all(
+                    color: Colors.black,
+                    width: 0.5,
+                  ),
+            color: Colors.white,
+            boxShadow: [
+              isImage == 'Yes'
+                  ? const BoxShadow(
+                      offset: Offset(2, 2),
+                      color: Colors.black26,
+                      blurRadius: 5,
+                    )
+                  : const BoxShadow(),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(right: 12),
+                width: screenSize.width * 0.04,
+                height: isImage == 'Yes'
+                    ? screenSize.height * 0.2
+                    : screenSize.height * 0.09,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    width: 1.3,
+                    color: answer == option ? Colors.transparent : Colors.black,
+                  ),
+                  color: answer == option ? Colors.black : Colors.transparent,
+                ),
+                child: Center(
+                  child: Text(
+                    boxNumber,
+                    style: TextStyle(
+                      color: answer == option ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              data[i].isOptionAudio == 'Yes'
+                  ? IconButton(
+                      onPressed: () async {
+                        if (data[i].option4Count >= 2) {
+                          toast(
+                              context: context,
+                              label: 'You cannot play audio more than twice',
+                              subTitle: '두 번 이상 플레이할 수 없습니다.',
+                              color: Colors.red);
+                        } else {
+                          //? For Audio Playing
+                          var filePath =
+                              await imageCache.getFileFromCache(option);
+                          await option4Player.setFilePath(filePath!.file.path);
+                          final duration = option4Player.duration;
+                          Timer(duration!, () {
+                            setState(() {
+                              isOption4Playing = false;
+                            });
+                          });
+                          if (o4 < 2) {
+                            option4Player.playing
+                                ? option4Player.stop()
+                                : option4Player.play();
+                            data[i].option4Count++;
+                            setState(() {
+                              isOption4Playing = !isOption4Playing;
+                              if (option4Player.playing) {
+                                o4++;
+                              }
+                            });
+                          } else {
+                            setState(() {
+                              isOption4Playing = false;
+                            });
+                            toast(
+                                context: context,
+                                label: 'You cannot play audio more than twice',
+                                subTitle: '두 번 이상 플레이할 수 없습니다.',
+                                color: Colors.red);
+                            option4Player.stop();
+                          }
+                        }
+
+                        //? For Selecting the options
+                        selectOption(option, selectedOption, data);
+                      },
+                      padding: const EdgeInsets.all(0),
+                      icon: Icon(
+                        isOption4Playing
+                            ? Icons.pause_circle
+                            : Icons.play_circle_outline,
+                        size: 32,
+                        color: data[i].option4Count < 2
+                            ? Colors.black
+                            : Colors.grey.shade500,
                       ),
                     )
                   : isImage == 'No'
@@ -332,10 +889,15 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
           data: (data) {
             //? Getting Timer Data
             CountDownTimer counter = CountDownTimer(
+              isStart: isTimerStart,
               time: Duration(minutes: examType.time),
               onSubmit: () {
                 List<String> questionIds = [];
                 List<String> selectedAnswers = [];
+
+                setState(() {
+                  isTimerStart = false;
+                });
 
                 for (var userAnswer in userSelected) {
                   questionIds.add(userAnswer['question'].toString());
@@ -367,7 +929,6 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                 });
               },
             );
-
             cachingDatas(data);
             return Theme(
               data: ThemeData.light(
@@ -452,6 +1013,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           Padding(
                                             padding: EdgeInsets.only(
                                               top: screenSize.height * 0.01,
+                                              bottom: 8,
                                             ),
                                             child: Text(
                                               data[i].category,
@@ -466,251 +1028,288 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                           ),
 
                                           //? Showing Question
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              bottom: screenSize.height * 0.03,
-                                            ),
-                                            child: Text(
-                                              '${i + 1}. ${data[i].question}',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyLarge!
-                                                  .copyWith(
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                          ),
-
-                                          data[i].isAudio == 'Yes' ||
-                                                  data[i].isOptionAudio == 'Yes'
-                                              ? IconButton(
-                                                  onPressed: () async {
-                                                    //? For Audio Playing
-                                                    var filePath =
-                                                        await imageCache
-                                                            .getFileFromCache(
-                                                                data[i]
-                                                                    .filePath!);
-                                                    await player.setFilePath(
-                                                        filePath!.file.path);
-                                                    if (q < 2) {
-                                                      isQusPlaying
-                                                          ? player.stop()
-                                                          : player.play();
-                                                      setState(() {
-                                                        isQusPlaying =
-                                                            !isQusPlaying;
-                                                        if (isQusPlaying) {
-                                                          q++;
-                                                        }
-                                                      });
-                                                    } else {
-                                                      player.stop();
-                                                      setState(() {
-                                                        isQusPlaying = false;
-                                                      });
-                                                      toast(
-                                                          context: context,
-                                                          label:
-                                                              'You cannot play audio more than twice',
-                                                          color: Colors.red);
-                                                    }
-                                                  },
-                                                  icon: Icon(
-                                                    isQusPlaying
-                                                        ? Icons
-                                                            .pause_circle_filled_rounded
-                                                        : Icons
-                                                            .play_circle_outline,
-                                                    size: 32,
-                                                  ),
-                                                )
-                                              : data[i].filePath != null
-                                                  ? InkWell(
-                                                      onTap: () {
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return Dialog(
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              surfaceTintColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              child: Row(
-                                                                children: [
-                                                                  Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerLeft,
-                                                                    child:
-                                                                        InteractiveViewer(
-                                                                      child:
-                                                                          CachedNetworkImage(
-                                                                        imageUrl:
-                                                                            '${ApiConstants.questionFileUrl}${data[i].filePath}',
-                                                                        width: screenSize.width *
-                                                                            0.4,
-                                                                        height:
-                                                                            double.infinity,
-                                                                        fit: BoxFit
-                                                                            .contain,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  Expanded(
-                                                                    child:
-                                                                        InkWell(
-                                                                      splashColor:
-                                                                          Colors
-                                                                              .transparent,
-                                                                      focusColor:
-                                                                          Colors
-                                                                              .transparent,
-                                                                      onTap: () =>
-                                                                          Navigator.of(context)
-                                                                              .pop(),
-                                                                      child: const SizedBox
-                                                                          .expand(),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            );
-                                                          },
-                                                        );
-                                                      },
-                                                      child: Container(
-                                                        width: double.infinity,
-                                                        height:
-                                                            screenSize.height *
-                                                                0.4,
-                                                        margin: const EdgeInsets
-                                                            .all(
-                                                          15,
-                                                        ),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          border: Border.all(
-                                                            color: Colors.black,
-                                                          ),
-                                                        ),
-                                                        child:
-                                                            CachedNetworkImage(
-                                                          // cacheManager: imageCache,
-                                                          imageUrl:
-                                                              '${ApiConstants.questionFileUrl}${data[i].filePath}',
-                                                          width:
-                                                              double.infinity,
-                                                          fit: BoxFit.contain,
-                                                          placeholder:
-                                                              (context, url) =>
-                                                                  const Center(
-                                                            child:
-                                                                CircularProgressIndicator(),
-                                                          ),
-                                                        ),
+                                          (i > 1 && i < 8) ||
+                                                  (i >= 12 && i <= 19)
+                                              ? QuestionWithBorder(
+                                                  screenSize: screenSize,
+                                                  i: i,
+                                                  data: data)
+                                              : Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 8.0),
+                                                      child: Text(
+                                                        '${i + 1}.',
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyLarge!
+                                                            .copyWith(
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
                                                       ),
-                                                    )
-                                                  : const SizedBox(),
+                                                    ),
+                                                    data[i].question != null ||
+                                                            data[i].isAudio ==
+                                                                'Yes'
+                                                        ? SizedBox(
+                                                            width: screenSize
+                                                                    .width *
+                                                                0.4,
+                                                            child: Text(
+                                                              data[i].question!,
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodyLarge!
+                                                                  .copyWith(
+                                                                    color: Colors
+                                                                        .black,
+                                                                  ),
+                                                            ),
+                                                          )
+                                                        : const SizedBox()
+                                                  ],
+                                                ),
+                                          // ! For Displaying audio
+                                          data[i].isAudio == 'Yes'
+                                              ? audioQuestion(
+                                                  screenSize, data, context)
+                                              : data[i].filePath!.isNotEmpty
+                                                  ? imageWithAudio(
+                                                      context, data, screenSize)
+                                                  : data[i].audioPath != null
+                                                      ? audioQuestionWithOptionImage(
+                                                          screenSize,
+                                                          data,
+                                                          context)
+                                                      : const SizedBox(),
                                         ],
                                       ),
-                                      Column(
-                                        children: [
-                                          //Option Box
-                                          optionBox(
-                                            option: data[i].option1,
-                                            isImage: data[i].isImage,
-                                            screenSize: screenSize,
-                                            selectedOption: 'option1',
-                                            isOptionAudio:
-                                                data[i].isOptionAudio,
-                                            data: data,
-                                            boxNumber: '1',
-                                          ),
-                                          optionBox(
-                                            option: data[i].option2,
-                                            isImage: data[i].isImage,
-                                            screenSize: screenSize,
-                                            isOptionAudio:
-                                                data[i].isOptionAudio,
-                                            selectedOption: 'option2',
-                                            data: data,
-                                            boxNumber: '2',
-                                          ),
-                                          optionBox(
-                                            option: data[i].option3,
-                                            isImage: data[i].isImage,
-                                            screenSize: screenSize,
-                                            isOptionAudio:
-                                                data[i].isOptionAudio,
-                                            selectedOption: 'option3',
-                                            data: data,
-                                            boxNumber: '3',
-                                          ),
-                                          optionBox(
-                                            option: data[i].option4,
-                                            isImage: data[i].isImage,
-                                            screenSize: screenSize,
-                                            isOptionAudio:
-                                                data[i].isOptionAudio,
-                                            selectedOption: 'option4',
-                                            data: data,
-                                            boxNumber: '4',
-                                          ),
-                                        ],
-                                      ),
+                                      //??? For answer
+                                      data[i].isImage == 'Yes'
+                                          ? Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: optionBox1(
+                                                        option: data[i].option1,
+                                                        isImage:
+                                                            data[i].isImage,
+                                                        screenSize: screenSize,
+                                                        selectedOption:
+                                                            'option1',
+                                                        isOptionAudio: data[i]
+                                                            .isOptionAudio,
+                                                        data: data,
+                                                        boxNumber: '1',
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: optionBox2(
+                                                        option: data[i].option2,
+                                                        isImage:
+                                                            data[i].isImage,
+                                                        screenSize: screenSize,
+                                                        isOptionAudio: data[i]
+                                                            .isOptionAudio,
+                                                        selectedOption:
+                                                            'option2',
+                                                        data: data,
+                                                        boxNumber: '2',
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: optionBox3(
+                                                        option: data[i].option3,
+                                                        isImage:
+                                                            data[i].isImage,
+                                                        screenSize: screenSize,
+                                                        isOptionAudio: data[i]
+                                                            .isOptionAudio,
+                                                        selectedOption:
+                                                            'option3',
+                                                        data: data,
+                                                        boxNumber: '3',
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: optionBox4(
+                                                        option: data[i].option4,
+                                                        isImage:
+                                                            data[i].isImage,
+                                                        screenSize: screenSize,
+                                                        isOptionAudio: data[i]
+                                                            .isOptionAudio,
+                                                        selectedOption:
+                                                            'option4',
+                                                        data: data,
+                                                        boxNumber: '4',
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                          : Column(
+                                              children: [
+                                                //Option Box
+                                                optionBox1(
+                                                  option: data[i].option1,
+                                                  isImage: data[i].isImage,
+                                                  screenSize: screenSize,
+                                                  selectedOption: 'option1',
+                                                  isOptionAudio:
+                                                      data[i].isOptionAudio,
+                                                  data: data,
+                                                  boxNumber: '1',
+                                                ),
+                                                optionBox2(
+                                                  option: data[i].option2,
+                                                  isImage: data[i].isImage,
+                                                  screenSize: screenSize,
+                                                  isOptionAudio:
+                                                      data[i].isOptionAudio,
+                                                  selectedOption: 'option2',
+                                                  data: data,
+                                                  boxNumber: '2',
+                                                ),
+                                                optionBox3(
+                                                  option: data[i].option3,
+                                                  isImage: data[i].isImage,
+                                                  screenSize: screenSize,
+                                                  isOptionAudio:
+                                                      data[i].isOptionAudio,
+                                                  selectedOption: 'option3',
+                                                  data: data,
+                                                  boxNumber: '3',
+                                                ),
+                                                optionBox4(
+                                                  option: data[i].option4,
+                                                  isImage: data[i].isImage,
+                                                  screenSize: screenSize,
+                                                  isOptionAudio:
+                                                      data[i].isOptionAudio,
+                                                  selectedOption: 'option4',
+                                                  data: data,
+                                                  boxNumber: '4',
+                                                ),
+                                              ],
+                                            ),
                                     ],
                                   ),
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    i == 0
-                                        ? const SizedBox.shrink()
-                                        : previousButton(
-                                            data,
-                                            examType,
-                                          ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 15.0),
-                                      child: OutlinedButton(
-                                        style: OutlinedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                20,
+                                // * For buttons
+                                i == 0
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 15.0),
+                                            child: OutlinedButton(
+                                              style: OutlinedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      9,
+                                                    ),
+                                                  ),
+                                                  side: BorderSide(
+                                                      color: AppConstants
+                                                          .quizScreen),
+                                                  backgroundColor:
+                                                      Colors.transparent),
+                                              onPressed: () {
+                                                setState(() {
+                                                  isTotalQuestion = true;
+                                                });
+                                              },
+                                              child: Text(
+                                                'Total Questions',
+                                                style: TextStyle(
+                                                    color: AppConstants
+                                                        .quizScreen),
                                               ),
                                             ),
-                                            side: BorderSide(
-                                                color: AppConstants.quizScreen),
-                                            backgroundColor:
-                                                Colors.transparent),
-                                        onPressed: () {
-                                          setState(() {
-                                            isTotalQuestion = true;
-                                          });
-                                        },
-                                        child: Text(
-                                          'Total Questions',
-                                          style: TextStyle(
-                                              color: AppConstants.quizScreen),
-                                        ),
-                                      ),
-                                    ),
-                                    i == data.length - 1
-                                        ? const SizedBox()
-                                        : nextButton(
+                                          ),
+                                          i == data.length - 1
+                                              ? const SizedBox()
+                                              : nextButton(
+                                                  data,
+                                                  examType,
+                                                ),
+                                        ],
+                                      )
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          previousButton(
                                             data,
                                             examType,
                                           ),
-                                  ],
-                                ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 15.0),
+                                            child: OutlinedButton(
+                                              style: OutlinedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      9,
+                                                    ),
+                                                  ),
+                                                  side: BorderSide(
+                                                      color: AppConstants
+                                                          .quizScreen),
+                                                  backgroundColor:
+                                                      Colors.transparent),
+                                              onPressed: () {
+                                                setState(() {
+                                                  isTotalQuestion = true;
+                                                });
+                                              },
+                                              child: Text(
+                                                'Total Questions',
+                                                style: TextStyle(
+                                                    color: AppConstants
+                                                        .quizScreen),
+                                              ),
+                                            ),
+                                          ),
+                                          i == data.length - 1
+                                              ? const SizedBox()
+                                              : nextButton(
+                                                  data,
+                                                  examType,
+                                                ),
+                                        ],
+                                      ),
                               ],
                             ),
                           ),
@@ -736,6 +1335,278 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         );
   }
 
+  Container audioQuestionWithOptionImage(
+      Size screenSize, List<Questions> data, BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      width: double.infinity,
+      height: screenSize.height * 0.25,
+      margin: const EdgeInsets.all(
+        15,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Colors.black,
+        ),
+        color: Colors.white,
+        boxShadow: const [
+          BoxShadow(offset: Offset(0, 5), blurRadius: 5, color: Colors.black26),
+        ],
+      ),
+      child: IconButton(
+        onPressed: () async {
+          if (data[i].audioPathcount >= 2) {
+            toast(
+                context: context,
+                label: 'You cannot play audio more than twice',
+                subTitle: '두 번 이상 플레이할 수 없습니다.',
+                color: Colors.red);
+          } else {
+            //? For Audio Playing
+            var filePath =
+                await imageCache.getFileFromCache(data[i].audioPath!);
+            await player.setFilePath(filePath!.file.path);
+            final duration = player.duration;
+            Timer(duration!, () {
+              setState(() {
+                isQusPlaying = false;
+              });
+            });
+            if (q < 2) {
+              isQusPlaying ? player.stop() : player.play();
+              data[i].audioPathcount++;
+              setState(() {
+                isQusPlaying = !isQusPlaying;
+                if (isQusPlaying) {
+                  q++;
+                }
+              });
+            } else {
+              player.stop();
+              setState(() {
+                isQusPlaying = false;
+              });
+              toast(
+                  context: context,
+                  label: 'You cannot play audio more than twice',
+                  subTitle: '두 번 이상 플레이할 수 없습니다.',
+                  color: Colors.red);
+            }
+          }
+        },
+        icon: Icon(
+          isQusPlaying ? Icons.pause_circle_filled_rounded : Icons.volume_down,
+          size: 32,
+          color:
+              data[i].audioPathcount < 2 ? Colors.black : Colors.grey.shade600,
+        ),
+      ),
+    );
+  }
+
+  Container audioQuestion(
+      Size screenSize, List<Questions> data, BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      width: double.infinity,
+      height: screenSize.height * 0.24,
+      margin: const EdgeInsets.all(
+        15,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Colors.black,
+        ),
+        color: Colors.white,
+        boxShadow: const [
+          BoxShadow(offset: Offset(0, 5), blurRadius: 5, color: Colors.black26),
+        ],
+      ),
+      child: IconButton(
+        onPressed: () async {
+          if (data[i].questionCount >= 2) {
+            toast(
+                context: context,
+                label: 'You cannot play audio more than twice',
+                subTitle: '두 번 이상 플레이할 수 없습니다.',
+                color: Colors.red);
+          } else {
+            data[i].questionCount++;
+            //? For Audio Playing
+            var filePath = await imageCache.getFileFromCache(data[i].filePath!);
+            await player.setFilePath(filePath!.file.path);
+
+            // Getting Timer
+            final duration = player.duration;
+            Timer(duration!, () {
+              setState(() {
+                isQusPlaying = false;
+              });
+            });
+            if (q < 2) {
+              isQusPlaying ? player.stop() : player.play();
+
+              setState(() {
+                isQusPlaying = !isQusPlaying;
+                if (isQusPlaying) {
+                  q++;
+                }
+              });
+            } else {
+              player.stop();
+              setState(() {
+                isQusPlaying = false;
+              });
+              toast(
+                  context: context,
+                  label: 'You cannot play audio more than twice',
+                  subTitle: '두 번 이상 플레이할 수 없습니다.',
+                  color: Colors.red);
+            }
+          }
+        },
+        icon: Icon(
+          isQusPlaying ? Icons.pause_circle_filled_rounded : Icons.volume_down,
+          size: 32,
+          color:
+              data[i].questionCount < 2 ? Colors.black : Colors.grey.shade600,
+        ),
+      ),
+    );
+  }
+
+  InkWell imageWithAudio(
+      BuildContext context, List<Questions> data, Size screenSize) {
+    return InkWell(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              child: Row(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: InteractiveViewer(
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            '${ApiConstants.questionFileUrl}${data[i].filePath}',
+                        width: screenSize.width * 0.4,
+                        height: double.infinity,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      onTap: () => Navigator.of(context).pop(),
+                      child: const SizedBox.expand(),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        width: double.infinity,
+        height: data[i].audioPath != null
+            ? screenSize.height * 0.53
+            : screenSize.height * 0.42,
+        margin: const EdgeInsets.all(
+          15,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Colors.black,
+          ),
+          color: Colors.white,
+          boxShadow: const [
+            BoxShadow(
+                offset: Offset(0, 5), blurRadius: 5, color: Colors.black26),
+          ],
+        ),
+        child: Column(
+          children: [
+            CachedNetworkImage(
+              // cacheManager: imageCache,
+              imageUrl: '${ApiConstants.questionFileUrl}${data[i].filePath}',
+              width: double.infinity,
+              height: screenSize.height * 0.3,
+              fit: BoxFit.contain,
+              placeholder: (context, url) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+            const Divider(),
+            data[i].audioPath != null
+                ? IconButton(
+                    onPressed: () async {
+                      if (data[i].audioPathcount >= 2) {
+                        toast(
+                            context: context,
+                            label: 'You cannot play audio more than twice',
+                            subTitle: '두 번 이상 플레이할 수 없습니다.',
+                            color: Colors.red);
+                      } else {
+                        //? For Audio Playing
+                        var filePath = await imageCache
+                            .getFileFromCache(data[i].audioPath!);
+                        await player.setFilePath(filePath!.file.path);
+                        final duration = player.duration;
+                        Timer(duration!, () {
+                          setState(() {
+                            isQusPlaying = false;
+                          });
+                        });
+                        if (q < 2) {
+                          isQusPlaying ? player.stop() : player.play();
+                          data[i].audioPathcount++;
+                          setState(() {
+                            isQusPlaying = !isQusPlaying;
+                            if (isQusPlaying) {
+                              q++;
+                            }
+                          });
+                        } else {
+                          player.stop();
+                          setState(() {
+                            isQusPlaying = false;
+                          });
+                          toast(
+                              context: context,
+                              label: 'You cannot play audio more than twice',
+                              subTitle: '두 번 이상 플레이할 수 없습니다.',
+                              color: Colors.red);
+                        }
+                      }
+                    },
+                    icon: Icon(
+                      isQusPlaying
+                          ? Icons.pause_circle_filled_rounded
+                          : Icons.volume_down,
+                      size: 32,
+                      color: data[i].audioPathcount < 2
+                          ? Colors.black
+                          : Colors.grey.shade600,
+                    ),
+                  )
+                : const SizedBox(),
+          ],
+        ),
+      ),
+    );
+  }
+
   void backPrompt(BuildContext context, ExamType examType) {
     showDialog(
       context: context,
@@ -745,10 +1616,11 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
             'Are you sure want to exit ?',
             style: Theme.of(context).textTheme.headlineSmall,
           ),
+          actionsAlignment: MainAxisAlignment.center,
           actions: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: AppConstants.quizScreen,
                 foregroundColor: Colors.white,
               ),
               onPressed: () {
@@ -770,6 +1642,10 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               width: 5,
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -833,6 +1709,12 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
           key: qus.option4,
         );
       }
+      if (qus.audioPath != null) {
+        imageCache.downloadFile(
+          '${ApiConstants.questionFileUrl}${qus.audioPath}',
+          key: qus.audioPath,
+        );
+      }
     }
   }
 
@@ -846,8 +1728,13 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         alignment: Alignment.centerRight,
         child: FilledButton(
           style: FilledButton.styleFrom(
-            backgroundColor: AppConstants.quizScreen,
-          ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  9,
+                ),
+              ),
+              backgroundColor: AppConstants.quizScreen,
+              fixedSize: const Size(150, 10)),
           onPressed: () {
             setState(() {
               //Setting audio values to 0
@@ -856,8 +1743,17 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               o2 = 0;
               o3 = 0;
               o4 = 0;
+              isQusPlaying = false;
+              isOption1Playing = false;
+              isOption4Playing = false;
+              isOption2Playing = false;
+              isOption3Playing = false;
 
               player.stop();
+              option1Player.stop();
+              option2Player.stop();
+              option3Player.stop();
+              option4Player.stop();
               if (i < data.length - 1) {
                 i++;
                 int selectedQuestion = data[i].id;
@@ -888,6 +1784,12 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
         child: FilledButton(
           style: FilledButton.styleFrom(
             backgroundColor: AppConstants.quizScreen,
+            fixedSize: const Size(150, 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                9,
+              ),
+            ),
           ),
           onPressed: () {
             setState(() {
@@ -897,7 +1799,12 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
               o2 = 0;
               o3 = 0;
               o4 = 0;
+              isQusPlaying = false;
               player.stop();
+              option1Player.stop();
+              option2Player.stop();
+              option3Player.stop();
+              option4Player.stop();
               if (i > 0) {
                 i--;
               }
@@ -1045,7 +1952,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             onTap: () {
                               setState(() {
                                 isTotalQuestion = false;
-                                i = index;
+                                i = 20 + index;
                                 if (i < data.length - 1) {
                                   int selectedQuestion = data[i].id;
                                   if (userSelected.length > 1) {
@@ -1131,25 +2038,37 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                 style:
                                     Theme.of(context).textTheme.headlineSmall,
                               ),
+                              actionsAlignment: MainAxisAlignment.center,
                               actions: [
-                                TextButton(
+                                FilledButton(
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: AppConstants.quizScreen,
+                                  ),
                                   onPressed: () {
                                     submitAnswers(
                                         examType: examType, data: data);
                                   },
                                   child: const Text(
                                     'Yes',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                TextButton(
+                                FilledButton(
+                                  style: FilledButton.styleFrom(
+                                      backgroundColor: Colors.red),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
                                   child: const Text(
                                     'No',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -1157,7 +2076,60 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                           },
                         );
                       } else {
-                        submitAnswers(examType: examType, data: data);
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content: SizedBox(
+                                height: screenSize.height * 0.12,
+                                child: Column(
+                                  children: const [
+                                    Text('Are you sure to submit ?'),
+                                  ],
+                                ),
+                              ),
+                              title: Text(
+                                'Warning !',
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                              actionsAlignment: MainAxisAlignment.center,
+                              actions: [
+                                FilledButton(
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: AppConstants.quizScreen,
+                                  ),
+                                  onPressed: () {
+                                    submitAnswers(
+                                        examType: examType, data: data);
+                                  },
+                                  child: const Text(
+                                    'Yes',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                FilledButton(
+                                  style: FilledButton.styleFrom(
+                                      backgroundColor: Colors.red),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text(
+                                    'No',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       }
                     }
                   },
@@ -1175,6 +2147,15 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     List<String> selectedAnswers = [];
 
     player.stop();
+    option1Player.stop();
+    option2Player.stop();
+    option3Player.stop();
+    option4Player.stop();
+
+    setState(() {
+      isTimerStart = false;
+    });
+
     for (var userAnswer in userSelected) {
       questionIds.add(userAnswer['question'].toString());
       selectedAnswers.add(userAnswer['option'].toString());
@@ -1193,7 +2174,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
       if (value[0] == 'false') {
         toast(context: context, label: value[1], color: Colors.red);
       } else {
-        List<String> msg = [value[1], value[2]];
+        List<String> msg = [value[1], value[2], value[3]];
         SystemChrome.setPreferredOrientations([
           DeviceOrientation.portraitUp,
         ]);
@@ -1201,5 +2182,90 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
             .pushReplacementNamed(QuizResultScreen.routeName, arguments: msg);
       }
     });
+  }
+}
+
+class QuestionWithBorder extends StatelessWidget {
+  const QuestionWithBorder({
+    super.key,
+    required this.screenSize,
+    required this.i,
+    required this.data,
+  });
+
+  final Size screenSize;
+  final int i;
+  final List<Questions> data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ? Showing Question number
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: screenSize.height * 0.03,
+          ),
+          child: Text(
+            '${i + 1}.',
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: Colors.black,
+                ),
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            border: Border.all(),
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+            boxShadow: const [
+              BoxShadow(
+                offset: Offset(0, 5),
+                blurRadius: 7,
+                color: Colors.black26,
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(8),
+          margin: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: i >= 2 && i <= 7
+                ? CrossAxisAlignment.center
+                : CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: screenSize.height * 0.03,
+                ),
+                child: data[i].question != null
+                    ? Text(
+                        data[i].question!,
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Colors.black,
+                            ),
+                      )
+                    : const SizedBox(),
+              ),
+              // Showing Sub Question
+              data[i].subQuestion != null
+                  ? Padding(
+                      padding: EdgeInsets.only(
+                        bottom: screenSize.height * 0.03,
+                      ),
+                      child: Text(
+                        '${data[i].subQuestion}',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Colors.black,
+                            ),
+                      ),
+                    )
+                  : const SizedBox(),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

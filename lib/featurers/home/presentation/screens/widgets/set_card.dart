@@ -5,7 +5,12 @@ import 'package:toddle/featurers/quiz/presnetation/screens/quiz_screen.dart';
 class SetCard extends StatelessWidget {
   final int setNumber;
   final ExamType exam;
-  const SetCard({required this.setNumber, required this.exam, super.key});
+  final int length;
+  const SetCard(
+      {required this.setNumber,
+      required this.exam,
+      required this.length,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +27,19 @@ class SetCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Set $setNumber',
+              'EPS-TOPIK',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            Text(
+              exam.examType,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            Text(
+              'Model Question',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            Text(
+              'Set ${length + setNumber}',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             Padding(

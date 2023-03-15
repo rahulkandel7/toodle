@@ -2,12 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:toddle/constants/app_constants.dart';
-import 'package:toddle/core/utils/toaster.dart';
 
 class CountDownTimer extends StatefulWidget {
   final Duration time;
   final Function onSubmit;
-  const CountDownTimer({required this.time, required this.onSubmit, super.key});
+  final bool isStart;
+  const CountDownTimer(
+      {required this.time,
+      required this.onSubmit,
+      required this.isStart,
+      super.key});
 
   @override
   State<CountDownTimer> createState() => _CountDownTimerState();
@@ -31,12 +35,30 @@ class _CountDownTimerState extends State<CountDownTimer> {
     const reduceSecondsBy = 1;
     setState(() {
       final seconds = duration.inSeconds - reduceSecondsBy;
-      if (duration <= const Duration(minutes: 20, seconds: 01) &&
-          duration > const Duration(minutes: 20, seconds: 0)) {
-        toast(
-            context: context,
-            label: 'Do not move your head.',
-            color: Colors.amber);
+
+      if (seconds % 180 == 0 && widget.isStart) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Text(
+                  'Do not move your head. टाउको नघुमाउनुहोस ।',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            ),
+            behavior: SnackBarBehavior.floating,
+            width: MediaQuery.of(context).size.width * 0.4,
+            backgroundColor: Colors.amber,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                10,
+              ),
+            ),
+          ),
+        );
       }
       if (seconds < 0) {
         widget.onSubmit();
@@ -57,6 +79,7 @@ class _CountDownTimerState extends State<CountDownTimer> {
   @override
   void dispose() {
     super.dispose();
+    stopTimer();
     countDownTimer!.cancel();
   }
 
