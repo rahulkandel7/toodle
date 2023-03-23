@@ -45,13 +45,13 @@ class _CountDownTimerState extends State<CountDownTimer> {
               children: const [
                 Text(
                   'Do not move your head. टाउको नघुमाउनुहोस ।',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Colors.white),
                 ),
               ],
             ),
             behavior: SnackBarBehavior.floating,
             width: MediaQuery.of(context).size.width * 0.4,
-            backgroundColor: Colors.amber,
+            backgroundColor: Colors.black,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(
                 10,

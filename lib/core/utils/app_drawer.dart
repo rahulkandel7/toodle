@@ -12,6 +12,7 @@ import 'package:toddle/core/utils/toaster.dart';
 import 'package:toddle/featurers/auth/presentation/controllers/auth_controller.dart';
 import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
 import 'package:toddle/featurers/notices/presentation/screens/notice_screen.dart';
+import 'package:toddle/featurers/offline_storage/presentation/screens/downloaded_exam_screen.dart';
 
 import '../../featurers/auth/presentation/screens/edit_profile.dart';
 import '../../featurers/auth/presentation/screens/login_screen.dart';
@@ -186,6 +187,13 @@ class AppDrawerState extends ConsumerState<AppDrawer> {
                       icon: Icons.notifications_none_sharp,
                       function: () => Navigator.of(context)
                           .pushNamed(NoticeScreen.routeName),
+                    ),
+                    textButton(
+                      context: context,
+                      text: 'Downloaded Exam',
+                      icon: Icons.stay_primary_landscape_rounded,
+                      function: () => Navigator.of(context)
+                          .pushNamed(DownloadedExamScreens.routeName),
                     ),
                     const Divider(),
                     Padding(

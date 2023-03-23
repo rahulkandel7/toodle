@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:toddle/core/darkmode_notifier.dart';
 import 'package:toddle/featurers/auth/presentation/screens/edit_profile.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_change_password.dart';
@@ -13,14 +14,25 @@ import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/set_screen.dart';
 import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_history.dart';
 import 'package:toddle/featurers/notices/presentation/screens/notice_screen.dart';
+import 'package:toddle/featurers/offline_storage/data/models/offline_exam.dart';
+import 'package:toddle/featurers/offline_storage/data/models/offline_question.dart';
+import 'package:toddle/featurers/offline_storage/presentation/screens/downloaded_exam_screen.dart';
+import 'package:toddle/featurers/offline_storage/presentation/screens/offline_score_card.dart';
+import 'package:toddle/featurers/offline_storage/presentation/screens/start_offline_exam.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_result_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_view_paper.dart';
 import 'package:toddle/featurers/splash_screen/splash_screen.dart';
 
+late Box box;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await Hive.initFlutter();
+  Hive.registerAdapter(OfflineQuestionsAdapter());
+  Hive.registerAdapter(OfflineExamAdapter());
+  await Hive.openBox<OfflineExam>('offlineexam');
+
   runApp(
     const ProviderScope(
       child: MainApp(),
@@ -94,6 +106,9 @@ class MainApp extends ConsumerWidget {
         ViewPaperHistory.routeName: (ctx) => const ViewPaperHistory(),
         FirstScreen.routeName: (ctx) => const FirstScreen(),
         NoticeScreen.routeName: (ctx) => const NoticeScreen(),
+        DownloadedExamScreens.routeName: (ctx) => const DownloadedExamScreens(),
+        StartOfflineExam.routeName: (ctx) => const StartOfflineExam(),
+        OfflineScoreCard.routeName: (ctx) => const OfflineScoreCard(),
       },
     );
   }

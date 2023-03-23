@@ -5,6 +5,7 @@ import 'package:toddle/core/utils/biometric_auth.dart';
 import 'package:toddle/featurers/auth/presentation/screens/forget_password_screen.dart';
 import 'package:toddle/featurers/auth/presentation/screens/register_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/first_screen.dart';
+import 'package:toddle/featurers/offline_storage/presentation/screens/downloaded_exam_screen.dart';
 
 import '../../../../core/utils/toaster.dart';
 import '../controllers/auth_controller.dart';
@@ -259,6 +260,25 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: const Text(
                               "Don't Have an Account? Create Now",
                             ),
+                          ),
+                        ),
+
+                        // Offline Button
+                        FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.purple.shade700,
+                          ),
+                          onPressed: () => Navigator.of(context)
+                              .pushNamed(DownloadedExamScreens.routeName),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.offline_bolt_outlined),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text('Go Offline'),
+                            ],
                           ),
                         ),
                       ],
