@@ -2231,7 +2231,7 @@ class QuestionWithBorder extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           margin: const EdgeInsets.all(10),
           child: Column(
-            crossAxisAlignment: i >= 2 && i <= 7
+            crossAxisAlignment: i >= 2 && i <= 3
                 ? CrossAxisAlignment.center
                 : CrossAxisAlignment.start,
             children: [
@@ -2245,6 +2245,9 @@ class QuestionWithBorder extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               color: Colors.black,
                             ),
+                        textAlign: i >= 4 && i <= 8
+                            ? TextAlign.left
+                            : TextAlign.center,
                       )
                     : const SizedBox(),
               ),
@@ -2259,6 +2262,9 @@ class QuestionWithBorder extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               color: Colors.black,
                             ),
+                        textAlign: i >= 4 && i <= 8
+                            ? TextAlign.left
+                            : TextAlign.center,
                       ),
                     )
                   : const SizedBox(),

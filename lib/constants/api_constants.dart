@@ -5,6 +5,7 @@ class ApiConstants {
       "https://toddle.com.np/images/quiz_images/";
 
   static const String questionFileUrl = "https://toddle.com.np/files/";
+  static const String resourceUrl = "https://toddle.com.np/resources/";
   static const String userImage = "https://toddle.com.np/profiles/";
 
   //* For Testing

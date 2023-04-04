@@ -11,6 +11,7 @@ import 'package:toddle/core/utils/app_drawer.dart';
 import 'package:toddle/featurers/auth/presentation/screens/edit_profile.dart';
 import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_history.dart';
 import 'package:toddle/featurers/notices/presentation/screens/notice_screen.dart';
+import 'package:toddle/featurers/resources/presentation/screens/resource_screen.dart';
 
 import 'home_screen.dart';
 
@@ -245,6 +246,21 @@ class FirstScreenState extends ConsumerState<FirstScreen> {
                     function: () =>
                         Navigator.of(context).pushNamed(EditProfile.routename),
                     image: 'assets/images/edit-profile.png',
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: screenSize.height * 0.02,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  infocard(
+                    screenSize: screenSize,
+                    info: 'Resources',
+                    function: () => Navigator.of(context)
+                        .pushNamed(ResourceScreen.routeName),
+                    image: 'assets/images/resources.png',
                   ),
                 ],
               ),

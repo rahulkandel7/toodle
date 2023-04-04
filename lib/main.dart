@@ -22,6 +22,7 @@ import 'package:toddle/featurers/offline_storage/presentation/screens/start_offl
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_result_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_screen.dart';
 import 'package:toddle/featurers/quiz/presnetation/screens/quiz_view_paper.dart';
+import 'package:toddle/featurers/resources/presentation/screens/resource_screen.dart';
 import 'package:toddle/featurers/splash_screen/splash_screen.dart';
 
 late Box box;
@@ -109,6 +110,7 @@ class MainApp extends ConsumerWidget {
         DownloadedExamScreens.routeName: (ctx) => const DownloadedExamScreens(),
         StartOfflineExam.routeName: (ctx) => const StartOfflineExam(),
         OfflineScoreCard.routeName: (ctx) => const OfflineScoreCard(),
+        ResourceScreen.routeName: (ctx) => const ResourceScreen(),
       },
     );
   }

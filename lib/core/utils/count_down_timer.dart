@@ -36,7 +36,7 @@ class _CountDownTimerState extends State<CountDownTimer> {
     setState(() {
       final seconds = duration.inSeconds - reduceSecondsBy;
 
-      if (seconds % 180 == 0 && widget.isStart) {
+      if (seconds % 60 == 0 && widget.isStart) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Column(

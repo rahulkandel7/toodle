@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toddle/constants/app_constants.dart';
@@ -45,9 +46,13 @@ class ExamCard extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    Text(
-                      examType.examType,
-                      style: Theme.of(context).textTheme.headlineSmall,
+                    SizedBox(
+                      width: screenSize.width * 0.6,
+                      child: AutoSizeText(
+                        examType.examType,
+                        style: Theme.of(context).textTheme.headlineSmall,
+                        maxLines: 1,
+                      ),
                     ),
                     Consumer(
                       builder: (context, ref, child) {
