@@ -101,6 +101,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     required String isOptionAudio,
     required List<Questions> data,
     required String boxNumber,
+    required BuildContext context,
   }) {
     return Padding(
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
@@ -182,7 +183,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             option1Player.playing
                                 ? option1Player.stop()
                                 : option1Player.play();
-                            data[i].option1Count++;
+                            if (option1Player.playing) {
+                              data[i].option1Count++;
+                            }
                             setState(() {
                               isOption1Playing = !isOption1Playing;
                               if (option1Player.playing) {
@@ -287,6 +290,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     required String isOptionAudio,
     required List<Questions> data,
     required String boxNumber,
+    required BuildContext context,
   }) {
     return Padding(
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
@@ -368,7 +372,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             option2Player.playing
                                 ? option2Player.stop()
                                 : option2Player.play();
-                            data[i].option2Count++;
+                            if (option2Player.playing) {
+                              data[i].option2Count++;
+                            }
                             setState(() {
                               isOption2Playing = !isOption2Playing;
                               if (option2Player.playing) {
@@ -473,6 +479,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     required String isOptionAudio,
     required List<Questions> data,
     required String boxNumber,
+    required BuildContext context,
   }) {
     return Padding(
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
@@ -554,7 +561,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             option3Player.playing
                                 ? option3Player.stop()
                                 : option3Player.play();
-                            data[i].option3Count++;
+                            if (option3Player.playing) {
+                              data[i].option3Count++;
+                            }
                             setState(() {
                               isOption3Playing = !isOption3Playing;
                               if (option3Player.playing) {
@@ -659,6 +668,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
     required String isOptionAudio,
     required List<Questions> data,
     required String boxNumber,
+    required BuildContext context,
   }) {
     return Padding(
       padding: EdgeInsets.only(top: screenSize.height * 0.02),
@@ -740,7 +750,9 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                             option4Player.playing
                                 ? option4Player.stop()
                                 : option4Player.play();
-                            data[i].option4Count++;
+                            if (option4Player.playing) {
+                              data[i].option4Count++;
+                            }
                             setState(() {
                               isOption4Playing = !isOption4Playing;
                               if (option4Player.playing) {
@@ -1113,6 +1125,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                             .isOptionAudio,
                                                         data: data,
                                                         boxNumber: '1',
+                                                        context: context,
                                                       ),
                                                     ),
                                                     Padding(
@@ -1130,6 +1143,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                             'option2',
                                                         data: data,
                                                         boxNumber: '2',
+                                                        context: context,
                                                       ),
                                                     ),
                                                   ],
@@ -1151,6 +1165,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                             'option3',
                                                         data: data,
                                                         boxNumber: '3',
+                                                        context: context,
                                                       ),
                                                     ),
                                                     Padding(
@@ -1168,6 +1183,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                             'option4',
                                                         data: data,
                                                         boxNumber: '4',
+                                                        context: context,
                                                       ),
                                                     ),
                                                   ],
@@ -1186,6 +1202,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                       data[i].isOptionAudio,
                                                   data: data,
                                                   boxNumber: '1',
+                                                  context: context,
                                                 ),
                                                 optionBox2(
                                                   option: data[i].option2,
@@ -1196,6 +1213,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   selectedOption: 'option2',
                                                   data: data,
                                                   boxNumber: '2',
+                                                  context: context,
                                                 ),
                                                 optionBox3(
                                                   option: data[i].option3,
@@ -1206,6 +1224,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   selectedOption: 'option3',
                                                   data: data,
                                                   boxNumber: '3',
+                                                  context: context,
                                                 ),
                                                 optionBox4(
                                                   option: data[i].option4,
@@ -1216,6 +1235,7 @@ class QuizScreenState extends ConsumerState<QuizScreen> {
                                                   selectedOption: 'option4',
                                                   data: data,
                                                   boxNumber: '4',
+                                                  context: context,
                                                 ),
                                               ],
                                             ),
