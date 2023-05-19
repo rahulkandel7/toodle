@@ -34,8 +34,20 @@ class OfflineStorageController {
               'Authorization': 'Bearer ${prefs.getString('token')}',
             },
           ));
+
       // * getting all 40 questions and storing as List
       final result = response.data['data'] as List<dynamic>;
+
+      // List<OfflineQuestions> offQus = result.map((e) {
+      //   if (e != null) {
+      //     print('--------------------------');
+
+      //     print(e['id']);
+      //     print('--------------------------');
+
+      //     return OfflineQuestions.fromMap(e);
+      //   }
+      // }).toList();
 
       List<OfflineQuestions> offQus =
           result.map((e) => OfflineQuestions.fromMap(e)).toList();
@@ -108,6 +120,7 @@ class OfflineStorageController {
 
       return true;
     } catch (e) {
+      print(e);
       return false;
     }
   }

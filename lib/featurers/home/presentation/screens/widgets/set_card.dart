@@ -82,7 +82,7 @@ class SetCard extends StatelessWidget {
                                   .storeInHive(
                                     setNumber: (length + setNumber).toString(),
                                     examType: exam.examType,
-                                    id: setNumber,
+                                    id: exam.id,
                                   );
 
                               isComplete.then((value) {
