@@ -2073,6 +2073,7 @@ class StartOfflineExamState extends ConsumerState<StartOfflineExam> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    Navigator.of(context).pop();
     Navigator.of(context)
         .pushReplacementNamed(OfflineScoreCard.routeName, arguments: message);
   }

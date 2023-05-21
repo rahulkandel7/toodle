@@ -44,6 +44,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  bool isProcessing = false;
+
   @override
   void initState() {
     super.initState();
@@ -212,14 +214,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                 children: [
                                   Expanded(
                                     child: FilledButton(
-                                      onPressed: () async {
-                                        formKey.currentState!.save();
-                                        if (!formKey.currentState!.validate()) {
-                                          return;
-                                        }
+                                      onPressed: isProcessing
+                                          ? null
+                                          : () async {
+                                              setState(() {
+                                                isProcessing = true;
+                                              });
+                                              formKey.currentState!.save();
+                                              if (!formKey.currentState!
+                                                  .validate()) {
+                                                return;
+                                              }
 
-                                        loginFunction(ref, context);
-                                      },
+                                              loginFunction(ref, context);
+                                              setState(() {
+                                                isProcessing = false;
+                                              });
+                                            },
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
