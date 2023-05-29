@@ -14,9 +14,13 @@ class OfflineExam extends HiveObject {
   @HiveField(2)
   final List<OfflineQuestions> questions;
 
+  @HiveField(3)
+  final String examTypeID;
+
   OfflineExam({
     required this.examType,
     required this.questions,
     required this.setNumber,
+    required this.examTypeID,
   });
 }

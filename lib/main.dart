@@ -14,6 +14,7 @@ import 'package:toddle/featurers/home/presentation/screens/home_screen.dart';
 import 'package:toddle/featurers/home/presentation/screens/set_screen.dart';
 import 'package:toddle/featurers/my_paper/presentation/screens/view_paper_history.dart';
 import 'package:toddle/featurers/notices/presentation/screens/notice_screen.dart';
+import 'package:toddle/featurers/offline_storage/data/models/offline_answers.dart';
 import 'package:toddle/featurers/offline_storage/data/models/offline_exam.dart';
 import 'package:toddle/featurers/offline_storage/data/models/offline_question.dart';
 import 'package:toddle/featurers/offline_storage/presentation/screens/downloaded_exam_screen.dart';
@@ -32,7 +33,9 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(OfflineQuestionsAdapter());
   Hive.registerAdapter(OfflineExamAdapter());
+  Hive.registerAdapter(OfflineAnswersAdapter());
   await Hive.openBox<OfflineExam>('offlineexam');
+  await Hive.openBox<OfflineAnswers>('offlineAnswers');
 
   runApp(
     const ProviderScope(

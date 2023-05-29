@@ -20,6 +20,7 @@ class DownloadedExamScreens extends StatelessWidget {
           valueListenable: OfflineDataSource.getOfflineExam().listenable(),
           builder: ((context, box, _) {
             final downloadedExams = box.values.toList().cast<OfflineExam>();
+
             return downloadedExams.isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.all(16.0),

@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -206,7 +207,10 @@ class StartOfflineExamState extends ConsumerState<StartOfflineExam> {
                       ),
                     )
                   : isImage == 'No'
-                      ? Text(option)
+                      ? AutoSizeText(
+                          option,
+                          maxLines: 2,
+                        )
                       : InkWell(
                           onTap: () {
                             showDialog(
@@ -399,7 +403,10 @@ class StartOfflineExamState extends ConsumerState<StartOfflineExam> {
                       ),
                     )
                   : isImage == 'No'
-                      ? Text(option)
+                      ? AutoSizeText(
+                          option,
+                          maxLines: 2,
+                        )
                       : InkWell(
                           onTap: () {
                             showDialog(
@@ -594,7 +601,10 @@ class StartOfflineExamState extends ConsumerState<StartOfflineExam> {
                       ),
                     )
                   : isImage == 'No'
-                      ? Text(option)
+                      ? AutoSizeText(
+                          option,
+                          maxLines: 2,
+                        )
                       : InkWell(
                           onTap: () {
                             showDialog(
@@ -787,7 +797,10 @@ class StartOfflineExamState extends ConsumerState<StartOfflineExam> {
                       ),
                     )
                   : isImage == 'No'
-                      ? Text(option)
+                      ? AutoSizeText(
+                          option,
+                          maxLines: 2,
+                        )
                       : InkWell(
                           onTap: () {
                             showDialog(
@@ -899,8 +912,8 @@ class StartOfflineExamState extends ConsumerState<StartOfflineExam> {
     Size screenSize = MediaQuery.of(context).size;
 
     //? Taking Arguments
-    List<OfflineQuestions> data =
-        ModalRoute.of(context)!.settings.arguments as List<OfflineQuestions>;
+    List previousData = ModalRoute.of(context)!.settings.arguments as List;
+    List<OfflineQuestions> data = previousData[0];
 
     //? Geting ExamType
     // ExamType examType = args['exam'];
@@ -1000,6 +1013,7 @@ class StartOfflineExamState extends ConsumerState<StartOfflineExam> {
               ? totalQuestionsView(
                   screenSize: screenSize,
                   data: data,
+                  id: previousData[1],
                 )
               : SingleChildScrollView(
                   child: Padding(
@@ -1730,7 +1744,9 @@ class StartOfflineExamState extends ConsumerState<StartOfflineExam> {
   }
 
   Padding totalQuestionsView(
-      {required Size screenSize, required List<OfflineQuestions> data}) {
+      {required Size screenSize,
+      required List<OfflineQuestions> data,
+      required String id}) {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: screenSize.width * 0.04,
@@ -1948,7 +1964,7 @@ class StartOfflineExamState extends ConsumerState<StartOfflineExam> {
                                     backgroundColor: AppConstants.quizScreen,
                                   ),
                                   onPressed: () {
-                                    submitAnswers(data: data);
+                                    submitAnswers(data: data, id: id);
                                   },
                                   child: const Text(
                                     'Yes',
@@ -2043,7 +2059,8 @@ class StartOfflineExamState extends ConsumerState<StartOfflineExam> {
     );
   }
 
-  void submitAnswers({required List<OfflineQuestions> data}) {
+  void submitAnswers(
+      {required List<OfflineQuestions> data, required String id}) {
     List<String> questionIds = [];
     List<String> selectedAnswers = [];
 
@@ -2069,7 +2086,11 @@ class StartOfflineExamState extends ConsumerState<StartOfflineExam> {
     }
 
     List<String> message = ref.read(offlineStorageProvider).calculateScore(
-        answers: selectedAnswers, questions: questionIds, data: data);
+          answers: selectedAnswers,
+          questions: questionIds,
+          data: data,
+          id: id,
+        );
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);

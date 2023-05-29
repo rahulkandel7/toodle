@@ -10,6 +10,8 @@ import 'package:toddle/featurers/offline_storage/data/models/offline_exam.dart';
 import 'package:toddle/featurers/offline_storage/data/models/offline_question.dart';
 import 'package:toddle/featurers/offline_storage/data/sources/offline_data_source.dart';
 
+import '../../data/models/offline_answers.dart';
+
 class OfflineStorageController {
   OfflineStorageController();
 
@@ -114,13 +116,13 @@ class OfflineStorageController {
         examType: examType,
         questions: offQus,
         setNumber: setNumber,
+        examTypeID: id.toString(),
       );
 
       box.put('$examType$setNumber', offlineExam);
 
       return true;
     } catch (e) {
-      print(e);
       return false;
     }
   }
@@ -155,10 +157,12 @@ class OfflineStorageController {
     }
   }
 
-  List<String> calculateScore(
-      {required List<String> questions,
-      required List<String> answers,
-      required List<OfflineQuestions> data}) {
+  List<String> calculateScore({
+    required List<String> questions,
+    required List<String> answers,
+    required List<OfflineQuestions> data,
+    required String id,
+  }) {
     int obtainedMarks = 0;
     int fullMarks = data.length;
 
@@ -169,8 +173,18 @@ class OfflineStorageController {
         obtainedMarks++;
       }
     }
-
     List<String> msg = [fullMarks.toString(), obtainedMarks.toString()];
+    final box = OfflineDataSource.getOfflineExam();
+    final offlineAnswers = OfflineDataSource.getOfflineAnswers();
+    final getQuiz = box.get(id);
+    offlineAnswers.put(
+      id,
+      OfflineAnswers(
+          answers: answers,
+          questions: questions,
+          examTypeId: getQuiz!.examTypeID),
+    );
+    box.delete(id);
     return msg;
   }
 }

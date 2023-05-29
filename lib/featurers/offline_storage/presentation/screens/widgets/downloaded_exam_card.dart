@@ -88,7 +88,7 @@ class DownloadedExamCard extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pushNamed(
                       StartOfflineExam.routeName,
-                      arguments: questions,
+                      arguments: [questions, '$examType$setNumber'],
                     );
                   },
                   child: const Text(
